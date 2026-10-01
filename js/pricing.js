@@ -1,5 +1,6 @@
 /**
  * Filtro simple de la lista de precios orientativos por categoría.
+ * Si la API actualiza la lista (api-data.js), se vuelve a aplicar el filtro activo.
  */
 (function () {
   'use strict';
@@ -10,12 +11,11 @@
   if (!filters || !list) return;
 
   const chips = Array.from(filters.querySelectorAll('[data-filter]'));
-  const items = Array.from(list.querySelectorAll('.price-item'));
   filters.hidden = false;
 
   function apply(category) {
     let shown = 0;
-    items.forEach((item) => {
+    list.querySelectorAll('.price-item').forEach((item) => {
       const categories = (item.dataset.category || '').split(/\s+/);
       const visible = category === 'todos' || categories.includes(category);
       item.hidden = !visible;
@@ -32,5 +32,10 @@
   filters.addEventListener('click', (event) => {
     const chip = event.target.closest('[data-filter]');
     if (chip) apply(chip.dataset.filter);
+  });
+
+  document.addEventListener('aeod:precios-actualizados', () => {
+    const active = chips.find((chip) => chip.getAttribute('aria-pressed') === 'true');
+    apply(active ? active.dataset.filter : 'todos');
   });
 })();

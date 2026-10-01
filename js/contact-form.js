@@ -2,7 +2,9 @@
  * Formulario de cita.
  * Responsabilidades separadas:
  *   1. Validación (reglas puras + pintado de errores accesible)
- *   2. Envío (delegado en AEOD.api.submitContactRequest)
+ *   2. Envío a la API (AEOD.api): con día preferido y tratamiento del catálogo
+ *      se envía como solicitud de cita (POST /citas); si no, como contacto (POST /contacto).
+ *      Una solicitud de cita NO confirma la cita: la clínica llama para confirmarla.
  *   3. Estados de UI: carga, éxito y error
  *   4. Ayudas: contador de caracteres, borrador en la pestaña y
  *      relleno desde otros módulos (estimador, orientación, CTA)
@@ -191,6 +193,66 @@
   }
 
   /* ── 2. Envío ── */
+  const SLOT_LABELS = { manana: 'mañana', tarde: 'tarde' };
+  // Campos de la API → campos del formulario, para pintar los errores que devuelve el backend
+  const API_FIELDS = {
+    nombre: 'name', telefono: 'phone', email: 'email', tratamiento: 'treatment', tratamiento_id: 'treatment',
+    fecha_preferida: 'date', hora_preferida: 'slot', mensaje: 'message',
+  };
+
+  function selectedOption() {
+    const select = form.elements.treatment;
+    return select.options[select.selectedIndex];
+  }
+
+  /** Mensaje final: añade lo que la API no guarda en un campo propio (franja, interés, día). */
+  function buildMessage(data, extras) {
+    const notes = extras.filter(Boolean).join(' ');
+    const text = [notes, data.message].filter(Boolean).join('\n');
+    return text.slice(0, 1000);
+  }
+
+  async function send(data) {
+    const { api } = AEOD;
+    const option = selectedOption();
+    // El formulario agrupa tratamientos ("Implantes dentales"); data-tratamiento indica su nombre en la API
+    const apiName = option.dataset.tratamiento || '';
+    const tratamientoId = data.date && apiName && AEOD.tratamientoId ? await AEOD.tratamientoId(apiName) : null;
+    const slot = SLOT_LABELS[data.slot] ? `Franja preferida: ${SLOT_LABELS[data.slot]}.` : '';
+
+    if (tratamientoId) {
+      await api.solicitarCita({
+        nombre: data.name,
+        telefono: data.phone,
+        email: data.email,
+        tratamiento_id: tratamientoId,
+        fecha_preferida: data.date,
+        hora_preferida: null,
+        mensaje: buildMessage(data, [apiName !== data.treatment ? `Interés: ${data.treatment}.` : '', slot]),
+      });
+      return 'cita';
+    }
+    await api.enviarContacto({
+      nombre: data.name,
+      telefono: data.phone,
+      email: data.email,
+      tratamiento: data.treatment,
+      mensaje: buildMessage(data, [data.date ? `Día preferido: ${data.date}.` : '', slot]),
+    });
+    return 'contacto';
+  }
+
+  function showApiFieldErrors(errores) {
+    const invalid = [];
+    Object.entries(errores).forEach(([apiField, message]) => {
+      const field = form.elements[API_FIELDS[apiField]];
+      if (!field) return;
+      showFieldError(field, message);
+      invalid.push(field);
+    });
+    return invalid;
+  }
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearSummary();
@@ -208,18 +270,25 @@
     const { api } = AEOD;
     setLoading(true);
     try {
-      await api.submitContactRequest(getData(), { endpoint: form.dataset.endpoint });
+      const kind = await send(getData());
       form.reset();
       touched.clear();
       updateCount();
       AEOD.session.remove(DRAFT_KEY);
-      showSummary('success',
-        '<strong>Hemos recibido tu solicitud.</strong> Te llamaremos para confirmar tu cita.');
+      showSummary('success', kind === 'cita'
+        ? '<strong>Hemos recibido tu solicitud de cita.</strong> Aún no está confirmada: te llamaremos para confirmar el día y la hora.'
+        : '<strong>Hemos recibido tu solicitud.</strong> Te llamaremos para ayudarte y, si lo necesitas, darte cita.');
     } catch (error) {
       const notConfigured = api && error instanceof api.ApiNotConfiguredError;
-      showSummary('error', notConfigured
-        ? `<strong>Por ahora no podemos recibir solicitudes online.</strong> ${CONTACT_FALLBACK}`
-        : `<strong>No hemos podido enviar tu solicitud.</strong> Inténtalo de nuevo en unos minutos. ${CONTACT_FALLBACK}`);
+      const rejected = api && error instanceof api.ApiRequestError && error.status === 400;
+      const invalidFields = rejected ? showApiFieldErrors(error.errores) : [];
+      if (invalidFields.length) {
+        showSummary('error', '<strong>Revisa los campos marcados.</strong>');
+      } else {
+        showSummary('error', notConfigured
+          ? `<strong>Por ahora no podemos recibir solicitudes online.</strong> ${CONTACT_FALLBACK}`
+          : `<strong>No hemos podido enviar tu solicitud.</strong> Inténtalo de nuevo en unos minutos. ${CONTACT_FALLBACK}`);
+      }
     } finally {
       setLoading(false);
     }
