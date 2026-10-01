@@ -1,0 +1,43 @@
+/* ═══════════════════════════════════════════════
+   TECNOLOGÍA — tecnología → qué hace → para ti
+   (antes: tarjetas clicables con especificaciones)
+═══════════════════════════════════════════════ */
+.tech__grid {
+  display: grid;
+  border-top: 1px solid var(--paper-3);
+}
+
+.tech-card {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--paper-3);
+}
+.tech-card h3 { font-size: 1.1875rem; }
+
+.tech-card__facts { display: grid; gap: 4px; margin-top: 14px; }
+.tech-card__facts dt {
+  margin-top: 10px;
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tech-card__facts dt:first-child { margin-top: 0; }
+.tech-card__facts dd { font-size: .9375rem; color: var(--ink-3); line-height: 1.6; }
+.tech-card__facts dt:nth-of-type(2) { color: var(--brand); }
+.tech-card__facts dd:last-child { color: var(--ink); font-weight: 500; }
+
+.brands {
+  display: grid;
+  gap: 12px;
+  margin-top: 48px;
+}
+
+@media (min-width: 768px) {
+  .tech__grid { grid-template-columns: 1fr 1fr; column-gap: 48px; }
+}
+
+@media (min-width: 1024px) {
+  .tech__grid { grid-template-columns: repeat(3, 1fr); }
+  .tech-card { padding: 32px 0 36px; }
+}

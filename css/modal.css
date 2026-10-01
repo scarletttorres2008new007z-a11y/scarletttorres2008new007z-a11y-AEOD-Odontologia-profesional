@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════
+   MODAL — <dialog> nativo (showModal):
+   foco atrapado, Escape y capa inerte de serie
+═══════════════════════════════════════════════ */
+.modal {
+  width: min(600px, calc(100% - 32px));
+  max-height: min(88vh, 900px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+}
+.modal[open] { display: flex; flex-direction: column; animation: modal-in var(--t-base) var(--ease); }
+.modal::backdrop { background: rgba(12, 12, 11, .6); }
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--paper-3);
+}
+.modal__title { margin-top: 6px; font-size: 1.5rem; }
+
+.modal__close {
+  display: grid;
+  place-items: center;
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  margin: -6px -10px 0 0;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+  font-size: 20px;
+  color: var(--ink-3);
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.modal__close:hover { border-color: var(--ink); color: var(--ink); }
+
+.modal__body { padding: 20px 24px; overflow-y: auto; }
+.modal__body > p { font-size: .9375rem; }
+.modal__body h3 {
+  margin: 20px 0 10px;
+  font-family: var(--font-sans);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.modal__note {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border-left: 2px solid var(--accent);
+  font-size: .875rem !important;
+}
+
+.modal__foot { padding: 16px 24px 24px; border-top: 1px solid var(--paper-3); }
+
+body.modal-open { overflow: hidden; }
+
+@media (min-width: 600px) {
+  .modal__head { padding: 32px 36px 20px; }
+  .modal__body { padding: 24px 36px; }
+  .modal__foot { padding: 20px 36px 32px; }
+}

@@ -1,0 +1,52 @@
+/* ═══════════════════════════════════════════════
+   FOOTER — Clínica · Navegación · Contacto · Legal
+═══════════════════════════════════════════════ */
+.site-footer { background: var(--dark-bg); color: var(--on-dark-3); }
+
+.site-footer__grid {
+  display: grid;
+  gap: 40px;
+  padding-block: 56px 48px;
+}
+
+.logo--light .logo__mark { border-color: rgba(255, 255, 255, .3); color: var(--accent); }
+.logo--light .logo__name { color: var(--on-dark); }
+.logo--light .logo__sub { color: var(--on-dark-3); }
+
+.site-footer__clinic p {
+  margin-top: 18px;
+  max-width: 36ch;
+  font-size: .9375rem;
+  color: var(--on-dark-3);
+}
+
+.site-footer__title {
+  margin-bottom: 14px;
+  font-family: var(--font-sans);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.site-footer__col ul { display: grid; gap: 2px; }
+.site-footer__col a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  font-size: .9375rem;
+  color: var(--on-dark-2);
+  transition: color var(--t-fast) var(--ease);
+}
+.site-footer__col a:hover { color: var(--on-dark); text-decoration: underline; text-underline-offset: 4px; }
+.site-footer a:focus-visible { outline-color: var(--accent); }
+
+.site-footer__bottom { border-top: 1px solid rgba(255, 255, 255, .1); }
+.site-footer__bottom p { padding-block: 20px; font-size: .8125rem; color: var(--on-dark-3); }
+
+@media (min-width: 600px) {
+  .site-footer__grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .site-footer__grid { grid-template-columns: 1.6fr 1fr 1.2fr 1fr; gap: 48px; padding-block: 72px 56px; }
+}

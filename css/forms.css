@@ -1,0 +1,54 @@
+/* ═══════════════════════════════════════════════
+   CAMPOS DE FORMULARIO (contacto y estimador)
+═══════════════════════════════════════════════ */
+.field { display: grid; gap: 6px; align-content: start; }
+
+.field label {
+  font-size: .8125rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.field .req { color: var(--error); }
+.field__optional { font-weight: 400; color: var(--muted); }
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 14px;
+  font-size: 1rem; /* evita el zoom automático en iOS */
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.field textarea { resize: vertical; min-height: 112px; }
+.field select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B3A30' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover { border-color: var(--muted); }
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(27, 58, 48, .18);
+}
+
+.field__hint { font-size: .8125rem; color: var(--muted); }
+.field__error { font-size: .8125rem; font-weight: 500; color: var(--error); }
+.field__error:empty { display: none; }
+
+.field [aria-invalid="true"] { border-color: var(--error); }
+.field [aria-invalid="true"]:focus-visible { box-shadow: 0 0 0 3px rgba(166, 27, 27, .16); }

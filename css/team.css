@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════
+   EQUIPO — foto, nombre, especialidad, bio breve y
+   credenciales visibles (sin botón "Ver formación")
+═══════════════════════════════════════════════ */
+.team__grid { display: grid; gap: 20px; }
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+.team-card__photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--paper-2);
+}
+
+.team-card__body { padding: 20px 20px 24px; }
+.team-card__name { font-size: 1.125rem; }
+.team-card__role {
+  margin-top: 6px;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--brand);
+  line-height: 1.4;
+}
+.team-card__bio { margin-top: 12px; font-size: .9375rem; line-height: 1.6; }
+
+.team-card__creds {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--paper-3);
+}
+.team-card__creds li {
+  position: relative;
+  padding-left: 14px;
+  font-size: .8125rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.team-card__creds li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: .7em;
+  width: 6px; height: 1px;
+  background: var(--accent-2);
+}
+
+@media (min-width: 600px) {
+  .team__grid { grid-template-columns: 1fr 1fr; }
+  .team-card__photo { aspect-ratio: 3 / 4; }
+}
+
+@media (min-width: 1024px) {
+  .team__grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+}

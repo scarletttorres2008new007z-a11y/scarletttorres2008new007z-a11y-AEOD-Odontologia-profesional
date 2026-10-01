@@ -1,0 +1,53 @@
+/* ═══════════════════════════════════════════════
+   TRATAMIENTOS — imagen, nombre, descripción,
+   beneficio principal y "Ver tratamiento"
+═══════════════════════════════════════════════ */
+.services__grid { display: grid; gap: 20px; }
+
+.service {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  transition: box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+.service:hover { border-color: var(--rule); box-shadow: var(--shadow-card); }
+
+.service__img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--paper-2);
+}
+
+.service__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px 24px 12px;
+}
+.service h3 { font-size: 1.25rem; margin-bottom: 10px; }
+.service__body > p:not(.service__benefit) { font-size: .9375rem; flex: 1; }
+
+.service__benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--paper-3);
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--brand);
+  line-height: 1.5;
+}
+.service__benefit .icon { margin-top: 3px; }
+
+.service .link-more { margin-top: 8px; align-self: flex-start; }
+
+@media (min-width: 768px) {
+  .services__grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .service__body { padding: 28px 28px 16px; }
+}
