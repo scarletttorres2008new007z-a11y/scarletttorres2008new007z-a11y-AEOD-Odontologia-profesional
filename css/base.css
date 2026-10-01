@@ -243,3 +243,6 @@ main:focus,
 @media (min-width: 768px) {
   .to-top { bottom: 24px; }
 }
+
+/* Foto que no ha podido cargar (sin conexión): fondo neutro, sin icono roto */
+img.is-unavailable { background: var(--paper-2); }

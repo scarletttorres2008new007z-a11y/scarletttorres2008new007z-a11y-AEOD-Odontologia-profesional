@@ -16,7 +16,8 @@
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-  <link rel="preload" href="assets/img/hero-960.webp" as="image" type="image/webp" imagesrcset="assets/img/hero-640.webp 640w, assets/img/hero-960.webp 960w, assets/img/hero-1280.webp 1280w" imagesizes="(min-width: 1024px) 560px, 100vw">
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75" imagesrcset="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=640&amp;h=480&amp;q=75 640w, https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75 960w, https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75 1280w, https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1600&amp;h=1200&amp;q=75 1600w" imagesizes="(min-width: 1024px) 900px, 100vw" fetchpriority="high">
 
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/variables.css">
@@ -41,6 +42,7 @@
   <!-- Sin JavaScript: respuestas del FAQ visibles y estimador oculto (depende de JS). -->
   <noscript><style>.faq-item__answer[hidden] { display: block !important; } .calculator { display: none; }</style></noscript>
 
+  <script src="js/image-fallback.js" defer></script>
   <script src="js/core.js" defer></script>
   <script src="js/navigation.js" defer></script>
   <script src="js/modal.js" defer></script>
@@ -68,6 +70,8 @@
   <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-prev" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -145,14 +149,14 @@
         </ul>
       </div>
       <figure class="hero__media">
-        <!-- Ilustración local. Para usar una foto real: guardar hero-640/960/1280/1600.webp en assets/img/ y añadir un alt descriptivo. -->
+        <!-- Fotos de Unsplash (se cargan desde internet). Para usar fotos propias, ver README. -->
         <img
-          src="assets/img/hero-1280.webp"
-          srcset="assets/img/hero-640.webp 640w,
-                  assets/img/hero-960.webp 960w,
-                  assets/img/hero-1280.webp 1280w,
-                  assets/img/hero-1600.webp 1600w"
-          sizes="(min-width: 1024px) 560px, 100vw"
+          src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75"
+          srcset="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=640&amp;h=480&amp;q=75 640w,
+                  https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75 960w,
+                  https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75 1280w,
+                  https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1600&amp;h=1200&amp;q=75 1600w"
+          sizes="(min-width: 1024px) 900px, 100vw"
           width="1280" height="960"
           alt=""
           fetchpriority="high" decoding="async">
@@ -222,10 +226,10 @@
       <div class="services__grid">
         <article class="service">
           <img class="service__img"
-            src="assets/img/general-720.webp"
-            srcset="assets/img/general-480.webp 480w,
-                    assets/img/general-720.webp 720w,
-                    assets/img/general-960.webp 960w"
+            src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75"
+            srcset="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=480&amp;h=300&amp;q=75 480w,
+                    https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75 720w,
+                    https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=960&amp;h=600&amp;q=75 960w"
             sizes="(min-width: 1024px) 370px, (min-width: 768px) 33vw, 100vw"
             width="720" height="450" alt="" loading="lazy" decoding="async">
           <div class="service__body">
@@ -240,10 +244,10 @@
 
         <article class="service">
           <img class="service__img"
-            src="assets/img/ortodoncia-720.webp"
-            srcset="assets/img/ortodoncia-480.webp 480w,
-                    assets/img/ortodoncia-720.webp 720w,
-                    assets/img/ortodoncia-960.webp 960w"
+            src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75"
+            srcset="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=480&amp;h=300&amp;q=75 480w,
+                    https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75 720w,
+                    https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=600&amp;q=75 960w"
             sizes="(min-width: 1024px) 370px, (min-width: 768px) 33vw, 100vw"
             width="720" height="450" alt="" loading="lazy" decoding="async">
           <div class="service__body">
@@ -258,10 +262,10 @@
 
         <article class="service">
           <img class="service__img"
-            src="assets/img/implantes-720.webp"
-            srcset="assets/img/implantes-480.webp 480w,
-                    assets/img/implantes-720.webp 720w,
-                    assets/img/implantes-960.webp 960w"
+            src="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75"
+            srcset="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=480&amp;h=300&amp;q=75 480w,
+                    https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75 720w,
+                    https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=960&amp;h=600&amp;q=75 960w"
             sizes="(min-width: 1024px) 370px, (min-width: 768px) 33vw, 100vw"
             width="720" height="450" alt="" loading="lazy" decoding="async">
           <div class="service__body">
@@ -332,14 +336,21 @@
   <section id="nosotros" class="section" aria-labelledby="nosotros-title">
     <div class="container about">
       <div class="about__media">
-        <img
-          src="assets/img/clinica-960.webp"
-          srcset="assets/img/clinica-640.webp 640w,
-                  assets/img/clinica-960.webp 960w,
-                  assets/img/clinica-1280.webp 1280w"
-          sizes="(min-width: 1024px) 540px, 100vw"
-          width="960" height="1200"
-          alt="" loading="lazy" decoding="async">
+        <picture>
+          <source media="(min-width: 1024px)"
+            srcset="https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=540&amp;h=675&amp;q=75&amp;crop=faces 540w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=810&amp;h=1012&amp;q=75&amp;crop=faces 810w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=1080&amp;h=1350&amp;q=75&amp;crop=faces 1080w"
+            sizes="540px" width="960" height="1200">
+          <img
+            src="https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=640&amp;h=480&amp;q=75&amp;crop=faces 640w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75&amp;crop=faces 960w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75&amp;crop=faces 1280w"
+            sizes="100vw"
+            width="960" height="720"
+            alt="Dos odontólogos atendiendo a un paciente" loading="lazy" decoding="async">
+        </picture>
       </div>
       <div class="about__copy">
         <span class="section-head__num" aria-hidden="true" data-num="02"></span>
@@ -380,14 +391,14 @@
         <p class="section-head__lead">Cada profesional cuenta con más de 10 años de experiencia en su especialidad y formación continua en los principales centros de Europa.</p>
       </header>
 
-      <!-- Retratos provisionales (iniciales). Sustituir por fotos reales con el mismo nombre de archivo y alt con el nombre. -->
+      <!-- Fotos de stock (Unsplash), no son los profesionales reales. Sustituir por fotos propias del equipo. -->
       <div class="team__grid">
         <article class="team-card">
           <img class="team-card__photo"
-            src="assets/img/equipo-rocio-fernandez-600.webp"
-            srcset="assets/img/equipo-rocio-fernandez-400.webp 400w,
-                    assets/img/equipo-rocio-fernandez-600.webp 600w,
-                    assets/img/equipo-rocio-fernandez-800.webp 800w"
+            src="https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
             sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
             width="600" height="800" alt="" loading="lazy" decoding="async">
           <div class="team-card__body">
@@ -405,10 +416,10 @@
 
         <article class="team-card">
           <img class="team-card__photo"
-            src="assets/img/equipo-marcos-ortega-600.webp"
-            srcset="assets/img/equipo-marcos-ortega-400.webp 400w,
-                    assets/img/equipo-marcos-ortega-600.webp 600w,
-                    assets/img/equipo-marcos-ortega-800.webp 800w"
+            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
             sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
             width="600" height="800" alt="" loading="lazy" decoding="async">
           <div class="team-card__body">
@@ -426,10 +437,10 @@
 
         <article class="team-card">
           <img class="team-card__photo"
-            src="assets/img/equipo-ana-villar-600.webp"
-            srcset="assets/img/equipo-ana-villar-400.webp 400w,
-                    assets/img/equipo-ana-villar-600.webp 600w,
-                    assets/img/equipo-ana-villar-800.webp 800w"
+            src="https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
             sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
             width="600" height="800" alt="" loading="lazy" decoding="async">
           <div class="team-card__body">
@@ -447,10 +458,10 @@
 
         <article class="team-card">
           <img class="team-card__photo"
-            src="assets/img/equipo-carlos-mendez-600.webp"
-            srcset="assets/img/equipo-carlos-mendez-400.webp 400w,
-                    assets/img/equipo-carlos-mendez-600.webp 600w,
-                    assets/img/equipo-carlos-mendez-800.webp 800w"
+            src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
             sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
             width="600" height="800" alt="" loading="lazy" decoding="async">
           <div class="team-card__body">
@@ -565,6 +576,10 @@
           <h2 id="testimonios-title">Lo que dicen nuestros pacientes</h2>
         </div>
         <div class="testimonials__controls" data-carousel-controls hidden>
+          <button type="button" class="slider-btn" data-carousel-toggle>
+            <svg class="icon" aria-hidden="true"><use href="#i-pause"/></svg>
+            <span class="visually-hidden" data-carousel-toggle-label>Pausar el paso automático de testimonios</span>
+          </button>
           <button type="button" class="slider-btn" data-carousel-prev>
             <svg class="icon" aria-hidden="true"><use href="#i-prev"/></svg>
             <span class="visually-hidden">Testimonio anterior</span>
@@ -621,6 +636,7 @@
           </div>
         </div>
       </section>
+      <div class="testimonials__progress" data-carousel-progress hidden><span></span></div>
     </div>
   </section>
 

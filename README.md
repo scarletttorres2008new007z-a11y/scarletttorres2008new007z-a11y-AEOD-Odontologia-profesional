@@ -1,7 +1,7 @@
 # AEOD · Odontología Profesional — Frontend
 
 Landing page de una sola página (HTML, CSS y JavaScript sin dependencias ni paso de compilación).
-Todo se sirve en local (imágenes, fuentes y scripts): funciona sin conexión y abriendo el archivo directamente.
+Fuentes y scripts van en local y la página funciona abriendo el archivo directamente. Las fotos se cargan desde Unsplash, así que necesitan conexión a internet (sin conexión se ve un fondo neutro en su lugar).
 
 ## Abrir en local
 
@@ -16,7 +16,6 @@ python3 -m http.server 8000
 ```text
 index.html          Página completa (HTML semántico, sin estilos ni onclick en línea)
 assets/
-  img/              Ilustraciones WebP en varios anchos (para srcset)
   fonts/            Inter y Libre Baskerville (woff2, licencia OFL)
   favicon.svg
 css/
@@ -33,7 +32,8 @@ js/
   core.js           Datos de la clínica (horario) y utilidades compartidas
   navigation.js     Menú móvil, sección activa, foco en enlaces internos, barra móvil, volver arriba
   modal.js          Modales de tratamiento (<dialog> nativo) con enlace compartible #tratamiento-…
-  testimonials.js   Carrusel accesible
+  image-fallback.js Fondo neutro si una foto no carga (sin conexión)
+  testimonials.js   Carrusel que pasa solo cada 7 s, con pausa (botón, ratón, foco y toque)
   pricing.js        Filtro de la lista de precios
   calculator.js     Estimador orientativo (lee los precios de la lista HTML)
   faq.js            Acordeón accesible
@@ -64,7 +64,13 @@ Se envía un `POST` con JSON `{ name, phone, email, treatment, message }`. Cualq
 
 ## Imágenes
 
-Las imágenes actuales son ilustraciones de marca generadas para el proyecto (no fotos). Para poner fotos reales, guarda cada foto en `assets/img/` con el **mismo nombre y anchos** (por ejemplo `hero-640.webp`, `hero-960.webp`, `hero-1280.webp`, `hero-1600.webp`) y añade un `alt` descriptivo en `index.html`. Proporciones: hero 4:3, tratamientos 16:10, clínica 4:5, equipo 3:4.
+Las fotos son las de Unsplash del archivo original, servidas con `srcset` en varios anchos y recortadas por Unsplash a la proporción de cada hueco (hero 4:3, tratamientos 16:10, clínica 4:3 en móvil y 4:5 en escritorio, equipo 3:4 centrado en la cara). Cambios respecto al original:
+
+- La foto de la clínica tenía el enlace mal escrito (`…daab30f310e5`, error 404). El correcto es `…daab30f310ce`.
+- La foto del Dr. Marcos Ortega ya no existía (404). Ahora usa la foto masculina que en el original estaba asignada a la Dra. Rocío Fernández.
+- Las fotos de la Dra. Rocío Fernández y la Dra. Ana Villar eran de hombres. Ahora son fotos de doctoras de Unsplash.
+
+Son fotos de stock: no son los profesionales reales. Para usar fotos propias, guárdalas en una carpeta (por ejemplo `assets/img/`) y cambia `src` y `srcset` en `index.html` manteniendo las proporciones.
 
 ## Horario
 
@@ -76,7 +82,7 @@ Los precios orientativos se editan en un solo sitio: la lista `data-price-list` 
 
 ## Pendiente antes de producción
 
-- Sustituir las ilustraciones por fotos reales de la clínica y del equipo (ver «Imágenes»).
+- Sustituir las fotos de stock por fotos propias de la clínica y del equipo (ver «Imágenes»).
 - Crear `aviso-legal.html`, `privacidad.html` y `cookies.html`.
 - Configurar `data-endpoint` del formulario.
 - Añadir `og:url`, `og:image` y `link rel="canonical"` con el dominio definitivo.

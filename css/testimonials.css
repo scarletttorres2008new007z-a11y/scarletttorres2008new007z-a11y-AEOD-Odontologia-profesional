@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
-   TESTIMONIOS — carrusel con scroll-snap,
-   botones visibles, sin autoplay
+   TESTIMONIOS — carrusel con scroll-snap que pasa
+   solo, con pausa visible y botones anterior/siguiente
 ═══════════════════════════════════════════════ */
 .testimonials {
   padding-block: var(--section-y);
@@ -85,4 +85,33 @@
 @media (min-width: 768px) {
   .testimonial { flex-basis: calc(50% - 8px); padding: 40px; }
   .testimonials__track { gap: 16px; }
+}
+
+/* Barra de progreso del paso automático */
+.testimonials__progress {
+  height: 2px;
+  margin-top: 24px;
+  background: var(--on-dark-rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.testimonials__progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.testimonials__progress.is-running span {
+  animation: carousel-progress var(--carousel-interval, 7s) linear forwards;
+}
+.testimonials__progress.is-paused span { animation-play-state: paused; }
+
+@keyframes carousel-progress {
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonials__viewport { scroll-behavior: auto; }
+  .testimonials__progress { display: none; }
 }
