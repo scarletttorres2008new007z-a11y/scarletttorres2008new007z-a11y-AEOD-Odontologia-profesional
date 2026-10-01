@@ -1,6 +1,7 @@
 /**
  * Estimador orientativo.
- * - Los precios se leen de la lista de precios del HTML (fuente única).
+ * - Los precios se leen de la lista de precios del HTML (fuente única),
+ *   que api-data.js actualiza con los datos de la API cuando está disponible.
  * - Se pueden sumar varios tratamientos ("Añadir a mi estimación").
  * - El seguro NO aplica ningún descuento: solo muestra una nota de cobertura.
  * - "Solicitar cita" lleva el resumen al mensaje del formulario.
@@ -36,22 +37,29 @@
     cta: $('[data-calc-cta]'),
   };
 
-  /* ── Catálogo desde el HTML ── */
+  /* ── Catálogo desde el HTML (se reconstruye si la API actualiza los precios) ── */
   const catalog = new Map();
-  list.querySelectorAll('.price-item').forEach((item) => {
-    const id = item.dataset.id;
-    const price = Number(item.dataset.price);
-    if (!id || !Number.isFinite(price)) return;
-    const entry = {
-      id,
-      name: item.querySelector('.price-item__name').textContent.trim(),
-      price,
-      perUnit: item.hasAttribute('data-per-unit'),
-      formOption: item.dataset.form || '',
-    };
-    catalog.set(id, entry);
-    el.treatment.add(new Option(entry.name + (entry.perUnit ? ' (por pieza)' : ''), id));
-  });
+  function buildCatalog() {
+    const selected = el.treatment.value;
+    catalog.clear();
+    el.treatment.length = 1; // conserva "Selecciona un tratamiento"
+    list.querySelectorAll('.price-item').forEach((item) => {
+      const id = item.dataset.id;
+      const price = Number(item.dataset.price);
+      if (!id || !Number.isFinite(price)) return;
+      const entry = {
+        id,
+        name: item.querySelector('.price-item__name').textContent.trim(),
+        price,
+        perUnit: item.hasAttribute('data-per-unit'),
+        formOption: item.dataset.form || '',
+      };
+      catalog.set(id, entry);
+      el.treatment.add(new Option(entry.name + (entry.perUnit ? ' (por pieza)' : ''), id));
+    });
+    el.treatment.value = catalog.has(selected) ? selected : '';
+  }
+  buildCatalog();
 
   /* ── Estado: líneas añadidas [{ id, qty }] ── */
   let lines = (session.get(STORAGE_KEY) || []).filter((line) => catalog.has(line.id));
@@ -172,6 +180,12 @@
   el.cta.addEventListener('click', () => {
     const message = summaryMessage();
     if (message) AEOD.prefillContact({ treatment: el.cta.dataset.treatment, message });
+  });
+
+  document.addEventListener('aeod:precios-actualizados', () => {
+    buildCatalog();
+    lines = lines.filter((line) => catalog.has(line.id));
+    renderSummary();
   });
 
   renderCurrent();

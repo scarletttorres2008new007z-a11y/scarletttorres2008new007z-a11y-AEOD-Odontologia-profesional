@@ -37,7 +37,8 @@ js/
   pricing.js        Filtro de la lista de precios
   calculator.js     Estimador orientativo (lee los precios de la lista HTML)
   faq.js            Acordeón accesible
-  api.js            Envío al backend (punto único de integración)
+  api.js            Capa única de llamadas a la API (backend/)
+  api-data.js       Precios y equipo desde la API (si no responde, se queda el contenido estático)
   contact-form.js   Validación, envío, estados, día/franja preferida, contador y borrador
   open-status.js    "Abierto ahora / Cerrado" con la hora de Madrid
   treatment-finder.js  Orientación rápida: 1–2 preguntas → tratamiento recomendado
@@ -50,17 +51,23 @@ Las media queries viven en el archivo de cada sección (mobile-first), por eso n
 
 Los scripts son clásicos con `defer` (no `type="module"`) para que la página siga funcionando al abrir el archivo directamente (`file://`).
 
-## Conectar el formulario a un backend
+## Backend (API)
 
-El formulario **no simula envíos**. Mientras no haya backend, muestra un error con el teléfono y el email.
+La carpeta `backend/` contiene la API (Java 21 + Spring Boot + MySQL). Cómo arrancarla: [backend/README.md](backend/README.md).
 
-Para activarlo, indica la URL de la API en `index.html`:
+La URL de la API se indica en `index.html`:
 
 ```html
-<form ... data-contact-form data-endpoint="https://tu-api.com/citas">
+<meta name="aeod-api" content="http://localhost:8080/api">
 ```
 
-Se envía un `POST` con JSON `{ name, phone, email, treatment, message }`. Cualquier respuesta 2xx se trata como éxito. La lógica está en `js/api.js`.
+Con la API en marcha y la landing servida en `http://localhost:5500`:
+
+- La lista de precios, el estimador y el equipo usan los datos de MySQL (se emparejan por nombre, así se conservan categorías, "por pieza" y credenciales del HTML).
+- El formulario envía una **solicitud de cita** (`POST /api/citas`) cuando hay día preferido y el tratamiento existe en la API (atributo `data-tratamiento` de cada opción); si no, un **contacto** (`POST /api/contacto`). La franja horaria va en el mensaje.
+- Los errores de validación que devuelve la API se muestran en su campo.
+
+Si la API no está configurada (meta vacío) o no responde, la página usa sus datos estáticos y el formulario **no simula envíos**: muestra un error con el teléfono y el email.
 
 ## Imágenes
 
@@ -78,12 +85,12 @@ El horario de `js/core.js` alimenta el indicador "Abierto ahora" y la validació
 
 ## Precios
 
-Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí.
+Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí. Con la API en marcha, los precios vienen de la columna `precio_desde` de MySQL y sustituyen a los del HTML.
 
 ## Pendiente antes de producción
 
 - Sustituir las fotos de stock por fotos propias de la clínica y del equipo (ver «Imágenes»).
 - Crear `aviso-legal.html`, `privacidad.html` y `cookies.html`.
-- Configurar `data-endpoint` del formulario.
+- Desplegar la API (`backend/`) y poner su URL pública en `<meta name="aeod-api">` y en `app.cors.origenes`.
 - Añadir `og:url`, `og:image` y `link rel="canonical"` con el dominio definitivo.
 - Verificar los datos de negocio (teléfonos, dirección, horario, cifras, credenciales y testimonios) antes de añadir datos estructurados de schema.org.

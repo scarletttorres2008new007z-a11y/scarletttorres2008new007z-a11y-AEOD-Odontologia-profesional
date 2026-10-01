@@ -6,6 +6,8 @@
   <title>AEOD Odontología Profesional | Clínica dental en Madrid</title>
   <meta name="description" content="Clínica dental en Madrid con más de 20 años de experiencia. Odontología general, ortodoncia, implantología y estética dental con tecnología digital. Urgencias 24 h.">
   <meta name="theme-color" content="#1B3A30">
+  <!-- URL base de la API (backend/). Vacío = sin API: la página usa sus datos estáticos. -->
+  <meta name="aeod-api" content="http://localhost:8080/api">
 
   <!-- Open Graph. Añadir og:url y og:image (URL absoluta) cuando exista el dominio definitivo. -->
   <meta property="og:type" content="website">
@@ -51,6 +53,7 @@
   <script src="js/calculator.js" defer></script>
   <script src="js/faq.js" defer></script>
   <script src="js/api.js" defer></script>
+  <script src="js/api-data.js" defer></script>
   <script src="js/contact-form.js" defer></script>
   <script src="js/open-status.js" defer></script>
   <script src="js/treatment-finder.js" defer></script>
@@ -935,10 +938,11 @@
       </div>
 
       <!--
-        El envío real se configura con data-endpoint (URL de la API). Mientras esté vacío,
+        El envío va a la API indicada en <meta name="aeod-api">. Si no hay API o no responde,
         el formulario NO simula éxito: muestra un error con los datos de contacto.
+        data-tratamiento = nombre del tratamiento en la API; con día preferido se envía como solicitud de cita.
       -->
-      <form class="contact-form" id="contact-form" data-contact-form data-endpoint="" novalidate aria-labelledby="form-title">
+      <form class="contact-form" id="contact-form" data-contact-form novalidate aria-labelledby="form-title">
         <h3 id="form-title">Formulario de cita</h3>
         <p class="contact-form__hint">Los campos marcados con <span aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
 
@@ -965,11 +969,11 @@
             <label for="cf-treatment">Tratamiento de interés <span class="req" aria-hidden="true">*</span></label>
             <select id="cf-treatment" name="treatment" required aria-describedby="cf-treatment-error">
               <option value="">Selecciona una opción</option>
-              <option>Revisión general</option>
-              <option>Limpieza dental</option>
-              <option>Implantes dentales</option>
-              <option>Ortodoncia / Invisalign</option>
-              <option>Estética dental / Carillas</option>
+              <option data-tratamiento="Valoración odontológica">Revisión general</option>
+              <option data-tratamiento="Limpieza dental">Limpieza dental</option>
+              <option data-tratamiento="Implante dental completo">Implantes dentales</option>
+              <option data-tratamiento="Valoración odontológica">Ortodoncia / Invisalign</option>
+              <option data-tratamiento="Valoración odontológica">Estética dental / Carillas</option>
               <option>Urgencia dental</option>
               <option>Otro</option>
             </select>
