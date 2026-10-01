@@ -4,38 +4,31 @@ API REST pequeña para que la landing de AEOD tenga datos dinámicos y formulari
 Solo cubre tratamientos (con su precio "desde"), equipo, solicitudes de contacto y solicitudes de cita.
 **No es un sistema de gestión clínica**: no hay usuarios, pacientes, agenda, pagos ni panel.
 
-Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · MySQL · Maven
+Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · SQL Server (MySQL opcional) · Maven
 
-## Arrancar en local
+## Arrancar en local (IntelliJ + SQL Server)
 
-1. Tener **Java 21**, **Maven** y **MySQL 8** instalados y MySQL en marcha.
-2. La base de datos `clinica_landing` se crea sola al arrancar. Por defecto se conecta como `root` sin contraseña; si tu MySQL usa otra, pásala por variables de entorno:
+1. **Base de datos.** Con SQL Server en marcha, ejecuta una vez `database/crear-base-de-datos.sql` (en SSMS o en la consola de base de datos de IntelliJ). Las tablas las crea la aplicación al arrancar.
+2. **Abrir el proyecto.** En IntelliJ: *File → Open* y elige la carpeta `backend` (la que tiene `pom.xml`). IntelliJ la reconoce como proyecto Maven. Comprueba que el SDK es Java 21 (*File → Project Structure → SDK*).
+3. **Usuario y contraseña.** Abre `ClinicaLandingApplication` y pulsa la flecha verde. La primera vez fallará la conexión: entra en *Run → Edit Configurations… → Environment variables* y pon
+   `DB_USER=sa;DB_PASSWORD=tu_contraseña`
+   (o el usuario de SQL Server que uses). Vuelve a ejecutar.
+4. **Comprobar.** Abre <http://localhost:8080/api/health>.
 
-   ```bash
-   cd backend
-   DB_USER=root DB_PASSWORD=tu_contraseña mvn spring-boot:run
-   ```
+Al primer arranque se cargan **datos de prueba** (los tratamientos, precios y equipo que ya muestra la landing). Son de ejemplo: cámbialos por los reales antes de publicar y desactiva la carga con `app.datos-iniciales=false`.
 
-   En Windows (PowerShell):
+Si no conecta, revisa en *SQL Server Configuration Manager* que **TCP/IP** está habilitado en el puerto **1433** y que el servidor acepta **autenticación de SQL Server** (modo mixto). Con SQL Server Express (instancia con nombre), pon su puerto en `DB_PORT` o fija 1433 en la configuración TCP/IP.
 
-   ```powershell
-   cd backend
-   $env:DB_USER="root"; $env:DB_PASSWORD="tu_contraseña"; mvn spring-boot:run
-   ```
+Desde terminal también funciona: `DB_PASSWORD=tu_contraseña mvn spring-boot:run`.
 
-3. Comprueba que funciona: <http://localhost:8080/api/health>
-
-Al primer arranque se crean las tablas y se cargan **datos de prueba** (los tratamientos, precios y equipo que ya muestra la landing). Son de ejemplo: cámbialos por los reales antes de publicar y desactiva la carga con `app.datos-iniciales=false`.
+**¿MySQL en lugar de SQL Server?** Añade `SPRING_PROFILES_ACTIVE=mysql` a las variables de entorno (usa `root` y crea la base de datos sola).
 
 ## Ver la landing con datos de la API
 
-La landing debe abrirse desde un servidor local (por CORS, abrir `index.html` con doble clic no puede hablar con la API). Desde la carpeta raíz del proyecto:
+La landing debe abrirse desde un servidor local (por CORS, abrir `index.html` con doble clic no puede hablar con la API).
 
-```bash
-python3 -m http.server 5500
-```
-
-y abre <http://localhost:5500>. También sirve la extensión Live Server de VS Code (puerto 5500).
+- **Desde IntelliJ:** abre `index.html` de la carpeta raíz y pulsa el icono del navegador que aparece arriba a la derecha (abre `http://localhost:63342/...`, que ya está permitido).
+- **Desde terminal:** en la carpeta raíz, `python3 -m http.server 5500` y abre <http://localhost:5500>.
 
 Si la API está apagada, la landing sigue funcionando con sus datos estáticos y el formulario muestra el teléfono en vez de fingir un envío.
 
@@ -82,8 +75,9 @@ Reglas: nombre (2–100, letras), teléfono (9–15 dígitos, admite `+`), email
 ## Configuración (`src/main/resources/application.properties`)
 
 - `server.port=8080`
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`: conexión a MySQL (por defecto `localhost:3306`, `root`, sin contraseña)
-- `app.cors.origenes`: orígenes permitidos (por defecto `localhost` y `127.0.0.1` en los puertos 5500 y 3000; nunca `*`)
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`: conexión a SQL Server (por defecto `localhost:1433`, `sa`)
+- Los textos se guardan como `nvarchar` (tildes, ñ y cualquier carácter)
+- `app.cors.origenes`: orígenes permitidos (por defecto `localhost` y `127.0.0.1` en los puertos 5500 y 3000, más `localhost:63342` de IntelliJ; nunca `*`)
 - `app.datos-iniciales`: carga los datos de prueba si las tablas están vacías
 - `app.zona-horaria`: zona de la clínica para decidir qué es "hoy" (`Europe/Madrid`)
 
@@ -95,7 +89,7 @@ Las tablas se crean con `spring.jpa.hibernate.ddl-auto=update`, suficiente en de
 mvn test
 ```
 
-Usan una base de datos H2 en memoria, así que no necesitan MySQL.
+Usan una base de datos H2 en memoria, así que no necesitan SQL Server. En IntelliJ: clic derecho en `src/test/java` → *Run 'All Tests'*.
 
 ## Estructura
 

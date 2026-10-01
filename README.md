@@ -53,7 +53,7 @@ Los scripts son clásicos con `defer` (no `type="module"`) para que la página s
 
 ## Backend (API)
 
-La carpeta `backend/` contiene la API (Java 21 + Spring Boot + MySQL). Cómo arrancarla: [backend/README.md](backend/README.md).
+La carpeta `backend/` contiene la API (Java 21 + Spring Boot + SQL Server). Cómo arrancarla: [backend/README.md](backend/README.md).
 
 La URL de la API se indica en `index.html`:
 
@@ -61,9 +61,9 @@ La URL de la API se indica en `index.html`:
 <meta name="aeod-api" content="http://localhost:8080/api">
 ```
 
-Con la API en marcha y la landing servida en `http://localhost:5500`:
+Con la API en marcha y la landing servida en `http://localhost:5500` o desde IntelliJ (`localhost:63342`):
 
-- La lista de precios, el estimador y el equipo usan los datos de MySQL (se emparejan por nombre, así se conservan categorías, "por pieza" y credenciales del HTML).
+- La lista de precios, el estimador y el equipo usan los datos de la base de datos (se emparejan por nombre, así se conservan categorías, "por pieza" y credenciales del HTML).
 - El formulario envía una **solicitud de cita** (`POST /api/citas`) cuando hay día preferido y el tratamiento existe en la API (atributo `data-tratamiento` de cada opción); si no, un **contacto** (`POST /api/contacto`). La franja horaria va en el mensaje.
 - Los errores de validación que devuelve la API se muestran en su campo.
 
@@ -85,7 +85,7 @@ El horario de `js/core.js` alimenta el indicador "Abierto ahora" y la validació
 
 ## Precios
 
-Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí. Con la API en marcha, los precios vienen de la columna `precio_desde` de MySQL y sustituyen a los del HTML.
+Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí. Con la API en marcha, los precios vienen de la columna `precio_desde` de la base de datos y sustituyen a los del HTML.
 
 ## Pendiente antes de producción
 

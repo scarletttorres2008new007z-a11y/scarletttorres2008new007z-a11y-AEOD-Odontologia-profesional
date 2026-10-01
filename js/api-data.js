@@ -1,7 +1,7 @@
 /**
  * Datos dinámicos desde la API: precios de tratamientos y equipo.
  *
- * - Si la API responde, la lista de precios y el equipo se actualizan con los datos de MySQL.
+ * - Si la API responde, la lista de precios y el equipo se actualizan con los datos de la base de datos.
  *   Los elementos se emparejan por nombre para conservar lo que la base de datos no guarda
  *   (categoría del filtro, "por pieza", credenciales del equipo).
  * - Si la API no está configurada, no responde o devuelve una lista vacía,
