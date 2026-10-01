@@ -4,7 +4,7 @@ API REST pequeña para que la landing de AEOD tenga datos dinámicos y formulari
 Solo cubre tratamientos (con su precio "desde"), equipo, solicitudes de contacto y solicitudes de cita.
 **No es un sistema de gestión clínica**: no hay usuarios, pacientes, agenda, pagos ni panel.
 
-Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · SQL Server (MySQL opcional) · Maven
+Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · SQL Server (XAMPP/MariaDB y MySQL opcionales) · Maven
 
 ## Arrancar en local (IntelliJ + SQL Server)
 
@@ -21,7 +21,15 @@ Si no conecta, revisa en *SQL Server Configuration Manager* que **TCP/IP** está
 
 Desde terminal también funciona: `DB_PASSWORD=tu_contraseña mvn spring-boot:run`.
 
-**¿MySQL en lugar de SQL Server?** Añade `SPRING_PROFILES_ACTIVE=mysql` a las variables de entorno (usa `root` y crea la base de datos sola).
+### Alternativa: XAMPP (MariaDB) en lugar de SQL Server
+
+1. En el panel de XAMPP pulsa **Start** en **MySQL**.
+2. Crea la base de datos una vez, ejecutando `database/crear-base-de-datos-mysql.sql` en la consola de base de datos de IntelliJ (*Database → + → Data Source → MariaDB*, usuario `root`, sin contraseña, puerto 3306) o en phpMyAdmin. La crea en `utf8mb4` para que se guarden bien tildes, ñ y cualquier carácter.
+3. En *Run → Edit Configurations → Environment variables* pon solo `SPRING_PROFILES_ACTIVE=xampp` y ejecuta `ClinicaLandingApplication`.
+
+No hace falta Tomcat aparte (ni Smart Tomcat): Spring Boot ya lleva Tomcat dentro y arranca en el puerto 8080.
+
+Para MySQL 8 sin XAMPP existe también el perfil `mysql`.
 
 ## Ver la landing con datos de la API
 
