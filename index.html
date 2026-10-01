@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AEOD Odontología Profesional | Clínica dental en Madrid</title>
+  <meta name="description" content="Clínica dental en Madrid con más de 20 años de experiencia. Odontología general, ortodoncia, implantología y estética dental con tecnología digital. Urgencias 24 h.">
+  <meta name="theme-color" content="#1B3A30">
+
+  <!-- Open Graph. Añadir og:url y og:image (URL absoluta) cuando exista el dominio definitivo. -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="AEOD Odontología Profesional">
+  <meta property="og:title" content="AEOD Odontología Profesional | Clínica dental en Madrid">
+  <meta property="og:description" content="Odontología general, ortodoncia, implantología y estética dental con tecnología digital. Solicita tu cita.">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75" imagesrcset="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=640&amp;h=480&amp;q=75 640w, https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75 960w, https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75 1280w, https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1600&amp;h=1200&amp;q=75 1600w" imagesizes="(min-width: 1024px) 900px, 100vw" fetchpriority="high">
+
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/buttons.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/trust.css">
+  <link rel="stylesheet" href="css/services.css">
+  <link rel="stylesheet" href="css/about.css">
+  <link rel="stylesheet" href="css/team.css">
+  <link rel="stylesheet" href="css/technology.css">
+  <link rel="stylesheet" href="css/testimonials.css">
+  <link rel="stylesheet" href="css/pricing.css">
+  <link rel="stylesheet" href="css/calculator.css">
+  <link rel="stylesheet" href="css/faq.css">
+  <link rel="stylesheet" href="css/contact.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/modal.css">
+
+  <!-- Sin JavaScript: respuestas del FAQ visibles y estimador oculto (depende de JS). -->
+  <noscript><style>.faq-item__answer[hidden] { display: block !important; } .calculator { display: none; }</style></noscript>
+
+  <script src="js/image-fallback.js" defer></script>
+  <script src="js/core.js" defer></script>
+  <script src="js/navigation.js" defer></script>
+  <script src="js/modal.js" defer></script>
+  <script src="js/testimonials.js" defer></script>
+  <script src="js/pricing.js" defer></script>
+  <script src="js/calculator.js" defer></script>
+  <script src="js/faq.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/contact-form.js" defer></script>
+  <script src="js/open-status.js" defer></script>
+  <script src="js/treatment-finder.js" defer></script>
+  <script src="js/copy.js" defer></script>
+  <script src="js/reveal.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+<!-- Iconos reutilizables -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.8-1.3 3.8L12 22l-2.7-12.2A5.5 5.5 0 0 1 8 6a4 4 0 0 1 4-4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.36 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.4 6.4l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></g></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></g></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></g></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></g></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></g></symbol>
+  <symbol id="i-care" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></g></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4" stroke-linecap="round"/></g></symbol>
+</svg>
+
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+<!-- ════════ NAVBAR ════════ -->
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a href="#inicio" class="logo" aria-label="AEOD Odontología profesional, ir al inicio">
+      <span class="logo__mark" aria-hidden="true"><svg class="icon"><use href="#i-tooth"/></svg></span>
+      <span class="logo__text" aria-hidden="true">
+        <span class="logo__name">AEOD</span>
+        <span class="logo__sub">Odontología profesional</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="site-nav" aria-label="Principal" data-nav>
+      <ul class="nav__list">
+        <li><a class="nav__link" href="#inicio">Inicio</a></li>
+        <li><a class="nav__link" href="#tratamientos">Tratamientos</a></li>
+        <li><a class="nav__link" href="#equipo">Equipo</a></li>
+        <li><a class="nav__link" href="#tecnologia">Tecnología</a></li>
+        <li><a class="nav__link" href="#precios">Precios</a></li>
+        <li><a class="nav__link" href="#faq">FAQ</a></li>
+        <li><a class="nav__link" href="#contacto">Contacto</a></li>
+      </ul>
+      <div class="nav__mobile-actions">
+        <a href="#contacto" class="btn btn--solid btn--block">Solicitar cita</a>
+        <a href="tel:+34900000000" class="btn btn--outline btn--block">
+          <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Llamar ahora · 900&nbsp;00&nbsp;00&nbsp;00
+        </a>
+      </div>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="tel:+34900000000" class="header-tel">
+        <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+        <span><span class="visually-hidden">Llamar al </span>900&nbsp;00&nbsp;00&nbsp;00</span>
+      </a>
+      <a href="#contacto" class="btn btn--solid btn--sm site-header__cta">Solicitar cita</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <svg class="icon nav-toggle__open" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="icon nav-toggle__close" aria-hidden="true"><use href="#i-close"/></svg>
+        <span class="visually-hidden" data-nav-toggle-label>Abrir menú</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="contenido" tabindex="-1">
+
+  <!-- ════════ HERO ════════ -->
+  <section id="inicio" class="hero" aria-labelledby="hero-title">
+    <div class="container hero__inner">
+      <div class="hero__panel">
+        <p class="hero__eyebrow">Clínica acreditada · Desde 2003</p>
+        <h1 id="hero-title">Especialistas en salud bucal y rehabilitación dental</h1>
+        <p class="hero__lead">Un equipo de odontólogos colegiados que combina experiencia clínica, tecnología 3D y un protocolo serio centrado en el paciente.</p>
+        <div class="hero__cta">
+          <a href="#contacto" class="btn btn--accent btn--lg">Solicitar cita</a>
+          <a href="#tratamientos" class="btn btn--ghost-light btn--lg">Ver tratamientos</a>
+        </div>
+        <p class="open-status open-status--dark" data-open-status hidden></p>
+        <ul class="hero__trust" aria-label="Datos de la clínica">
+          <li><strong>20 años</strong> de trayectoria</li>
+          <li><strong>+12.000</strong> pacientes</li>
+          <li><strong>Urgencias</strong> 24 h</li>
+        </ul>
+      </div>
+      <figure class="hero__media">
+        <!-- Fotos de Unsplash (se cargan desde internet). Para usar fotos propias, ver README. -->
+        <img
+          src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75"
+          srcset="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=640&amp;h=480&amp;q=75 640w,
+                  https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75 960w,
+                  https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75 1280w,
+                  https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=1600&amp;h=1200&amp;q=75 1600w"
+          sizes="(min-width: 1024px) 900px, 100vw"
+          width="1280" height="960"
+          alt=""
+          fetchpriority="high" decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- ════════ TRUST / AUTORIDAD ════════ -->
+  <section class="trust" aria-labelledby="trust-title">
+    <div class="container">
+      <h2 id="trust-title" class="visually-hidden">Por qué confiar en AEOD</h2>
+      <ul class="trust__list">
+        <li class="trust__item">
+          <svg class="icon trust__icon" aria-hidden="true"><use href="#i-team"/></svg>
+          <div>
+            <h3 class="trust__title">Profesionales especializados</h3>
+            <p>Odontólogos colegiados con formación continua.</p>
+          </div>
+        </li>
+        <li class="trust__item">
+          <svg class="icon trust__icon" aria-hidden="true"><use href="#i-scan"/></svg>
+          <div>
+            <h3 class="trust__title">Tecnología avanzada</h3>
+            <p>Escáner intraoral, TAC 3D y laboratorio propio.</p>
+          </div>
+        </li>
+        <li class="trust__item">
+          <svg class="icon trust__icon" aria-hidden="true"><use href="#i-care"/></svg>
+          <div>
+            <h3 class="trust__title">Atención personalizada</h3>
+            <p>Un coordinador clínico te acompaña en todo el proceso.</p>
+          </div>
+        </li>
+        <li class="trust__item">
+          <svg class="icon trust__icon" aria-hidden="true"><use href="#i-shield"/></svg>
+          <div>
+            <h3 class="trust__title">Experiencia clínica</h3>
+            <p>Cada caso lo revisa un comité clínico antes de empezar.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="trust__accreditations">
+        <p class="label">Respaldo y acreditaciones</p>
+        <ul class="badge-list">
+          <li>Colegio Oficial de Odontólogos</li>
+          <li>SEPA</li>
+          <li>ISO 9001</li>
+          <li>Invisalign Diamond Provider</li>
+          <li>DSD Certified</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TRATAMIENTOS ════════ -->
+  <section id="tratamientos" class="section section--alt" aria-labelledby="tratamientos-title">
+    <div class="container">
+      <header class="section-head section-head--row">
+        <div>
+          <span class="section-head__num" aria-hidden="true" data-num="01"></span>
+          <p class="label label--brand">Tratamientos</p>
+          <h2 id="tratamientos-title">Especialistas en cada disciplina odontológica.</h2>
+        </div>
+        <p class="section-head__lead">Todos nuestros tratamientos siguen protocolos clínicos contrastados, esterilización certificada y trazabilidad completa del material utilizado.</p>
+      </header>
+
+      <div class="services__grid">
+        <article class="service">
+          <img class="service__img"
+            src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75"
+            srcset="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=480&amp;h=300&amp;q=75 480w,
+                    https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75 720w,
+                    https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&amp;fit=crop&amp;w=960&amp;h=600&amp;q=75 960w"
+            sizes="(min-width: 1024px) 370px, (min-width: 768px) 33vw, 100vw"
+            width="720" height="450" alt="" loading="lazy" decoding="async">
+          <div class="service__body">
+            <h3>Odontología general</h3>
+            <p>Diagnóstico integral, revisiones, empastes, higiene profesional y tratamientos preventivos para cuidar tu salud bucal a largo plazo.</p>
+            <p class="service__benefit"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Primera revisión gratuita</p>
+            <button type="button" class="link-more" data-modal-open="modal-general" aria-haspopup="dialog">
+              Ver tratamiento <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <article class="service">
+          <img class="service__img"
+            src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75"
+            srcset="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=480&amp;h=300&amp;q=75 480w,
+                    https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75 720w,
+                    https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&amp;fit=crop&amp;w=960&amp;h=600&amp;q=75 960w"
+            sizes="(min-width: 1024px) 370px, (min-width: 768px) 33vw, 100vw"
+            width="720" height="450" alt="" loading="lazy" decoding="async">
+          <div class="service__body">
+            <h3>Ortodoncia</h3>
+            <p>Invisalign y brackets estéticos de zafiro o cerámica, con un plan personalizado diseñado a partir de un escáner 3D.</p>
+            <p class="service__benefit"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Simulación 3D del resultado antes de empezar</p>
+            <button type="button" class="link-more" data-modal-open="modal-ortodoncia" aria-haspopup="dialog">
+              Ver tratamiento <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <article class="service">
+          <img class="service__img"
+            src="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75"
+            srcset="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=480&amp;h=300&amp;q=75 480w,
+                    https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=720&amp;h=450&amp;q=75 720w,
+                    https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&amp;fit=crop&amp;w=960&amp;h=600&amp;q=75 960w"
+            sizes="(min-width: 1024px) 370px, (min-width: 768px) 33vw, 100vw"
+            width="720" height="450" alt="" loading="lazy" decoding="async">
+          <div class="service__body">
+            <h3>Implantología y estética</h3>
+            <p>Implantes de carga inmediata, prótesis fijas, carillas de porcelana y diseño digital de sonrisa con resultados predecibles.</p>
+            <p class="service__benefit"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Implantes con garantía escrita de 10 años</p>
+            <button type="button" class="link-more" data-modal-open="modal-implantes" aria-haspopup="dialog">
+              Ver tratamiento <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Orientación rápida: se activa con JS (treatment-finder.js) -->
+      <div class="finder" data-finder>
+        <div class="finder__intro">
+          <p class="label label--brand">Orientación rápida</p>
+          <h3 id="finder-title">¿No sabes qué tratamiento necesitas?</h3>
+          <p>Responde una o dos preguntas y te orientamos. El diagnóstico siempre lo hace el profesional en consulta.</p>
+          <p class="finder__nojs" data-finder-nojs>Llámanos al <a class="text-link" href="tel:+34900000000">900&nbsp;00&nbsp;00&nbsp;00</a> y te orientamos.</p>
+        </div>
+        <div class="finder__panel" data-finder-panel hidden>
+          <div class="finder__step" data-finder-step="goal">
+            <p class="finder__question" id="finder-q-goal" tabindex="-1">¿Qué te gustaría resolver?</p>
+            <div class="finder__options" role="group" aria-labelledby="finder-q-goal">
+              <button type="button" class="finder__option" data-finder-choice="urgencia">Tengo dolor o una urgencia</button>
+              <button type="button" class="finder__option" data-finder-choice="implantes">Me falta uno o varios dientes</button>
+              <button type="button" class="finder__option" data-finder-next="ortho">Quiero alinear mis dientes</button>
+              <button type="button" class="finder__option" data-finder-next="aesthetic">Quiero mejorar el color o la forma</button>
+              <button type="button" class="finder__option" data-finder-choice="revision">Quiero una revisión o una limpieza</button>
+            </div>
+          </div>
+          <div class="finder__step" data-finder-step="ortho" hidden>
+            <p class="finder__question" id="finder-q-ortho" tabindex="-1">¿Qué es más importante para ti?</p>
+            <div class="finder__options" role="group" aria-labelledby="finder-q-ortho">
+              <button type="button" class="finder__option" data-finder-choice="invisalign">Que sea discreto, casi invisible</button>
+              <button type="button" class="finder__option" data-finder-choice="brackets">Un tratamiento fijo, sin tener que acordarme de llevarlo</button>
+            </div>
+            <button type="button" class="finder__back" data-finder-back>Volver</button>
+          </div>
+          <div class="finder__step" data-finder-step="aesthetic" hidden>
+            <p class="finder__question" id="finder-q-aesthetic" tabindex="-1">¿Qué te gustaría mejorar?</p>
+            <div class="finder__options" role="group" aria-labelledby="finder-q-aesthetic">
+              <button type="button" class="finder__option" data-finder-choice="blanqueamiento">El color de mis dientes</button>
+              <button type="button" class="finder__option" data-finder-choice="carillas">La forma, el tamaño o pequeñas imperfecciones</button>
+            </div>
+            <button type="button" class="finder__back" data-finder-back>Volver</button>
+          </div>
+          <div class="finder__result" data-finder-result hidden>
+            <p class="label label--brand">Te recomendamos empezar por</p>
+            <h4 class="finder__result-title" data-finder-title tabindex="-1">Tu recomendación</h4>
+            <p data-finder-text></p>
+            <p class="finder__price" data-finder-price hidden></p>
+            <div class="finder__actions">
+              <a href="#contacto" class="btn btn--solid" data-finder-cta>Solicitar cita</a>
+              <a href="tel:+34900000000" class="btn btn--solid" data-finder-call hidden>Llamar ahora · 900&nbsp;00&nbsp;00&nbsp;00</a>
+              <button type="button" class="btn btn--outline" data-finder-more aria-haspopup="dialog">Ver tratamiento</button>
+            </div>
+            <button type="button" class="finder__back" data-finder-restart>Volver a empezar</button>
+            <p class="finder__disclaimer">Orientación general. El diagnóstico y el plan de tratamiento los decide el profesional tras la valoración.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ POR QUÉ ELEGIR LA CLÍNICA (antes: Quiénes somos + tarjetas apiladas + Misión/Visión) ════════ -->
+  <section id="nosotros" class="section" aria-labelledby="nosotros-title">
+    <div class="container about">
+      <div class="about__media">
+        <picture>
+          <source media="(min-width: 1024px)"
+            srcset="https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=540&amp;h=675&amp;q=75&amp;crop=faces 540w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=810&amp;h=1012&amp;q=75&amp;crop=faces 810w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=1080&amp;h=1350&amp;q=75&amp;crop=faces 1080w"
+            sizes="540px" width="960" height="1200">
+          <img
+            src="https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=640&amp;h=480&amp;q=75&amp;crop=faces 640w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=960&amp;h=720&amp;q=75&amp;crop=faces 960w,
+                    https://images.unsplash.com/photo-1588776814546-daab30f310ce?auto=format&amp;fit=crop&amp;w=1280&amp;h=960&amp;q=75&amp;crop=faces 1280w"
+            sizes="100vw"
+            width="960" height="720"
+            alt="Dos odontólogos atendiendo a un paciente" loading="lazy" decoding="async">
+        </picture>
+      </div>
+      <div class="about__copy">
+        <span class="section-head__num" aria-hidden="true" data-num="02"></span>
+        <p class="label label--brand">Por qué elegirnos</p>
+        <h2 id="nosotros-title">Siempre a disposición del paciente, en cualquiera de sus necesidades clínicas.</h2>
+        <p class="about__lead">Una odontología seria, basada en evidencia y centrada en la persona. Desde una primera revisión hasta una rehabilitación oral completa: protocolos claros, presupuestos cerrados y seguimiento personal en cada fase.</p>
+        <ul class="values">
+          <li class="value">
+            <h3>Primera visita sin coste</h3>
+            <p>Exploración, radiografía panorámica y plan de tratamiento, sin compromiso.</p>
+          </li>
+          <li class="value">
+            <h3>Presupuesto cerrado</h3>
+            <p>Por escrito antes de empezar, sin extras ocultos y con financiación disponible.</p>
+          </li>
+          <li class="value">
+            <h3>Un especialista para cada área</h3>
+            <p>Implantología, periodoncia, ortodoncia y estética en manos de quien se dedica a ello.</p>
+          </li>
+          <li class="value">
+            <h3>Acompañamiento en cada fase</h3>
+            <p>Un coordinador clínico asignado desde el primer día, también en el postoperatorio.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ EQUIPO ════════ -->
+  <section id="equipo" class="section section--alt" aria-labelledby="equipo-title">
+    <div class="container">
+      <header class="section-head section-head--row">
+        <div>
+          <span class="section-head__num" aria-hidden="true" data-num="03"></span>
+          <p class="label label--brand">Equipo médico</p>
+          <h2 id="equipo-title">Especialistas colegiados en cada disciplina dental.</h2>
+        </div>
+        <p class="section-head__lead">Cada profesional cuenta con más de 10 años de experiencia en su especialidad y formación continua en los principales centros de Europa.</p>
+      </header>
+
+      <!-- Fotos de stock (Unsplash), no son los profesionales reales. Sustituir por fotos propias del equipo. -->
+      <div class="team__grid">
+        <article class="team-card">
+          <img class="team-card__photo"
+            src="https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1758691462651-611d730c5272?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
+            sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
+            width="600" height="800" alt="" loading="lazy" decoding="async">
+          <div class="team-card__body">
+            <h3 class="team-card__name">Dra. Rocío Fernández</h3>
+            <p class="team-card__role">Directora clínica · Implantología</p>
+            <p class="team-card__bio">Más de 3.200 implantes colocados con éxito documentado.</p>
+            <ul class="team-card__creds" aria-label="Formación y credenciales">
+              <li>Licenciada en Odontología, UCM 2004</li>
+              <li>Máster en Implantología, UAB 2007</li>
+              <li>Fellowship Nobel Biocare, Zúrich 2010</li>
+              <li>Miembro de la SEPA y SEOM</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="team-card">
+          <img class="team-card__photo"
+            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
+            sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
+            width="600" height="800" alt="" loading="lazy" decoding="async">
+          <div class="team-card__body">
+            <h3 class="team-card__name">Dr. Marcos Ortega</h3>
+            <p class="team-card__role">Ortodoncia</p>
+            <p class="team-card__bio">Especialista en ortodoncia invisible, con más de 800 casos tratados.</p>
+            <ul class="team-card__creds" aria-label="Formación y credenciales">
+              <li>Licenciado en Odontología, Sevilla 2006</li>
+              <li>Máster en Ortodoncia, UCAM 2009</li>
+              <li>Invisalign Diamond Provider</li>
+              <li>Ortodoncia lingual Incognito · Miembro de la SEDO</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="team-card">
+          <img class="team-card__photo"
+            src="https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1678695972687-033fa0bdbac9?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
+            sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
+            width="600" height="800" alt="" loading="lazy" decoding="async">
+          <div class="team-card__body">
+            <h3 class="team-card__name">Dra. Ana Villar</h3>
+            <p class="team-card__role">Periodoncia · Cirugía oral</p>
+            <p class="team-card__bio">Especialista en enfermedad periodontal y regeneración ósea guiada.</p>
+            <ul class="team-card__creds" aria-label="Formación y credenciales">
+              <li>Máster en Periodoncia e Implantología, UB 2008</li>
+              <li>PhD en Regeneración Periodontal, 2012</li>
+              <li>Profesora asociada UAM</li>
+              <li>14 publicaciones científicas indexadas</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="team-card">
+          <img class="team-card__photo"
+            src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces"
+            srcset="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=400&amp;h=533&amp;q=75&amp;crop=faces 400w,
+                    https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=600&amp;h=800&amp;q=75&amp;crop=faces 600w,
+                    https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&amp;fit=crop&amp;w=800&amp;h=1067&amp;q=75&amp;crop=faces 800w"
+            sizes="(min-width: 1024px) 280px, (min-width: 600px) 50vw, 100vw"
+            width="600" height="800" alt="" loading="lazy" decoding="async">
+          <div class="team-card__body">
+            <h3 class="team-card__name">Dr. Carlos Méndez</h3>
+            <p class="team-card__role">Estética dental · DSD</p>
+            <p class="team-card__bio">Carillas de porcelana y estética mínimamente invasiva. Más de 500 diseños de sonrisa.</p>
+            <ul class="team-card__creds" aria-label="Formación y credenciales">
+              <li>Licenciado en Odontología, Granada 2008</li>
+              <li>Máster en Estética Dental, SEPE 2011</li>
+              <li>Certificado Digital Smile Design, Niza 2014</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TECNOLOGÍA ════════ -->
+  <section id="tecnologia" class="section" aria-labelledby="tecnologia-title">
+    <div class="container">
+      <header class="section-head section-head--row">
+        <div>
+          <span class="section-head__num" aria-hidden="true" data-num="04"></span>
+          <p class="label label--brand">Tecnología clínica</p>
+          <h2 id="tecnologia-title">Tecnología pensada para tu comodidad y tu diagnóstico.</h2>
+        </div>
+        <p class="section-head__lead">Invertimos en tecnología para que el diagnóstico sea más preciso, los tratamientos más seguros y los resultados más predecibles. Esto es lo que significa para ti.</p>
+      </header>
+
+      <div class="tech__grid">
+        <article class="tech-card">
+          <h3>Escaneo digital iTero</h3>
+          <dl class="tech-card__facts">
+            <dt>Qué hace</dt>
+            <dd>Registra tu boca en 3D en unos minutos, sin las pastas de impresión tradicionales.</dd>
+            <dt>Para ti</dt>
+            <dd>Registros más rápidos y cómodos, y una simulación del resultado antes de empezar tu ortodoncia.</dd>
+          </dl>
+        </article>
+        <article class="tech-card">
+          <h3>Tomografía Cone Beam 3D</h3>
+          <dl class="tech-card__facts">
+            <dt>Qué hace</dt>
+            <dd>Obtiene una imagen tridimensional del hueso y los dientes con una dosis de radiación hasta 10 veces menor que un TAC médico convencional.</dd>
+            <dt>Para ti</dt>
+            <dd>Un diagnóstico más preciso y una cirugía de implantes planificada virtualmente antes de intervenir.</dd>
+          </dl>
+        </article>
+        <article class="tech-card">
+          <h3>Impresión 3D en laboratorio propio</h3>
+          <dl class="tech-card__facts">
+            <dt>Qué hace</dt>
+            <dd>Fabrica guías quirúrgicas, modelos y provisionales con materiales biocompatibles certificados.</dd>
+            <dt>Para ti</dt>
+            <dd>Menos esperas de laboratorios externos y provisionales estéticos, incluso el mismo día.</dd>
+          </dl>
+        </article>
+        <article class="tech-card">
+          <h3>Láser dental Fotona</h3>
+          <dl class="tech-card__facts">
+            <dt>Qué hace</dt>
+            <dd>Láser de doble longitud de onda para cirugía de encías, periodoncia y blanqueamiento.</dd>
+            <dt>Para ti</dt>
+            <dd>Intervenciones sin bisturí ni puntos, con menos sangrado y una cicatrización más rápida.</dd>
+          </dl>
+        </article>
+        <article class="tech-card">
+          <h3>Quirófano certificado</h3>
+          <dl class="tech-card__facts">
+            <dt>Qué hace</dt>
+            <dd>Presión positiva, filtros HEPA, esterilización autoclave clase B y trazabilidad completa.</dd>
+            <dt>Para ti</dt>
+            <dd>Opción de sedación consciente con monitorización durante todo el procedimiento: más seguridad y tranquilidad.</dd>
+          </dl>
+        </article>
+        <article class="tech-card">
+          <h3>App del paciente</h3>
+          <dl class="tech-card__facts">
+            <dt>Qué hace</dt>
+            <dd>Reúne tu historial, radiografías, presupuesto y citas en el móvil.</dd>
+            <dt>Para ti</dt>
+            <dd>Tu información siempre a mano y contacto directo con tu coordinador clínico.</dd>
+          </dl>
+        </article>
+      </div>
+
+      <div class="brands">
+        <p class="label">Tecnología y materiales con los que trabajamos</p>
+        <ul class="badge-list badge-list--quiet">
+          <li>iTero</li>
+          <li>Invisalign</li>
+          <li>Nobel Biocare</li>
+          <li>Straumann</li>
+          <li>Dentsply Sirona</li>
+          <li>3Shape</li>
+          <li>Fotona</li>
+          <li>Formlabs</li>
+          <li>Camlog</li>
+          <li>BioHorizons</li>
+          <li>Zimmer Biomet</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TESTIMONIOS ════════ -->
+  <section id="testimonios" class="testimonials" aria-labelledby="testimonios-title">
+    <div class="container">
+      <header class="testimonials__head">
+        <div>
+          <p class="label label--light">Testimonios</p>
+          <h2 id="testimonios-title">Lo que dicen nuestros pacientes</h2>
+        </div>
+        <div class="testimonials__controls" data-carousel-controls hidden>
+          <button type="button" class="slider-btn" data-carousel-toggle>
+            <svg class="icon" aria-hidden="true"><use href="#i-pause"/></svg>
+            <span class="visually-hidden" data-carousel-toggle-label>Pausar el paso automático de testimonios</span>
+          </button>
+          <button type="button" class="slider-btn" data-carousel-prev>
+            <svg class="icon" aria-hidden="true"><use href="#i-prev"/></svg>
+            <span class="visually-hidden">Testimonio anterior</span>
+          </button>
+          <p class="slider-status" data-carousel-status aria-live="polite"></p>
+          <button type="button" class="slider-btn" data-carousel-next>
+            <svg class="icon" aria-hidden="true"><use href="#i-next"/></svg>
+            <span class="visually-hidden">Testimonio siguiente</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="testimonials__viewport" data-carousel tabindex="0" aria-roledescription="carrusel" aria-label="Testimonios de pacientes">
+        <div class="testimonials__track" data-carousel-track>
+          <div class="testimonial" role="group" aria-roledescription="testimonio" aria-label="1 de 4">
+            <blockquote>
+              <p class="testimonial__stars"><span aria-hidden="true">★★★★★</span><span class="visually-hidden">Valoración: 5 de 5</span></p>
+              <p class="testimonial__text">“Llevaba años con miedo al dentista. La Dra. Fernández me explicó cada paso del tratamiento de implantes y en ningún momento sentí dolor. El resultado es increíble.”</p>
+              <footer class="testimonial__author">
+                <cite>María L. González</cite>
+                <span>Implante dental · Madrid, 2024</span>
+              </footer>
+            </blockquote>
+          </div>
+          <div class="testimonial" role="group" aria-roledescription="testimonio" aria-label="2 de 4">
+            <blockquote>
+              <p class="testimonial__stars"><span aria-hidden="true">★★★★★</span><span class="visually-hidden">Valoración: 5 de 5</span></p>
+              <p class="testimonial__text">“Hice la ortodoncia con Invisalign y el Dr. Ortega fue extraordinario. Cada revisión era puntual y detallada. En 14 meses conseguí la sonrisa que siempre quise.”</p>
+              <footer class="testimonial__author">
+                <cite>Javier R. Pérez</cite>
+                <span>Invisalign Full · Barcelona, 2024</span>
+              </footer>
+            </blockquote>
+          </div>
+          <div class="testimonial" role="group" aria-roledescription="testimonio" aria-label="3 de 4">
+            <blockquote>
+              <p class="testimonial__stars"><span aria-hidden="true">★★★★★</span><span class="visually-hidden">Valoración: 5 de 5</span></p>
+              <p class="testimonial__text">“Me hicieron 8 carillas con el Dr. Méndez. El diseño digital previo fue genial porque pude ver el resultado antes de empezar. En 3 días cambió toda mi sonrisa.”</p>
+              <footer class="testimonial__author">
+                <cite>Sara C. Martínez</cite>
+                <span>Carillas DSD · Madrid, 2023</span>
+              </footer>
+            </blockquote>
+          </div>
+          <div class="testimonial" role="group" aria-roledescription="testimonio" aria-label="4 de 4">
+            <blockquote>
+              <p class="testimonial__stars"><span aria-hidden="true">★★★★★</span><span class="visually-hidden">Valoración: 5 de 5</span></p>
+              <p class="testimonial__text">“La atención de urgencias fue impecable. Llamé un domingo a las 22 h con un dolor insoportable y en 40 minutos ya me estaban atendiendo. Profesionalidad absoluta.”</p>
+              <footer class="testimonial__author">
+                <cite>Alberto P. Ruiz</cite>
+                <span>Urgencia nocturna · Sevilla, 2024</span>
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+      <div class="testimonials__progress" data-carousel-progress hidden><span></span></div>
+    </div>
+  </section>
+
+  <!-- ════════ PRECIOS ════════ -->
+  <section id="precios" class="section section--alt" aria-labelledby="precios-title">
+    <div class="container">
+      <header class="section-head section-head--row">
+        <div>
+          <span class="section-head__num" aria-hidden="true" data-num="05"></span>
+          <p class="label label--brand">Precios y financiación</p>
+          <h2 id="precios-title">Precios orientativos, explicados con claridad.</h2>
+        </div>
+        <p class="section-head__lead">Te damos una referencia para que puedas planificar. El precio definitivo depende de tu caso y se fija en un presupuesto cerrado por escrito tras la valoración clínica.</p>
+      </header>
+
+      <div class="pricing__plans">
+        <article class="plan">
+          <h3 class="plan__name">Primera visita</h3>
+          <p class="plan__price">0 €</p>
+          <p class="plan__desc">Diagnóstico inicial sin compromiso de tratamiento.</p>
+          <ul class="plan__feats">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Exploración clínica completa</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Radiografía panorámica</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Plan de tratamiento</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Presupuesto sin compromiso</li>
+          </ul>
+          <p class="plan__note">No incluye limpieza ni escáner 3D.</p>
+          <a href="#contacto" class="link-more" data-treatment="Revisión general">Solicitar cita <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </article>
+
+        <article class="plan plan--featured">
+          <p class="plan__tag">Más solicitado</p>
+          <h3 class="plan__name">Revisión completa</h3>
+          <p class="plan__price">89 €</p>
+          <p class="plan__desc">Diagnóstico con escáner 3D, limpieza y plan de tratamiento detallado.</p>
+          <ul class="plan__feats">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Todo lo de la primera visita</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Escáner intraoral iTero</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Limpieza dental profesional</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Fotografías clínicas y asesoramiento de higiene</li>
+          </ul>
+          <a href="#contacto" class="btn btn--accent btn--block" data-treatment="Revisión general">Solicitar cita</a>
+        </article>
+      </div>
+
+      <div class="price-list">
+        <div class="price-list__head">
+          <h3>Precios orientativos por tratamiento</h3>
+          <div class="chips" role="group" aria-label="Filtrar tratamientos por categoría" data-price-filters hidden>
+            <button type="button" class="chip" aria-pressed="true" data-filter="todos">Todos</button>
+            <button type="button" class="chip" aria-pressed="false" data-filter="general">General</button>
+            <button type="button" class="chip" aria-pressed="false" data-filter="cirugia">Implantes</button>
+            <button type="button" class="chip" aria-pressed="false" data-filter="ortodoncia">Ortodoncia</button>
+            <button type="button" class="chip" aria-pressed="false" data-filter="estetica">Estética</button>
+          </div>
+        </div>
+        <!-- Fuente única de precios: la calculadora lee estos datos (data-*). -->
+        <ul class="price-list__items" data-price-list>
+          <li class="price-item" data-category="general" data-id="limpieza" data-price="60" data-form="Limpieza dental">
+            <span class="price-item__name">Limpieza dental</span><span class="price-item__price">desde 60 €</span>
+          </li>
+          <li class="price-item" data-category="general" data-id="empaste" data-price="80" data-per-unit data-form="Revisión general">
+            <span class="price-item__name">Empaste de composite</span><span class="price-item__price">desde 80 € / pieza</span>
+          </li>
+          <li class="price-item" data-category="general" data-id="endodoncia" data-price="280" data-per-unit data-form="Revisión general">
+            <span class="price-item__name">Endodoncia</span><span class="price-item__price">desde 280 € / pieza</span>
+          </li>
+          <li class="price-item" data-category="general cirugia" data-id="extraccion" data-price="120" data-per-unit data-form="Revisión general">
+            <span class="price-item__name">Extracción simple</span><span class="price-item__price">desde 120 € / pieza</span>
+          </li>
+          <li class="price-item" data-category="cirugia" data-id="implante" data-price="990" data-per-unit data-form="Implantes dentales">
+            <span class="price-item__name">Implante dental completo</span><span class="price-item__price">desde 990 € / pieza</span>
+          </li>
+          <li class="price-item" data-category="ortodoncia" data-id="invisalign-lite" data-price="1800" data-form="Ortodoncia / Invisalign">
+            <span class="price-item__name">Invisalign Lite</span><span class="price-item__price">desde 1.800 €</span>
+          </li>
+          <li class="price-item" data-category="ortodoncia" data-id="invisalign-full" data-price="3200" data-form="Ortodoncia / Invisalign">
+            <span class="price-item__name">Invisalign Full</span><span class="price-item__price">desde 3.200 €</span>
+          </li>
+          <li class="price-item" data-category="ortodoncia" data-id="brackets" data-price="2200" data-form="Ortodoncia / Invisalign">
+            <span class="price-item__name">Brackets metálicos</span><span class="price-item__price">desde 2.200 €</span>
+          </li>
+          <li class="price-item" data-category="estetica" data-id="carilla" data-price="390" data-per-unit data-form="Estética dental / Carillas">
+            <span class="price-item__name">Carilla de porcelana</span><span class="price-item__price">desde 390 € / pieza</span>
+          </li>
+          <li class="price-item" data-category="estetica" data-id="blanqueamiento" data-price="250" data-form="Estética dental / Carillas">
+            <span class="price-item__name">Blanqueamiento LED</span><span class="price-item__price">desde 250 €</span>
+          </li>
+        </ul>
+        <p class="visually-hidden" aria-live="polite" data-price-filter-status></p>
+        <p class="price-list__note">Precios orientativos con IVA incluido donde aplica. No constituyen un presupuesto: el precio final depende de la valoración clínica de tu caso. Financiación disponible hasta 60 meses sin intereses, sujeta a aprobación.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ ESTIMADOR ════════ -->
+  <section id="estimador" class="section calculator" aria-labelledby="estimador-title">
+    <div class="container">
+      <div class="calc">
+        <div class="calc__intro">
+          <p class="label label--brand">Estimación orientativa</p>
+          <h2 id="estimador-title">Calcula un coste aproximado</h2>
+          <p>Elige un tratamiento para obtener una referencia. No sustituye a la valoración clínica.</p>
+        </div>
+
+        <div class="calc__form" data-calculator>
+          <div class="calc__grid">
+            <div class="field">
+              <label for="calc-treatment">Tratamiento</label>
+              <select id="calc-treatment" name="treatment">
+                <option value="">Selecciona un tratamiento</option>
+                <!-- Las opciones se generan desde la lista de precios -->
+              </select>
+            </div>
+            <div class="field" data-calc-qty-field hidden>
+              <label for="calc-qty">Número de piezas</label>
+              <input id="calc-qty" name="qty" type="number" inputmode="numeric" min="1" max="32" value="1">
+            </div>
+            <div class="field">
+              <label for="calc-months">Forma de pago</label>
+              <select id="calc-months" name="months">
+                <option value="1">Pago único</option>
+                <option value="12">12 meses</option>
+                <option value="24">24 meses</option>
+                <option value="36">36 meses</option>
+                <option value="60">60 meses</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="calc-insurance">¿Tienes seguro dental?</label>
+              <select id="calc-insurance" name="insurance">
+                <option value="no">No</option>
+                <option value="si">Sí</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc__result" aria-live="polite" data-calc-result>
+            <p class="calc__placeholder" data-calc-empty>Selecciona un tratamiento para ver la estimación.</p>
+            <div data-calc-filled hidden>
+              <p class="calc__result-label">Estimación orientativa</p>
+              <p class="calc__price"><span class="calc__from">desde</span> <span data-calc-price></span></p>
+              <p class="calc__monthly" data-calc-monthly></p>
+              <p class="calc__insurance" data-calc-insurance hidden>Tu seguro puede modificar el coste final según la cobertura y las condiciones de tu póliza. Lo revisamos contigo en la valoración.</p>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--outline btn--block calc__add" data-calc-add disabled>Añadir a mi estimación</button>
+
+          <div class="calc__summary" data-calc-summary hidden>
+            <h3 class="calc__summary-title">Tu estimación</h3>
+            <ul class="calc__lines" data-calc-lines></ul>
+            <div class="calc__total">
+              <span>Total orientativo</span>
+              <strong><span class="calc__from">desde</span> <span data-calc-total></span></strong>
+            </div>
+            <p class="calc__monthly" data-calc-total-monthly></p>
+          </div>
+
+          <p class="calc__disclaimer">Esta es una estimación orientativa. El presupuesto definitivo será determinado por el profesional después de la evaluación.</p>
+          <a href="#contacto" class="btn btn--solid btn--block" data-calc-cta data-treatment="">Solicitar cita para una valoración</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FAQ ════════ -->
+  <section id="faq" class="section" aria-labelledby="faq-title">
+    <div class="container faq">
+      <header class="faq__intro">
+        <span class="section-head__num" aria-hidden="true" data-num="06"></span>
+        <p class="label label--brand">Preguntas frecuentes</p>
+        <h2 id="faq-title">Lo que necesitas saber antes de tu primera cita.</h2>
+        <p class="section-head__lead">¿No encuentras tu respuesta? Llámanos al <a class="text-link" href="tel:+34900000000">900&nbsp;00&nbsp;00&nbsp;00</a> o escríbenos a <a class="text-link" href="mailto:atencion@aeod.es">atencion@aeod.es</a>.</p>
+      </header>
+
+      <div class="faq__list" data-faq>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q1" aria-expanded="false" aria-controls="faq-a1">¿Cuánto dura un tratamiento de implantes?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a1" hidden><p>El proceso completo dura entre 3 y 6 meses, según si hace falta un injerto óseo previo. En casos de carga inmediata es posible colocar un diente provisional el mismo día de la cirugía.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q2" aria-expanded="false" aria-controls="faq-a2">¿Duele el tratamiento de ortodoncia?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a2" hidden><p>La ortodoncia no es dolorosa, pero puede generar molestias los primeros días tras cada revisión o cambio de alineadores. Este malestar suele desaparecer en 24-48 horas.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q3" aria-expanded="false" aria-controls="faq-a3">¿Ofrecéis financiación sin intereses?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a3" hidden><p>Sí. Trabajamos con varias entidades para ofrecer planes de pago a 12, 24, 36 y 60 meses al 0 % de interés. La aprobación suele ser inmediata y el trámite lo gestionamos desde la propia clínica.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q4" aria-expanded="false" aria-controls="faq-a4">¿Trabajáis con seguros dentales privados?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a4" hidden><p>Trabajamos con DKV, Sanitas, Adeslas, Asisa, AXA, Mapfre, Cigna y otros. Llámanos con tu número de póliza y verificamos tu cobertura. Lo que cubre cada seguro depende de las condiciones de tu póliza.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q5" aria-expanded="false" aria-controls="faq-a5">¿Qué diferencia hay entre Invisalign y brackets?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a5" hidden><p>Ambos sistemas son eficaces para corregir la mayoría de maloclusiones. Invisalign usa alineadores transparentes removibles; los brackets son fijos y no requieren que el paciente se acuerde de llevarlos.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q6" aria-expanded="false" aria-controls="faq-a6">¿Puedo comer con normalidad con Invisalign?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a6" hidden><p>Sí. Los alineadores se retiran para comer y beber, así que puedes comer cualquier alimento sin restricciones.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q7" aria-expanded="false" aria-controls="faq-a7">¿Cómo funciona la garantía de implantes?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a7" hidden><p>Nuestros implantes incluyen garantía escrita de 10 años sobre el implante y de 5 años sobre la corona. En el improbable caso de fracaso, lo reponemos sin coste.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q8" aria-expanded="false" aria-controls="faq-a8">¿Desde qué edad se puede poner un implante?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a8" hidden><p>A partir de los 18-20 años, cuando el desarrollo óseo se ha completado. No hay un límite de edad máxima.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q9" aria-expanded="false" aria-controls="faq-a9">¿Cuánto tiempo duran los implantes?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a9" hidden><p>Con una higiene adecuada y revisiones periódicas, un implante puede durar toda la vida. La tasa de supervivencia a 20 años de los implantes Nobel Biocare es superior al 97 %.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q10" aria-expanded="false" aria-controls="faq-a10">¿Las carillas dañan los dientes?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a10" hidden><p>Las carillas actuales, con técnica mínimamente invasiva, requieren un desgaste mínimo del esmalte (0,3-0,5 mm).</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q11" aria-expanded="false" aria-controls="faq-a11">¿Cuánto dura un blanqueamiento profesional?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a11" hidden><p>El blanqueamiento con láser Fotona dura entre 45 y 60 minutos y se puede completar en una sola sesión. El resultado depende del punto de partida de cada paciente.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q12" aria-expanded="false" aria-controls="faq-a12">¿Atendéis urgencias por la noche o en fin de semana?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a12" hidden><p>Sí. Tenemos servicio de urgencias las 24 horas, los 365 días del año. Llama al <a class="text-link" href="tel:+34900000000">900&nbsp;00&nbsp;00&nbsp;00</a> y te atenderá un odontólogo de guardia.</p></div>
+        </div>
+        <div class="faq-item">
+          <h3><button type="button" class="faq-item__q" id="faq-q13" aria-expanded="false" aria-controls="faq-a13">¿Atendéis a pacientes de fuera de Madrid?<svg class="icon faq-item__icon" aria-hidden="true"><use href="#i-plus"/></svg></button></h3>
+          <div class="faq-item__answer" id="faq-a13" hidden><p>Sí. Organizamos la agenda para reducir al mínimo las visitas necesarias y ofrecemos seguimiento por telemedicina.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CTA FINAL ════════ -->
+  <section class="cta-final" aria-labelledby="cta-final-title">
+    <div class="container cta-final__inner">
+      <div>
+        <h2 id="cta-final-title">Tu primera visita, sin coste ni compromiso.</h2>
+        <p>Exploración, radiografía panorámica y un plan de tratamiento claro antes de decidir nada.</p>
+      </div>
+      <div class="cta-final__actions">
+        <a href="#contacto" class="btn btn--accent btn--lg">Solicitar cita</a>
+        <a href="tel:+34900000000" class="btn btn--ghost-light btn--lg">
+          <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Llamar ahora
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CONTACTO / UBICACIÓN ════════ -->
+  <section id="contacto" class="section contact" aria-labelledby="contacto-title">
+    <div class="container contact__grid">
+      <div class="contact__info">
+        <p class="label label--brand">Contacto</p>
+        <h2 id="contacto-title">Solicita tu cita</h2>
+        <p class="contact__lead">Déjanos tus datos y un asesor clínico te llamará para entender tu caso, resolver tus dudas y agendar tu primera valoración.</p>
+
+        <ul class="contact-list">
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+            <div>
+              <a class="contact-list__main" href="tel:+34900000000">900&nbsp;00&nbsp;00&nbsp;00</a>
+              <button type="button" class="copy-btn" data-copy="900 00 00 00" data-copy-label="teléfono" hidden>Copiar</button>
+              <p>Atención telefónica y urgencias 24 h · También en el <a class="text-link" href="tel:+34914650095">914&nbsp;650&nbsp;095</a></p>
+            </div>
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+            <div>
+              <a class="contact-list__main" href="mailto:atencion@aeod.es">atencion@aeod.es</a>
+              <button type="button" class="copy-btn" data-copy="atencion@aeod.es" data-copy-label="email" hidden>Copiar</button>
+              <p>Respondemos en menos de 24 h</p>
+            </div>
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+            <div>
+              <a class="contact-list__main" href="https://www.google.com/maps/search/?api=1&amp;query=Calle+Mayor+12%2C+28013+Madrid" target="_blank" rel="noopener">Calle Mayor 12, 3ª planta, 28013 Madrid<span class="visually-hidden"> (abre Google Maps en una pestaña nueva)</span></a>
+              <button type="button" class="copy-btn" data-copy="Calle Mayor 12, 3ª planta, 28013 Madrid" data-copy-label="dirección" hidden>Copiar</button>
+              <p>A 3 minutos de Metro Sol · Parking público a menos de 100 m</p>
+            </div>
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <div>
+              <p class="contact-list__main">Lun–Vie 09:00–21:00 · Sáb 10:00–14:00</p>
+              <p class="open-status" data-open-status="compact" hidden></p>
+              <p>Urgencias 24 h, los 365 días</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="map">
+          <iframe title="Mapa: ubicación de la clínica AEOD en Calle Mayor 12, Madrid" src="https://www.openstreetmap.org/export/embed.html?bbox=-3.7100%2C40.4140%2C-3.6980%2C40.4210&amp;layer=mapnik&amp;marker=40.4175%2C-3.7040" loading="lazy" width="600" height="320"></iframe>
+        </div>
+      </div>
+
+      <!--
+        El envío real se configura con data-endpoint (URL de la API). Mientras esté vacío,
+        el formulario NO simula éxito: muestra un error con los datos de contacto.
+      -->
+      <form class="contact-form" id="contact-form" data-contact-form data-endpoint="" novalidate aria-labelledby="form-title">
+        <h3 id="form-title">Formulario de cita</h3>
+        <p class="contact-form__hint">Los campos marcados con <span aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
+
+        <div class="contact-form__summary" data-form-status role="status" tabindex="-1" hidden></div>
+
+        <div class="contact-form__grid">
+          <div class="field" data-field="name">
+            <label for="cf-name">Nombre completo <span class="req" aria-hidden="true">*</span></label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="cf-name-error">
+            <p class="field__error" id="cf-name-error" data-error-for="name"></p>
+          </div>
+          <div class="field" data-field="phone">
+            <label for="cf-phone">Teléfono <span class="req" aria-hidden="true">*</span></label>
+            <input id="cf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="cf-phone-hint cf-phone-error">
+            <p class="field__hint" id="cf-phone-hint">Ej.: 600 123 456</p>
+            <p class="field__error" id="cf-phone-error" data-error-for="phone"></p>
+          </div>
+          <div class="field field--full" data-field="email">
+            <label for="cf-email">Correo electrónico <span class="req" aria-hidden="true">*</span></label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required aria-describedby="cf-email-error">
+            <p class="field__error" id="cf-email-error" data-error-for="email"></p>
+          </div>
+          <div class="field field--full" data-field="treatment">
+            <label for="cf-treatment">Tratamiento de interés <span class="req" aria-hidden="true">*</span></label>
+            <select id="cf-treatment" name="treatment" required aria-describedby="cf-treatment-error">
+              <option value="">Selecciona una opción</option>
+              <option>Revisión general</option>
+              <option>Limpieza dental</option>
+              <option>Implantes dentales</option>
+              <option>Ortodoncia / Invisalign</option>
+              <option>Estética dental / Carillas</option>
+              <option>Urgencia dental</option>
+              <option>Otro</option>
+            </select>
+            <p class="field__error" id="cf-treatment-error" data-error-for="treatment"></p>
+          </div>
+          <div class="field" data-field="date">
+            <label for="cf-date">Día preferido <span class="field__optional">(opcional)</span></label>
+            <input id="cf-date" name="date" type="date" aria-describedby="cf-date-hint cf-date-error">
+            <p class="field__hint" id="cf-date-hint">De lunes a sábado.</p>
+            <p class="field__error" id="cf-date-error" data-error-for="date"></p>
+          </div>
+          <div class="field" data-field="slot">
+            <label for="cf-slot">Franja horaria <span class="field__optional">(opcional)</span></label>
+            <select id="cf-slot" name="slot" aria-describedby="cf-slot-error">
+              <option value="">Indiferente</option>
+              <option value="manana">Mañana (hasta las 14:00)</option>
+              <option value="tarde">Tarde (14:00–21:00)</option>
+            </select>
+            <p class="field__error" id="cf-slot-error" data-error-for="slot"></p>
+          </div>
+          <div class="field field--full" data-field="message">
+            <label for="cf-message">Mensaje <span class="field__optional">(opcional)</span></label>
+            <textarea id="cf-message" name="message" rows="4" maxlength="1000" aria-describedby="cf-message-hint cf-message-error"></textarea>
+            <p class="field__hint field__hint--row" id="cf-message-hint"><span>Cuéntanos brevemente qué necesitas.</span> <span class="field__count"><span data-char-count>0</span>/1.000</span></p>
+            <p class="field__error" id="cf-message-error" data-error-for="message"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn--solid btn--block btn--lg" data-submit>
+          <span class="btn__spinner" aria-hidden="true"></span>
+          <span data-submit-label>Enviar solicitud</span>
+        </button>
+
+        <p class="contact-form__legal">Al enviar aceptas nuestra <a class="text-link" href="privacidad.html">política de privacidad</a>. Nunca compartiremos tus datos con terceros.</p>
+        <p class="contact-form__urgent">¿Es una urgencia? Llama al <a class="text-link" href="tel:+34900000000">900&nbsp;00&nbsp;00&nbsp;00</a> (24 h).</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__clinic">
+      <a href="#inicio" class="logo logo--light" aria-label="AEOD Odontología profesional, ir al inicio">
+        <span class="logo__mark" aria-hidden="true"><svg class="icon"><use href="#i-tooth"/></svg></span>
+        <span class="logo__text" aria-hidden="true">
+          <span class="logo__name">AEOD</span>
+          <span class="logo__sub">Odontología profesional</span>
+        </span>
+      </a>
+      <p>Clínica dental con más de 20 años de experiencia. Atendemos a pacientes de toda España con un protocolo clínico serio y transparente.</p>
+    </div>
+
+    <nav class="site-footer__col" aria-labelledby="footer-nav-title">
+      <h2 class="site-footer__title" id="footer-nav-title">Navegación</h2>
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#tratamientos">Tratamientos</a></li>
+        <li><a href="#equipo">Equipo</a></li>
+        <li><a href="#tecnologia">Tecnología</a></li>
+        <li><a href="#precios">Precios</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__title">Contacto</h2>
+      <address>
+        <ul>
+          <li><a href="tel:+34900000000">900&nbsp;00&nbsp;00&nbsp;00</a></li>
+          <li><a href="tel:+34914650095">914&nbsp;650&nbsp;095</a></li>
+          <li><a href="mailto:atencion@aeod.es">atencion@aeod.es</a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Calle+Mayor+12%2C+28013+Madrid" target="_blank" rel="noopener">Calle Mayor 12, 28013 Madrid<span class="visually-hidden"> (abre Google Maps en una pestaña nueva)</span></a></li>
+        </ul>
+      </address>
+    </div>
+
+    <nav class="site-footer__col" aria-labelledby="footer-legal-title">
+      <h2 class="site-footer__title" id="footer-legal-title">Legal</h2>
+      <!-- Páginas pendientes de crear con su contenido legal. -->
+      <ul>
+        <li><a href="aviso-legal.html">Aviso legal</a></li>
+        <li><a href="privacidad.html">Privacidad</a></li>
+        <li><a href="cookies.html">Cookies</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="site-footer__bottom">
+    <div class="container">
+      <p>© <span data-year>2026</span> AEOD · Asociación Española de Odontología Profesional</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Avisos para lectores de pantalla (copiado, estimación…) -->
+<div class="visually-hidden" aria-live="polite" data-announcer></div>
+
+<button type="button" class="to-top" data-to-top hidden>
+  <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+  <span class="visually-hidden">Volver arriba</span>
+</button>
+
+<!-- Barra de acción rápida (solo móvil) -->
+<div class="mobile-cta" data-mobile-cta>
+  <a href="tel:+34900000000" class="mobile-cta__call">
+    <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg> Llamar
+  </a>
+  <a href="#contacto" class="mobile-cta__book">Solicitar cita</a>
+</div>
+
+<!-- ════════ MODALES DE TRATAMIENTO ════════ -->
+<dialog class="modal" id="modal-general" aria-labelledby="modal-general-title" aria-modal="true">
+  <div class="modal__head">
+    <div>
+      <p class="label label--brand">Tratamiento</p>
+      <h2 id="modal-general-title" class="modal__title">Odontología general</h2>
+    </div>
+    <button type="button" class="modal__close" data-modal-close>
+      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg><span class="visually-hidden">Cerrar</span>
+    </button>
+  </div>
+  <div class="modal__body">
+    <p>La base de una buena salud bucal. Diagnóstico completo con radiografías digitales de baja radiación y escáner intraoral.</p>
+    <h3>La primera visita incluye</h3>
+    <ul class="check-list">
+      <li>Exploración clínica completa</li>
+      <li>Radiografías panorámica y periapical</li>
+      <li>Plan de tratamiento personalizado</li>
+      <li>Presupuesto cerrado, sin sorpresas</li>
+    </ul>
+    <h3>Prevención</h3>
+    <ul class="check-list">
+      <li>Limpieza dental profesional</li>
+      <li>Tratamiento de la halitosis</li>
+      <li>Sellado de fisuras en niños</li>
+      <li>Bruxismo y férulas de descarga</li>
+    </ul>
+    <h3>Tratamientos restauradores</h3>
+    <ul class="check-list">
+      <li>Empastes de composite</li>
+      <li>Endodoncias</li>
+      <li>Coronas de porcelana y zirconio</li>
+    </ul>
+    <p class="modal__note">Primera revisión gratuita. Consulta los <a class="text-link" href="#precios" data-modal-close>precios orientativos</a>.</p>
+  </div>
+  <div class="modal__foot">
+    <a href="#contacto" class="btn btn--solid btn--block" data-modal-close data-treatment="Revisión general">Solicitar cita</a>
+  </div>
+</dialog>
+
+<dialog class="modal" id="modal-ortodoncia" aria-labelledby="modal-ortodoncia-title" aria-modal="true">
+  <div class="modal__head">
+    <div>
+      <p class="label label--brand">Tratamiento</p>
+      <h2 id="modal-ortodoncia-title" class="modal__title">Ortodoncia</h2>
+    </div>
+    <button type="button" class="modal__close" data-modal-close>
+      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg><span class="visually-hidden">Cerrar</span>
+    </button>
+  </div>
+  <div class="modal__body">
+    <p>Con el escáner iTero creamos una simulación 3D del resultado final antes de comenzar. Planificación digital completa de tu tratamiento.</p>
+    <h3>Opciones disponibles</h3>
+    <ul class="check-list">
+      <li>Invisalign Full, Lite y Teen (Invisalign Diamond Provider)</li>
+      <li>Brackets estéticos de zafiro y cerámica</li>
+      <li>Brackets metálicos de alta eficacia</li>
+      <li>Ortodoncia lingual invisible</li>
+      <li>Ortodoncia infantil desde los 7 años</li>
+      <li>Retenedores fijos y removibles</li>
+    </ul>
+    <p class="modal__note">Invisalign desde 1.800 € (precio orientativo). Financiación sin intereses disponible, sujeta a aprobación.</p>
+  </div>
+  <div class="modal__foot">
+    <a href="#contacto" class="btn btn--solid btn--block" data-modal-close data-treatment="Ortodoncia / Invisalign">Solicitar cita</a>
+  </div>
+</dialog>
+
+<dialog class="modal" id="modal-implantes" aria-labelledby="modal-implantes-title" aria-modal="true">
+  <div class="modal__head">
+    <div>
+      <p class="label label--brand">Tratamiento</p>
+      <h2 id="modal-implantes-title" class="modal__title">Implantología y estética</h2>
+    </div>
+    <button type="button" class="modal__close" data-modal-close>
+      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg><span class="visually-hidden">Cerrar</span>
+    </button>
+  </div>
+  <div class="modal__body">
+    <p>Los implantes son la solución más natural y duradera para reponer dientes perdidos. El primer paso es saber si eres candidato: lo valoramos con TAC 3D.</p>
+    <h3>Proceso del implante</h3>
+    <ul class="check-list">
+      <li>TAC 3D para medir la cantidad y calidad del hueso</li>
+      <li>Valoración periodontal y planificación virtual</li>
+      <li>Cirugía guiada por ordenador</li>
+      <li>Implantes Nobel Biocare o Straumann</li>
+      <li>Garantía escrita de 10 años en el implante</li>
+    </ul>
+    <h3>Estética dental</h3>
+    <ul class="check-list">
+      <li>Carillas de porcelana con Digital Smile Design (DSD)</li>
+      <li>Blanqueamiento LED profesional</li>
+    </ul>
+    <p class="modal__note">Implante completo desde 990 € (precio orientativo). El presupuesto final se fija tras la valoración.</p>
+  </div>
+  <div class="modal__foot">
+    <a href="#contacto" class="btn btn--solid btn--block" data-modal-close data-treatment="Implantes dentales">Solicitar cita</a>
+  </div>
+</dialog>
+
+</body>
+</html>

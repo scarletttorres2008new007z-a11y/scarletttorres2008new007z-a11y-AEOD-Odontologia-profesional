@@ -1,0 +1,73 @@
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — Estética clínica editorial
+   Paleta original conservada. --muted se oscurece
+   ligeramente (#7A7972 → #6B6A64) para cumplir
+   contraste AA sobre fondos claros.
+═══════════════════════════════════════════════ */
+:root {
+  /* Color */
+  --ink:        #0C0C0B;
+  --ink-2:      #2A2A28;
+  --ink-3:      #5C5C58;
+  --muted:      #6B6A64;
+  --brand:      #1B3A30;
+  --brand-2:    #122A22;
+  --accent:     #BFA882;
+  --accent-2:   #A8936E;
+  --paper:      #F7F5F1;
+  --paper-2:    #EEECE8;
+  --paper-3:    #E4E1DB;
+  --canvas:     #FCFBF9;
+  --white:      #FFFFFF;
+  --dark-bg:    #111210;
+  --rule:       #D8D4CC;
+  --error:      #A61B1B;
+  --error-bg:   #FBEFEF;
+  --success-bg: #EEF3F0;
+
+  /* Texto sobre fondos oscuros (verde / negro) */
+  --on-dark:        #FFFFFF;
+  --on-dark-2:      rgba(255, 255, 255, .78);
+  --on-dark-3:      rgba(255, 255, 255, .66);
+  --on-dark-rule:   rgba(255, 255, 255, .16);
+
+  /* Tipografía */
+  --font-serif: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Forma */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  --shadow-card: 0 1px 3px rgba(12, 12, 11, .06), 0 4px 12px rgba(12, 12, 11, .04);
+  --shadow-lift: 0 2px 8px rgba(12, 12, 11, .08), 0 12px 32px rgba(12, 12, 11, .08);
+
+  /* Layout */
+  --container: 1160px;
+  --gutter: 20px;
+  --header-h: 64px;
+  --mobile-cta-h: 60px;
+  --section-y: 72px;
+
+  /* Movimiento: microinteracciones discretas */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --t-fast: .16s;
+  --t-base: .24s;
+
+  --focus-ring: 0 0 0 3px var(--canvas), 0 0 0 5px var(--brand);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 28px;
+    --section-y: 96px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 72px;
+    --section-y: 112px;
+  }
+}

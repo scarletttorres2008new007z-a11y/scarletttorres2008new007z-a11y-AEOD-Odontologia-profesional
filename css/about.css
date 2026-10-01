@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════
+   POR QUÉ ELEGIRNOS — filosofía + 4 valores
+   (antes: Quiénes somos, barras animadas, pilares,
+   tarjetas apiladas y Misión/Visión/Valores)
+═══════════════════════════════════════════════ */
+.about { display: grid; gap: 40px; }
+
+.about__media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+}
+
+.about__copy h2 { margin-top: 10px; max-width: 24ch; }
+.about__lead { margin-top: 18px; max-width: 54ch; }
+
+.values {
+  display: grid;
+  gap: 24px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--paper-3);
+}
+.value h3 {
+  position: relative;
+  padding-left: 18px;
+  font-size: 1.0625rem;
+}
+.value h3::before {
+  content: '';
+  position: absolute;
+  left: 0; top: .5em;
+  width: 8px; height: 1px;
+  background: var(--accent-2);
+}
+.value p { margin-top: 6px; padding-left: 18px; font-size: .9375rem; }
+
+@media (min-width: 600px) {
+  .values { grid-template-columns: 1fr 1fr; gap: 28px 32px; }
+}
+
+@media (min-width: 1024px) {
+  .about { grid-template-columns: 1fr 1.1fr; gap: 72px; align-items: center; }
+  .about__media img { aspect-ratio: 4 / 5; }
+}

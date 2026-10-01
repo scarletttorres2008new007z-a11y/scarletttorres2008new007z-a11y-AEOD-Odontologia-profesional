@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════════════
+   ESTIMADOR — estimación orientativa
+═══════════════════════════════════════════════ */
+.calculator { background: var(--canvas); }
+
+.calc {
+  display: grid;
+  gap: 32px;
+  padding: 32px 24px;
+  background: var(--paper);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+}
+.calc__intro h2 { margin-top: 10px; }
+.calc__intro p { margin-top: 12px; max-width: 40ch; }
+
+.calc__grid { display: grid; gap: 16px; }
+
+.calc__result {
+  margin-top: 20px;
+  padding: 20px;
+  min-height: 96px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+}
+.calc__placeholder { font-size: .9375rem; color: var(--muted); }
+.calc__result-label {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.calc__price {
+  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--brand);
+}
+.calc__from { font-family: var(--font-sans); font-size: .9375rem; font-weight: 500; color: var(--muted); }
+.calc__monthly { margin-top: 6px; font-size: .9375rem; }
+.calc__insurance {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--paper-3);
+  font-size: .875rem;
+}
+
+.calc__disclaimer {
+  margin: 16px 0 20px;
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+@media (min-width: 600px) {
+  .calc__grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+  .calc { grid-template-columns: 1fr 1.4fr; gap: 64px; padding: 56px; }
+}
+
+/* Estimación con varios tratamientos */
+.calc__add { margin-top: 12px; }
+
+.calc__summary {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+}
+.calc__summary-title { font-size: 1.0625rem; }
+.calc__lines { display: grid; margin-top: 10px; }
+.calc__line {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--paper-3);
+  font-size: .9375rem;
+  color: var(--ink-2);
+}
+.calc__line-price { font-weight: 600; color: var(--brand); font-variant-numeric: tabular-nums; }
+.calc__remove {
+  min-height: 36px;
+  padding: 0 8px;
+  font-size: .8125rem;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.calc__remove:hover { color: var(--error); }
+
+.calc__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 14px;
+  font-weight: 500;
+}
+.calc__total strong {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--brand);
+}

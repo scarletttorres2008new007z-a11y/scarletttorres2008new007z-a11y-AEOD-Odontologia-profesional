@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════
+   TRATAMIENTOS — imagen, nombre, descripción,
+   beneficio principal y "Ver tratamiento"
+═══════════════════════════════════════════════ */
+.services__grid { display: grid; gap: 20px; }
+
+.service {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  transition: box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+.service:hover { border-color: var(--rule); box-shadow: var(--shadow-card); }
+
+.service__img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--paper-2);
+}
+
+.service__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px 24px 12px;
+}
+.service h3 { font-size: 1.25rem; margin-bottom: 10px; }
+.service__body > p:not(.service__benefit) { font-size: .9375rem; flex: 1; }
+
+.service__benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--paper-3);
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--brand);
+  line-height: 1.5;
+}
+.service__benefit .icon { margin-top: 3px; }
+
+.service .link-more { margin-top: 8px; align-self: flex-start; }
+
+@media (min-width: 768px) {
+  .services__grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .service__body { padding: 28px 28px 16px; }
+}
+
+/* ═══════════════════════════════════════════════
+   ORIENTACIÓN RÁPIDA (treatment-finder.js)
+═══════════════════════════════════════════════ */
+.finder {
+  display: grid;
+  gap: 24px;
+  margin-top: 40px;
+  padding: 28px 22px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+}
+.finder__intro h3 { margin-top: 8px; font-size: 1.375rem; }
+.finder__intro p:not(.label) { margin-top: 10px; font-size: .9375rem; max-width: 46ch; }
+
+.finder__question {
+  margin-bottom: 14px;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.finder__question:focus { outline: none; }
+
+.finder__options { display: grid; gap: 10px; }
+.finder__option {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: .9375rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: var(--paper);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+  transition: border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.finder__option::after {
+  content: '';
+  width: 7px; height: 7px;
+  margin-left: auto;
+  padding-left: 0;
+  border-top: 1.5px solid var(--brand);
+  border-right: 1.5px solid var(--brand);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  transition: transform var(--t-fast) var(--ease);
+}
+.finder__option:hover { border-color: var(--brand); background: var(--white); }
+.finder__option:hover::after { transform: translateX(3px) rotate(45deg); }
+
+.finder__back {
+  margin-top: 14px;
+  min-height: 44px;
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.finder__back:hover { color: var(--brand); }
+
+.finder__result-title { margin-top: 8px; font-size: 1.5rem; }
+.finder__result-title:focus { outline: none; }
+.finder__result > p:not(.label) { margin-top: 10px; font-size: .9375rem; }
+.finder__price { font-weight: 600; color: var(--brand) !important; }
+.finder__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.finder__disclaimer { font-size: .8125rem !important; color: var(--muted) !important; }
+
+@media (max-width: 479px) {
+  .finder__actions .btn { width: 100%; }
+}
+@media (min-width: 768px) {
+  .finder { padding: 36px 40px; }
+  .finder__options { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .finder { grid-template-columns: 1fr 1.5fr; gap: 56px; align-items: start; }
+}
