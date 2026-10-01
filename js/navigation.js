@@ -100,4 +100,19 @@
     }, { threshold: 0.15 });
     observer.observe(contact);
   }
+
+  /* ── Botón "Volver arriba" ── */
+  const toTop = document.querySelector('[data-to-top]');
+  if (toTop) {
+    toTop.hidden = false;
+    const onScrollTop = () => toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 1.5);
+    window.addEventListener('scroll', onScrollTop, { passive: true });
+    onScrollTop();
+    toTop.addEventListener('click', () => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      const logo = document.querySelector('.site-header .logo');
+      if (logo) logo.focus({ preventScroll: true });
+    });
+  }
 })();

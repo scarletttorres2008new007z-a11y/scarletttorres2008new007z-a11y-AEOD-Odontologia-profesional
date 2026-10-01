@@ -52,3 +52,6 @@
 
 .field [aria-invalid="true"] { border-color: var(--error); }
 .field [aria-invalid="true"]:focus-visible { box-shadow: 0 0 0 3px rgba(166, 27, 27, .16); }
+
+.field__hint--row { display: flex; justify-content: space-between; gap: 12px; }
+.field__count { flex-shrink: 0; font-variant-numeric: tabular-nums; }
