@@ -1,0 +1,2452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEOD — Asociación Española de Odontología Profesional</title>
+  <meta name="description" content="Clínica dental con más de 20 años de experiencia. Odontología general, ortodoncia, implantología y estética dental. Atención 24h." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — Estética clínica editorial europea
+═══════════════════════════════════════════════ */
+:root {
+  --ink:          #0C0C0B;
+  --ink-2:        #2A2A28;
+  --ink-3:        #5C5C58;
+  --brand:        #1B3A30;
+  --brand-2:      #122A22;
+  --accent:       #BFA882;
+  --accent-2:     #A8936E;
+  --paper:        #F7F5F1;
+  --paper-2:      #EEECE8;
+  --paper-3:      #E4E1DB;
+  --canvas:       #FCFBF9;
+  --dark-bg:      #111210;
+  --dark-bg-2:    #1A1C19;
+  --rule:         #D8D4CC;
+  --muted:        #7A7972;
+
+  --font-serif:   'Libre Baskerville', Georgia, serif;
+  --font-sans:    'Inter', system-ui, sans-serif;
+
+  --r-sm:   4px;
+  --r-md:   6px;
+  --r-lg:   8px;
+
+  --shadow-card:  0 1px 3px rgba(12,12,11,.06), 0 4px 12px rgba(12,12,11,.04);
+  --shadow-lift:  0 2px 8px rgba(12,12,11,.08), 0 8px 24px rgba(12,12,11,.06);
+
+  --container: 1160px;
+  --col-gap:   28px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--canvas);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* TIPOGRAFÍA */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  line-height: 1.1;
+  font-weight: 700;
+}
+h1 { font-size: clamp(2rem, 3.8vw, 3.2rem); letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.7rem, 2.8vw, 2.5rem); letter-spacing: -0.02em; }
+h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+h4 { font-size: 0.95rem; font-weight: 700; letter-spacing: 0; }
+p { color: var(--ink-3); line-height: 1.7; }
+
+/* LAYOUT */
+.container { max-width: var(--container); margin: 0 auto; padding: 0 28px; }
+.center { text-align: center; }
+
+/* ETIQUETAS */
+.label {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.label--brand { color: var(--brand); }
+.label--accent { color: var(--accent-2); }
+
+/* DIVISORES */
+.rule { display: block; width: 32px; height: 1px; background: var(--rule); margin: 16px 0; }
+.rule--accent { background: var(--accent); width: 24px; }
+.rule--brand  { background: var(--brand); width: 24px; }
+
+/* BOTONES */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 11px 22px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .16s ease;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn--solid { background: var(--brand); color: #fff; border-color: var(--brand); }
+.btn--solid:hover { background: var(--brand-2); border-color: var(--brand-2); }
+.btn--outline { background: transparent; color: var(--brand); border-color: var(--brand); }
+.btn--outline:hover { background: var(--brand); color: #fff; }
+.btn--light { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.25); }
+.btn--light:hover { background: rgba(255,255,255,.16); }
+.btn--accent-solid { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+.btn--accent-solid:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.btn--block { width: 100%; }
+.btn--sm { padding: 9px 18px; font-size: 12px; }
+.btn--lg { padding: 13px 28px; font-size: 14px; }
+.icon { display: inline-block; width: 1em; height: 1em; vertical-align: middle; flex-shrink: 0; }
+
+/* ════════════════════════════
+   TOPBAR
+════════════════════════════ */
+.topbar { background: var(--dark-bg); display: none; }
+@media (min-width: 768px) { .topbar { display: block; } }
+.topbar__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 28px; font-size: 12px;
+}
+.topbar__left { display: flex; gap: 28px; }
+.topbar__item {
+  display: inline-flex; align-items: center; gap: 7px;
+  color: rgba(255,255,255,.52); transition: color .2s; font-weight: 400;
+}
+.topbar__item:hover { color: rgba(255,255,255,.82); }
+.topbar__item strong { font-weight: 500; }
+.topbar__right {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+.topbar__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin: 0 6px; opacity: .7; }
+
+/* ════════════════════════════
+   HEADER / NAVBAR MULTIPÁGINA
+════════════════════════════ */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(252,251,249,.97);
+  border-bottom: 1px solid var(--paper-3);
+  transition: box-shadow .3s, background .3s;
+}
+.header.scrolled { box-shadow: 0 1px 0 var(--rule), 0 4px 20px rgba(12,12,11,.05); }
+.navbar {
+  position: relative;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 14px 28px;
+}
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.logo { display: flex; align-items: center; gap: 14px; }
+.logo__mark {
+  width: 36px; height: 36px;
+  border: 1px solid var(--brand);
+  display: grid; place-items: center; color: var(--brand); flex-shrink: 0;
+}
+.logo__text { display: flex; flex-direction: column; }
+.logo__name { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--brand); letter-spacing: -0.01em; line-height: 1; }
+.logo__sub { font-size: 9px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.nav-menu {
+  display: none;
+  align-items: center;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-link {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  transition: color .2s;
+  letter-spacing: -0.005em;
+}
+.nav-link:hover,
+.nav-link.active { color: var(--ink); }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header__tel {
+  display: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--brand);
+  letter-spacing: -0.01em;
+}
+.mobile-menu-btn {
+  display: grid; place-items: center;
+  width: 36px; height: 36px;
+  border: 1px solid var(--paper-3);
+  background: transparent;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 18px;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.mobile-menu-btn:hover { border-color: var(--ink); }
+.mobile-menu {
+  display: none;
+  border-top: 1px solid var(--paper-3);
+  background: var(--canvas);
+}
+.mobile-menu.open { display: grid; }
+.mobile-menu a {
+  padding: 12px 28px;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--paper-3);
+  font-size: 13px;
+  transition: background .2s, color .2s;
+}
+.mobile-menu a:hover { color: var(--ink); background: var(--paper); }
+.mobile-menu a:last-child { border-bottom: none; }
+@media (min-width: 768px) { .header__tel { display: block; } }
+@media (min-width: 1024px) {
+  .navbar { padding: 14px 0; }
+  .nav-menu { display: flex; }
+  .mobile-menu-btn { display: none; }
+}
+@media (max-width: 1023px) {
+  .nav-actions .btn,
+  .nav-actions .header__tel { display: none; }
+}
+
+/* ════════════════════════════
+   HERO — con imagen de fondo real
+════════════════════════════ */
+.hero { background: var(--canvas); }
+.hero__inner {
+  display: grid; grid-template-columns: 1fr; gap: 0; padding-top: 48px;
+}
+@media (min-width: 1024px) {
+  .hero__inner { grid-template-columns: 52% 1fr; align-items: stretch; padding-top: 0; }
+}
+
+/* Panel principal con imagen de fondo */
+.hero__panel {
+  position: relative;
+  padding: 56px 48px 64px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  overflow: hidden;
+}
+@media (min-width: 1024px) { .hero__panel { padding: 72px 56px 72px; min-height: 620px; } }
+
+/* Imagen de fondo con zoom animado */
+.hero__panel::before {
+  content: '';
+  position: absolute;
+  inset: -8%;
+  background: url('https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+  animation: heroBgZoom 20s infinite alternate ease-in-out;
+  z-index: 0;
+}
+/* Overlay verde de marca encima */
+.hero__panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(27,58,48,0.92) 0%,
+    rgba(18,42,34,0.86) 60%,
+    rgba(27,58,48,0.78) 100%
+  );
+  z-index: 1;
+}
+@keyframes heroBgZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.1); }
+}
+/* Todos los hijos sobre el overlay */
+.hero__panel > * { position: relative; z-index: 2; }
+
+.hero__panel-number {
+  position: absolute; top: 40px; right: 40px; z-index: 2;
+  font-family: var(--font-serif); font-size: 7rem; font-weight: 700;
+  color: rgba(255,255,255,.06); line-height: 1; user-select: none; pointer-events: none;
+}
+.hero__eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: block; }
+.hero__panel h1 { color: #fff; font-size: clamp(1.8rem, 3.2vw, 2.9rem); max-width: 22rem; line-height: 1.06; }
+.hero__panel p { color: rgba(255,255,255,.72); font-size: 15px; margin-top: 20px; max-width: 28rem; line-height: 1.7; }
+.hero__cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+.hero__metrics { display: flex; gap: 32px; margin-top: 48px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,.15); }
+.metric__n { display: block; font-family: var(--font-serif); font-size: 1.6rem; font-weight: 700; color: #fff; line-height: 1; }
+.metric__l { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,.42); margin-top: 4px; display: block; }
+
+/* Aside derecho */
+.hero__aside { display: flex; flex-direction: column; background: var(--paper); border-left: 1px solid var(--paper-3); }
+.hero__card { padding: 32px 32px; border-bottom: 1px solid var(--paper-3); }
+@media (min-width: 1024px) { .hero__card { padding: 40px 40px; } }
+.hero__card-label { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); margin-bottom: 12px; display: block; }
+.hero__card h3 { color: var(--ink); font-size: 1.05rem; line-height: 1.3; margin-bottom: 8px; }
+.hero__card p { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 16px; }
+.contact-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border: 1px solid var(--paper-3); margin-bottom: 8px;
+  transition: border-color .2s, background .2s;
+}
+.contact-row:hover { border-color: var(--brand); background: #fff; }
+.contact-row:last-child { margin-bottom: 0; }
+.contact-row__main { font-size: 14px; font-weight: 500; color: var(--ink); }
+.contact-row__arrow { color: var(--muted); font-size: 12px; }
+.schedule-table { width: 100%; }
+.schedule-table tr { border-bottom: 1px solid var(--paper-3); }
+.schedule-table tr:last-child { border-bottom: none; }
+.schedule-table td { padding: 10px 0; font-size: 13px; }
+.schedule-table td:first-child { color: var(--muted); }
+.schedule-table td:last-child { text-align: right; font-weight: 500; color: var(--ink); }
+.schedule-table .td-emerg { color: var(--brand); font-weight: 600; }
+
+/* ════════════════════════════
+   BANDAS INSTITUCIONALES
+════════════════════════════ */
+.band { border-top: 1px solid var(--paper-3); border-bottom: 1px solid var(--paper-3); padding: 20px 0; overflow: hidden; background: var(--paper); }
+.band__inner { display: flex; align-items: center; gap: 48px; white-space: nowrap; }
+.band__item { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+.band__sep { color: var(--paper-3); flex-shrink: 0; }
+
+/* ════════════════════════════
+   SECCIONES
+════════════════════════════ */
+.section { padding: 96px 0; }
+.section--alt { background: var(--paper); }
+.section--dark { background: var(--dark-bg); }
+.section--brand { background: var(--brand); }
+@media (min-width: 1024px) { .section { padding: 120px 0; } }
+
+.section-head { margin-bottom: 64px; }
+.section-head--row { display: grid; gap: 32px; align-items: end; margin-bottom: 64px; }
+@media (min-width: 768px) { .section-head--row { grid-template-columns: 1fr 1fr; gap: 48px; } }
+.section-head__num { font-family: var(--font-serif); font-size: 5rem; font-weight: 700; color: var(--paper-3); line-height: 1; user-select: none; display: block; margin-bottom: -12px; }
+.section-head--dark .section-head__num { color: rgba(255,255,255,.06); }
+.section-head h2 { margin-top: 8px; }
+.section-head--dark h2 { color: #fff; }
+.section-head__lead { color: var(--muted); font-size: 14.5px; line-height: 1.75; }
+
+/* ════════════════════════════
+   SERVICIOS — con imágenes reales
+════════════════════════════ */
+.services__grid {
+  display: grid; gap: 1px; grid-template-columns: 1fr;
+  border: 1px solid var(--paper-3);
+}
+@media (min-width: 768px) { .services__grid { grid-template-columns: repeat(3, 1fr); } }
+.service {
+  background: #fff; padding: 0;
+  transition: background .2s;
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--paper-3);
+  overflow: hidden;
+}
+.service:last-child { border-right: none; }
+.service:hover { background: var(--paper); }
+
+/* Imagen de servicio */
+.service__img { height: 200px; overflow: hidden; flex-shrink: 0; position: relative; }
+.service__img img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  transition: transform .55s ease;
+  filter: brightness(0.92) saturate(0.9);
+}
+.service:hover .service__img img { transform: scale(1.06); filter: brightness(0.98) saturate(1); }
+/* Tinta de color sobre la imagen */
+.service__img::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 55%, rgba(27,58,48,0.18) 100%);
+}
+
+/* Contenido de la tarjeta */
+.service__body { padding: 28px 32px 32px; display: flex; flex-direction: column; flex: 1; }
+.service__num { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 700; color: var(--paper-3); line-height: 1; margin-bottom: 16px; display: block; transition: color .2s; }
+.service:hover .service__num { color: var(--paper-2); }
+.service__icon { width: 40px; height: 40px; border: 1px solid var(--paper-3); display: grid; place-items: center; color: var(--brand); margin-bottom: 16px; flex-shrink: 0; transition: border-color .2s, background .2s; }
+.service:hover .service__icon { border-color: var(--brand); background: var(--brand); color: #fff; }
+.service h3 { color: var(--ink); margin-bottom: 10px; font-size: 1.05rem; }
+.service > .service__body > p { color: var(--muted); font-size: 13.5px; line-height: 1.7; flex: 1; margin-bottom: 16px; }
+.service__list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.service__list li { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--ink-3); }
+.service__list .check { color: var(--brand); flex-shrink: 0; font-size: 11px; margin-top: 3px; }
+.link-more {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 500; color: var(--brand);
+  background: none; border: none; cursor: pointer;
+  padding: 0; letter-spacing: -0.005em;
+  transition: gap .2s, color .2s; margin-top: auto;
+}
+.link-more:hover { gap: 10px; color: var(--ink); }
+
+/* Service expand */
+.service-expand { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s; opacity: 0; }
+.service-expand.open { max-height: 600px; opacity: 1; }
+.expand-inner { padding-top: 20px; margin-top: 20px; border-top: 1px solid var(--paper-3); }
+.expand-inner p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+.expand-inner h4 { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin: 14px 0 8px; }
+.price-note { display: inline-block; font-size: 11.5px; font-weight: 500; color: var(--brand); border: 1px solid var(--paper-3); padding: 4px 10px; margin-top: 10px; }
+
+/* ════════════════════════════
+   AUTHORITY — con imagen real
+════════════════════════════ */
+.authority__grid { display: grid; gap: 64px; align-items: start; grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .authority__grid { grid-template-columns: 1fr 1fr; gap: 80px; } }
+.authority__media { position: relative; }
+.authority__img {
+  width: 100%; aspect-ratio: 4/3;
+  object-fit: cover; object-position: center;
+  border: 1px solid var(--paper-3);
+  display: block;
+  transition: transform .6s ease;
+}
+.authority__media:hover .authority__img { transform: scale(1.015); }
+.authority__badge {
+  position: absolute; bottom: -24px; right: -16px;
+  background: #fff; border: 1px solid var(--paper-3);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 1023px) { .authority__badge { right: 0; } }
+.authority__badge-n { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; color: var(--brand); line-height: 1; }
+.authority__badge-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 3px; }
+.authority__copy { padding-top: 0; }
+@media (min-width: 1024px) { .authority__copy { padding-top: 16px; } }
+.authority__copy h2 { margin: 12px 0 20px; }
+.authority__copy p { color: var(--muted); font-size: 14.5px; line-height: 1.75; margin-bottom: 14px; }
+
+/* Stat bars */
+.stat-bars { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+.stat-bar__header { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 500; color: var(--ink-3); margin-bottom: 6px; }
+.stat-bar__header span { color: var(--brand); font-weight: 600; }
+.bar-track { height: 3px; background: var(--paper-3); }
+.bar-fill { height: 100%; background: var(--brand); width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+/* Pillars */
+.pillars { display: grid; gap: 16px; margin-top: 32px; grid-template-columns: 1fr 1fr; }
+.pillar { padding: 18px; border: 1px solid var(--paper-3); background: var(--paper); transition: border-color .2s; }
+.pillar:hover { border-color: var(--brand); }
+.pillar__icon { color: var(--brand); font-size: 16px; margin-bottom: 10px; }
+.pillar__t { font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.pillar p { font-size: 12px; color: var(--muted); }
+
+/* ════════════════════════════
+   EQUIPO — con fotos reales
+════════════════════════════ */
+.team__grid {
+  display: grid; gap: 1px; grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--paper-3);
+}
+@media (min-width: 1024px) { .team__grid { grid-template-columns: repeat(4, 1fr); } }
+.team-card { background: #fff; overflow: hidden; transition: background .2s; border-right: 1px solid var(--paper-3); }
+.team-card:last-child { border-right: none; }
+.team-card:hover { background: var(--paper); }
+
+/* Avatar con foto real */
+.team-avatar {
+  width: 100%; aspect-ratio: 3/4;
+  overflow: hidden; position: relative;
+}
+.team-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  transition: transform .55s ease;
+}
+.team-card:hover .team-avatar img { transform: scale(1.04); }
+/* Gradiente sutil en la parte inferior de la foto */
+.team-avatar::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 65%, rgba(27,58,48,0.22) 100%);
+  pointer-events: none;
+}
+
+.team-info { padding: 20px; }
+.team-name { font-family: var(--font-serif); font-size: 1rem; font-weight: 700; color: var(--ink); line-height: 1.2; margin-bottom: 3px; }
+.team-role { font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); margin-bottom: 10px; display: block; }
+.team-bio { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+.team-expand-btn {
+  width: 100%; padding: 8px; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1px solid var(--paper-3); background: transparent;
+  color: var(--muted); cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.team-expand-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--paper); }
+.team-details { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+.team-details.open { max-height: 300px; }
+.team-details-inner { padding: 12px 0; border-top: 1px solid var(--paper-3); margin-top: 12px; }
+.team-details-inner ul { display: flex; flex-direction: column; gap: 6px; }
+.team-details-inner li { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; }
+.team-details-inner li::before { content: '–'; color: var(--accent-2); flex-shrink: 0; }
+
+/* ════════════════════════════
+   MVV
+════════════════════════════ */
+.mvv__grid { display: grid; gap: 0; grid-template-columns: 1fr; border: 1px solid var(--paper-3); }
+@media (min-width: 1024px) { .mvv__grid { grid-template-columns: 5fr 7fr; } }
+.mvv__media { background: var(--brand); padding: 48px 40px; border-right: 1px solid rgba(255,255,255,.08); position: relative; overflow: hidden; }
+.mvv__media::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1588776814546-daab30f310e5?auto=format&fit=crop&w=900&q=80') center/cover;
+  opacity: 0.1;
+}
+.mvv__media > * { position: relative; z-index: 1; }
+@media (min-width: 1024px) { .mvv__media { padding: 64px 56px; } }
+.mvv__media-num { font-family: var(--font-serif); font-size: 6rem; font-weight: 700; color: rgba(255,255,255,.06); line-height: 1; display: block; margin-bottom: -16px; }
+.mvv__media h2 { color: #fff; font-size: clamp(1.4rem, 2vw, 1.85rem); margin-top: 12px; max-width: 24rem; }
+.mvv__media p { color: rgba(255,255,255,.55); font-size: 14px; margin-top: 14px; line-height: 1.75; max-width: 28rem; }
+.mvv__panels { display: flex; flex-direction: column; }
+.panel-mvv { padding: 32px 36px; border-bottom: 1px solid var(--paper-3); display: flex; gap: 20px; align-items: flex-start; background: #fff; transition: background .2s; }
+@media (min-width: 1024px) { .panel-mvv { padding: 40px 48px; } }
+.panel-mvv:last-child { border-bottom: none; }
+.panel-mvv:hover { background: var(--paper); }
+.panel-mvv__tag { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand); flex-shrink: 0; padding-top: 3px; min-width: 56px; }
+.panel-mvv__body h4 { font-family: var(--font-serif); font-size: 1.05rem; color: var(--ink); margin-bottom: 7px; }
+.panel-mvv__body p { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+
+/* ════════════════════════════
+   TESTIMONIOS
+════════════════════════════ */
+.testimonials { background: var(--dark-bg); padding: 96px 0; }
+@media (min-width: 1024px) { .testimonials { padding: 120px 0; } }
+.testimonials .section-head { margin-bottom: 56px; }
+.testimonials__viewport { overflow: hidden; }
+.testimonials__track { display: flex; gap: 1px; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+.testimonial-card { min-width: 100%; background: var(--dark-bg-2); border: 1px solid rgba(255,255,255,.06); padding: 40px; flex-shrink: 0; }
+@media (min-width: 768px) { .testimonial-card { min-width: calc(50% - 1px); } }
+.testimonial-stars { font-size: 12px; letter-spacing: 2px; color: var(--accent); margin-bottom: 16px; }
+.testimonial-text { font-size: 15px; color: rgba(255,255,255,.7); line-height: 1.8; margin-bottom: 24px; font-style: italic; font-family: var(--font-serif); }
+.testimonial-author { display: flex; align-items: center; gap: 14px; border-top: 1px solid rgba(255,255,255,.07); padding-top: 20px; }
+.testimonial-avatar { width: 40px; height: 40px; background: var(--brand); display: grid; place-items: center; font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: rgba(255,255,255,.6); flex-shrink: 0; }
+.testimonial-name { font-size: 14px; font-weight: 500; color: rgba(255,255,255,.75); }
+.testimonial-detail { font-size: 11px; color: rgba(255,255,255,.38); margin-top: 2px; }
+.testimonials__controls { display: flex; align-items: center; gap: 10px; margin-top: 28px; }
+.slider-btn { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.15); background: transparent; color: rgba(255,255,255,.55); cursor: pointer; display: grid; place-items: center; font-size: 16px; transition: border-color .2s, color .2s; }
+.slider-btn:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+.slider-dots { display: flex; gap: 6px; }
+.slider-dot { width: 6px; height: 6px; border: 1px solid rgba(255,255,255,.25); background: transparent; cursor: pointer; padding: 0; transition: background .2s, border-color .2s; }
+.slider-dot.active { background: var(--accent); border-color: var(--accent); }
+
+/* ════════════════════════════
+   CONFIDENCE STACK
+════════════════════════════ */
+.stack { background: var(--dark-bg); padding: 96px 0 0; overflow: hidden; }
+.stack-cards { position: relative; margin-top: 64px; padding-bottom: 48vh; }
+.stack-card {
+  position: sticky; top: 12vh;
+  display: grid; grid-template-columns: 1fr 1fr; padding: 48px; gap: 48px;
+  background: var(--dark-bg-2); border: 1px solid rgba(255,255,255,.06);
+  align-items: center; border-radius: 24px;
+  transform-origin: top center;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  transition: transform .18s ease, opacity .18s ease, filter .18s ease;
+  box-shadow: 0 18px 60px rgba(0,0,0,.22);
+}
+@media (max-width: 767px) {
+  .stack-card { grid-template-columns: 1fr; padding: 36px 28px; gap: 28px; top: 84px; border-radius: 18px; }
+}
+.stack-card + .stack-card { margin-top: 28px; }
+.stack-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 14px; }
+.stack-card h3 { font-family: var(--font-serif); font-size: clamp(1.15rem, 2vw, 1.5rem); color: #fff; margin-bottom: 12px; }
+.stack-card > div > p { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.75; margin-bottom: 20px; }
+.stack-right { display: flex; align-items: center; justify-content: center; }
+.stat-block { text-align: center; }
+.stat-block .stat-big { display: block; font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4rem); color: #fff; line-height: 1; font-weight: 700; }
+.stat-block .stat-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,.38); margin-top: 8px; display: block; }
+.stack-checklist { display: flex; flex-direction: column; gap: 10px; }
+.stack-checklist li { display: flex; gap: 10px; font-size: 13.5px; color: rgba(255,255,255,.6); align-items: flex-start; }
+.stack-checklist li::before { content: '–'; color: var(--accent); flex-shrink: 0; }
+
+/* ════════════════════════════
+   LOGO BAND
+════════════════════════════ */
+.logo-band { background: var(--paper); border-top: 1px solid var(--paper-3); border-bottom: 1px solid var(--paper-3); padding: 36px 0; overflow: hidden; }
+.logo-band__track { display: flex; width: max-content; will-change: transform; user-select: none; }
+.logo-band__list { display: flex; align-items: center; gap: 0; }
+.logo-band__item { flex-shrink: 0; }
+.logo-badge { font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 8px 24px; border-right: 1px solid var(--paper-3); white-space: nowrap; display: block; transition: color .2s; }
+.logo-badge:hover { color: var(--ink); }
+
+/* ════════════════════════════
+   PRECIOS
+════════════════════════════ */
+.pricing__grid { display: grid; gap: 1px; grid-template-columns: 1fr; border: 1px solid var(--paper-3); }
+@media (min-width: 768px) { .pricing__grid { grid-template-columns: repeat(3, 1fr); } }
+.pricing-card { background: #fff; padding: 36px; border-right: 1px solid var(--paper-3); display: flex; flex-direction: column; transition: background .2s; position: relative; }
+.pricing-card:last-child { border-right: none; }
+.pricing-card:hover { background: var(--paper); }
+.pricing-card--featured { background: var(--brand); }
+.pricing-card--featured:hover { background: var(--brand-2); }
+.pricing-featured-label { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 12px; }
+.pricing-name { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: block; }
+.pricing-card--featured .pricing-name { color: rgba(255,255,255,.45); }
+.pricing-price { font-family: var(--font-serif); font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 8px; }
+.pricing-card--featured .pricing-price { color: #fff; }
+.pricing-price small { font-size: 1rem; font-weight: 400; }
+.pricing-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+.pricing-card--featured .pricing-desc { color: rgba(255,255,255,.55); }
+.pricing-divider { height: 1px; background: var(--paper-3); margin: 16px 0; }
+.pricing-card--featured .pricing-divider { background: rgba(255,255,255,.1); }
+.pricing-feats { display: flex; flex-direction: column; gap: 8px; flex: 1; margin-bottom: 24px; }
+.pricing-feats li { display: flex; gap: 8px; font-size: 13px; color: var(--ink-3); }
+.pricing-card--featured .pricing-feats li { color: rgba(255,255,255,.7); }
+.pricing-feats .pf-check { color: var(--brand); font-size: 11px; flex-shrink: 0; margin-top: 2px; }
+.pricing-card--featured .pricing-feats .pf-check { color: var(--accent); }
+.pricing-feats .pf-x { color: var(--paper-3); font-size: 11px; flex-shrink: 0; margin-top: 2px; }
+.pricing-feats li.dim { color: var(--muted); }
+
+/* Chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+.chip { padding: 6px 14px; border: 1px solid var(--paper-3); background: #fff; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
+.chip:hover, .chip.active { border-color: var(--brand); color: var(--brand); background: var(--paper); }
+
+/* ════════════════════════════
+   CALCULADORA
+════════════════════════════ */
+.calculator { background: var(--dark-bg); padding: 96px 0; }
+.calc-wrap { max-width: 680px; margin: 48px auto 0; border: 1px solid rgba(255,255,255,.07); background: var(--dark-bg-2); padding: 40px; }
+.calc-title { font-family: var(--font-serif); font-size: 1.3rem; color: #fff; margin-bottom: 6px; }
+.calc-sub { font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 28px; }
+.calc-grid { display: grid; gap: 18px; grid-template-columns: 1fr 1fr; }
+@media (max-width: 599px) { .calc-grid { grid-template-columns: 1fr; } }
+.calc-field label { display: block; font-size: 10.5px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,.42); margin-bottom: 8px; }
+.calc-field select, .calc-field input { width: 100%; padding: 11px 14px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); color: #fff; font-size: 13.5px; font-family: var(--font-sans); outline: none; transition: border-color .2s; }
+.calc-field select option { background: #1a1c19; }
+.calc-field select:focus, .calc-field input:focus { border-color: var(--accent); }
+.calc-result { margin-top: 24px; padding: 20px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); }
+.calc-result-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,.38); margin-bottom: 8px; display: block; }
+.calc-result-price { font-family: var(--font-serif); font-size: 2.2rem; color: #fff; font-weight: 700; }
+.calc-result-monthly { font-size: 13px; color: rgba(255,255,255,.45); margin-top: 6px; }
+.calc-result-note { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 12px; border-top: 1px solid rgba(255,255,255,.05); padding-top: 10px; }
+
+/* ════════════════════════════
+   TECNOLOGÍA
+════════════════════════════ */
+.tech__grid { display: grid; gap: 1px; grid-template-columns: 1fr 1fr; border: 1px solid var(--paper-3); }
+@media (min-width: 1024px) { .tech__grid { grid-template-columns: repeat(3, 1fr); } }
+.tech-card { background: #fff; padding: 28px; border-right: 1px solid var(--paper-3); border-bottom: 1px solid var(--paper-3); cursor: pointer; transition: background .2s; }
+.tech-card:hover { background: var(--paper); }
+.tech-icon { width: 40px; height: 40px; border: 1px solid var(--paper-3); display: grid; place-items: center; color: var(--brand); margin-bottom: 16px; transition: border-color .2s, background .2s, color .2s; }
+.tech-card:hover .tech-icon { border-color: var(--brand); background: var(--brand); color: #fff; }
+.tech-card h3 { color: var(--ink); font-size: 1rem; margin-bottom: 8px; }
+.tech-card > p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+.tech-expand { max-height: 0; overflow: hidden; transition: max-height .4s ease, opacity .3s; opacity: 0; }
+.tech-card.expanded .tech-expand { max-height: 400px; opacity: 1; }
+.tech-expand-inner { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--paper-3); font-size: 12.5px; color: var(--muted); }
+.tech-expand-inner ul { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.tech-expand-inner li { display: flex; gap: 8px; align-items: flex-start; }
+.tech-expand-inner li::before { content: '–'; color: var(--brand); flex-shrink: 0; }
+.tech-toggle { font-size: 11px; color: var(--brand); font-weight: 500; cursor: pointer; display: inline-block; margin-top: 12px; letter-spacing: 0.04em; }
+
+/* ════════════════════════════
+   FAQ
+════════════════════════════ */
+.faq__grid { display: grid; gap: 0; border: 1px solid var(--paper-3); }
+@media (min-width: 768px) {
+  .faq__grid { grid-template-columns: 1fr 1fr; }
+  .faq-item:nth-child(odd) { border-right: 1px solid var(--paper-3); }
+}
+.faq-item { border-bottom: 1px solid var(--paper-3); }
+.faq-item:nth-last-child(-n+2) { border-bottom: none; }
+@media (max-width: 767px) { .faq-item:last-child { border-bottom: none; } }
+.faq-question { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; padding: 20px 24px; background: #fff; border: none; cursor: pointer; text-align: left; font-family: var(--font-sans); font-weight: 500; font-size: 14px; color: var(--ink); gap: 12px; line-height: 1.4; transition: background .2s; }
+.faq-question:hover { background: var(--paper); }
+.faq-q-icon { flex-shrink: 0; width: 20px; height: 20px; border: 1px solid var(--paper-3); display: grid; place-items: center; color: var(--brand); font-size: 14px; transition: transform .3s, background .2s; }
+.faq-item.open .faq-q-icon { transform: rotate(45deg); background: var(--brand); color: #fff; border-color: var(--brand); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+.faq-answer-inner { padding: 0 24px 20px; font-size: 13.5px; color: var(--muted); line-height: 1.75; }
+.faq-item.open .faq-answer { max-height: 300px; }
+
+/* ════════════════════════════
+   CONTACTO
+════════════════════════════ */
+.contact { background: var(--brand); padding: 96px 0; }
+@media (min-width: 1024px) { .contact { padding: 120px 0; } }
+.contact__grid { display: grid; gap: 64px; grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .contact__grid { grid-template-columns: 1fr 1fr; align-items: start; } }
+.contact__intro h2 { color: #fff; margin: 12px 0 16px; }
+.contact__intro p { color: rgba(255,255,255,.6); font-size: 15px; line-height: 1.75; margin-bottom: 32px; }
+.contact-rows { display: flex; flex-direction: column; gap: 10px; }
+.c-row { display: flex; gap: 14px; padding: 16px 18px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); transition: border-color .2s, background .2s; }
+.c-row:hover { border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.07); }
+.c-row__icon { width: 36px; height: 36px; background: rgba(255,255,255,.1); display: grid; place-items: center; color: rgba(255,255,255,.7); flex-shrink: 0; }
+.c-row p { font-weight: 500; color: #fff; font-size: 14px; }
+.c-row__s { font-size: 11.5px; color: rgba(255,255,255,.45); margin-top: 2px; }
+.contact__form { background: #fff; padding: 40px; border: 1px solid rgba(255,255,255,.15); }
+@media (min-width: 768px) { .contact__form { padding: 48px; } }
+.form__head { margin-bottom: 24px; }
+.form__head h3 { font-size: 1.1rem; color: var(--ink); margin-bottom: 4px; }
+.form__head p { font-size: 13px; color: var(--muted); }
+.form__grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 600px) { .form__grid { grid-template-columns: 1fr 1fr; } }
+.field--full { grid-column: 1 / -1; }
+.field label { display: block; font-size: 11.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.field label span { color: var(--brand); }
+.field input, .field textarea, .field select { width: 100%; padding: 10px 13px; font-size: 14px; font-family: var(--font-sans); border: 1px solid var(--paper-3); background: var(--paper); outline: none; transition: border-color .2s, background .2s; color: var(--ink); }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--brand); background: #fff; }
+.form__status { font-size: 13px; font-weight: 500; min-height: 18px; margin-top: 12px; }
+.form__status.ok { color: var(--brand); }
+.form__status.err { color: #b91c1c; }
+.form__legal { font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+/* ════════════════════════════
+   UBICACIÓN
+════════════════════════════ */
+.location__grid { display: grid; gap: 64px; grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .location__grid { grid-template-columns: 1fr 1fr; align-items: center; } }
+.location h2 { margin: 12px 0 18px; }
+.location__copy > p { color: var(--muted); font-size: 14.5px; line-height: 1.75; margin-bottom: 24px; }
+.info-list { display: flex; flex-direction: column; gap: 14px; }
+.info-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px; color: var(--ink-3); }
+.info-icon { color: var(--brand); flex-shrink: 0; margin-top: 1px; }
+.map { border: 1px solid var(--paper-3); overflow: hidden; }
+.map iframe { width: 100%; height: 420px; border: 0; display: block; }
+
+/* ════════════════════════════
+   FOOTER
+════════════════════════════ */
+.footer { background: var(--dark-bg); border-top: 1px solid rgba(255,255,255,.05); }
+.footer__grid { display: grid; gap: 56px; padding: 72px 0 64px; grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .footer__grid { grid-template-columns: 2fr 1fr 1fr; } }
+.footer__about { margin-top: 16px; font-size: 13.5px; color: rgba(255,255,255,.38); line-height: 1.75; max-width: 28rem; }
+.footer__certs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.footer__cert { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.08); padding: 4px 10px; }
+.footer h4 { font-family: var(--font-sans); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 16px; }
+.footer ul { display: flex; flex-direction: column; gap: 10px; }
+.footer ul li, .footer ul a { font-size: 13.5px; color: rgba(255,255,255,.5); transition: color .2s; }
+.footer ul a:hover { color: rgba(255,255,255,.8); }
+.footer__bottom { border-top: 1px solid rgba(255,255,255,.05); }
+.footer__bottom-inner { display: flex; flex-direction: column; gap: 10px; padding: 18px 28px; font-size: 11.5px; color: rgba(255,255,255,.28); }
+@media (min-width: 1024px) { .footer__bottom-inner { flex-direction: row; justify-content: space-between; align-items: center; } }
+.footer__links { display: flex; gap: 20px; }
+.footer__links a:hover { color: rgba(255,255,255,.55); }
+
+/* ════════════════════════════
+   MODAL
+════════════════════════════ */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(12,12,11,.72); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; max-width: 560px; width: 100%; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--paper-3); animation: modalIn .25s ease; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.modal-close { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border: 1px solid var(--paper-3); background: transparent; cursor: pointer; font-size: 16px; color: var(--muted); display: grid; place-items: center; transition: all .2s; }
+.modal-close:hover { border-color: var(--ink); color: var(--ink); }
+.modal-title { font-family: var(--font-serif); font-size: 1.25rem; color: var(--ink); margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.modal-body p { font-size: 13.5px; color: var(--ink-3); line-height: 1.75; margin-bottom: 12px; }
+.modal-body ul { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.modal-body li { display: flex; gap: 10px; font-size: 13.5px; color: var(--ink-3); align-items: flex-start; }
+.modal-body .m-check { color: var(--brand); flex-shrink: 0; font-size: 11px; margin-top: 3px; }
+.modal-body h4 { font-family: var(--font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--brand); margin: 16px 0 8px; }
+
+/* ════════════════════════════
+   TOAST
+════════════════════════════ */
+.toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--ink); color: #fff; padding: 12px 18px; font-size: 13px; font-weight: 500; border: 1px solid rgba(255,255,255,.08); display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform .35s cubic-bezier(.16,1,.3,1), opacity .35s; pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { color: var(--accent); }
+
+/* ════════════════════════════
+   REVEAL
+════════════════════════════ */
+[data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+[data-reveal].visible { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════
+   REDUCED MOTION
+════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+/* ════════════════════════════
+   PRELOADER PROFESIONAL
+════════════════════════════ */
+body.is-loading {
+  overflow: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(191, 168, 130, 0.12), transparent 32%),
+    radial-gradient(circle at 80% 80%, rgba(27, 58, 48, 0.18), transparent 34%),
+    linear-gradient(180deg, #0f1110 0%, #131614 100%);
+  color: #fff;
+  transition: opacity .7s cubic-bezier(.16,1,.3,1), visibility .7s cubic-bezier(.16,1,.3,1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader__shell {
+  width: min(560px, calc(100vw - 40px));
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.35);
+  border-radius: 24px;
+}
+
+.preloader__brand {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.preloader__logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(191,168,130,.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.preloader__logo::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(120deg, transparent 35%, rgba(191,168,130,.22) 50%, transparent 65%);
+  transform: translateX(-30%);
+  animation: preloaderShine 1.8s infinite;
+}
+
+.preloader__logo svg {
+  width: 34px;
+  height: 34px;
+  stroke: #BFA882;
+  stroke-width: 2;
+  position: relative;
+  z-index: 1;
+  animation: preloaderPulse 1.7s ease-in-out infinite;
+}
+
+.preloader__copy {
+  min-width: 0;
+}
+
+.preloader__eyebrow {
+  display: block;
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.48);
+  margin-bottom: 8px;
+}
+
+.preloader__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  line-height: 1.1;
+  margin: 0;
+  color: #fff;
+}
+
+.preloader__subtitle {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,.62);
+}
+
+.preloader__meter {
+  margin-top: 26px;
+}
+
+.preloader__track {
+  height: 2px;
+  background: rgba(255,255,255,.10);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.preloader__bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #BFA882 0%, #D7C39F 100%);
+  border-radius: inherit;
+  transition: width .18s linear;
+}
+
+.preloader__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  gap: 16px;
+}
+
+.preloader__percent {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  line-height: 1;
+  color: #fff;
+}
+
+.preloader__status {
+  font-size: 12px;
+  color: rgba(255,255,255,.48);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+@keyframes preloaderPulse {
+  0%, 100% { transform: scale(1); opacity: .9; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes preloaderShine {
+  0% { transform: translateX(-35%) rotate(0deg); }
+  100% { transform: translateX(35%) rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader,
+  .preloader__logo::after,
+  .preloader__logo svg {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- PRELOADER -->
+<div class="preloader" id="preloader" aria-live="polite" aria-busy="true">
+  <div class="preloader__shell">
+    <div class="preloader__brand">
+      <div class="preloader__logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M32 8c7.2 0 12 5 12 11.5 0 4.8-1.9 8.8-4.8 12.3L32 56 24.8 31.8C21.9 28.3 20 24.3 20 19.5 20 13 24.8 8 32 8Z"></path>
+          <path d="M24 26.5c2.2 2.4 4.8 3.8 8 3.8s5.8-1.4 8-3.8"></path>
+        </svg>
+      </div>
+
+      <div class="preloader__copy">
+        <span class="preloader__eyebrow">AEOD · Clínica Odontológica</span>
+        <h1 class="preloader__title">Preparando su experiencia</h1>
+        <p class="preloader__subtitle">Cargando recursos clínicos, imágenes y tipografías.</p>
+      </div>
+    </div>
+
+    <div class="preloader__meter" aria-hidden="true">
+      <div class="preloader__track">
+        <div class="preloader__bar" id="preloaderBar"></div>
+      </div>
+
+      <div class="preloader__meta">
+        <span class="preloader__percent" id="preloaderPercent">0%</span>
+        <span class="preloader__status" id="preloaderStatus">Inicializando</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+    <p class="modal-title" id="modalTitle"></p>
+    <p class="modal-subtitle" id="modalSubtitle"></p>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar__inner">
+    <div class="topbar__left">
+      <a href="tel:+34900000000" class="topbar__item">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.36 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.4 6.4l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <strong>Urgencias 24h:</strong>&nbsp;900 00 00 00 · 914 650 095
+      </a>
+      <a href="mailto:atencion@aeod.es" class="topbar__item" style="display:none;" id="topbar-mail">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        atencion@aeod.es
+      </a>
+    </div>
+    <div class="topbar__right">AEOD <span class="topbar__dot"></span> Est. 2003</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <nav class="navbar" aria-label="Navegación principal">
+    <div class="nav-container">
+      <a href="inicio.html" class="logo">
+        <span class="logo__mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.8-1.3 3.8L12 22l-2.7-12.2A5.5 5.5 0 0 1 8 6a4 4 0 0 1 4-4z"/></svg>
+        </span>
+        <span class="logo__text">
+          <span class="logo__name">AEOD</span>
+          <span class="logo__sub">Odontología profesional</span>
+        </span>
+      </a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="inicio.html" class="nav-link active">Inicio</a></li>
+        <li><a href="servicios.html" class="nav-link">Servicios</a></li>
+        <li><a href="equipo.html" class="nav-link">Equipo</a></li>
+        <li><a href="tecnologia.html" class="nav-link">Tecnología</a></li>
+        <li><a href="precios.html" class="nav-link">Precios</a></li>
+        <li><a href="faq.html" class="nav-link">FAQ</a></li>
+        <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="tel:+34900000000" class="header__tel">900 00 00 00</a>
+        <a href="contacto.html" class="btn btn--solid btn--sm">Solicitar cita</a>
+        <button class="mobile-menu-btn" id="menuToggle" aria-label="Menú" aria-expanded="false">☰</button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="inicio.html">Inicio</a>
+      <a href="servicios.html">Servicios</a>
+      <a href="equipo.html">Equipo</a>
+      <a href="tecnologia.html">Tecnología</a>
+      <a href="precios.html">Precios</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contacto.html">Contacto</a>
+      <a href="contacto.html">Solicitar cita</a>
+      <a href="tel:+34900000000">900 00 00 00</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ════════════════════════════
+     HERO — imagen clínica real de fondo con overlay verde
+════════════════════════════ -->
+<section id="inicio" class="hero">
+  <div style="max-width:var(--container);margin:0 auto;padding:0 28px;">
+    <div class="hero__inner">
+      <!-- Panel principal con imagen + overlay -->
+      <div class="hero__panel">
+        <span class="hero__panel-number" aria-hidden="true">20</span>
+        <span class="hero__eyebrow">Clínica acreditada · Desde 2003</span>
+        <h1>Especialistas en salud bucal y rehabilitación dental</h1>
+        <p>Un equipo de odontólogos colegiados que combina experiencia clínica, tecnología 3D y un protocolo serio centrado en el paciente.</p>
+        <div class="hero__cta">
+          <a href="#contacto" class="btn btn--accent-solid btn--lg">Solicitar valoración gratuita</a>
+          <a href="#servicios" class="btn btn--light">Ver servicios</a>
+        </div>
+        <div class="hero__metrics">
+          <div class="metric">
+            <span class="metric__n">+12.000</span>
+            <span class="metric__l">Pacientes</span>
+          </div>
+          <div class="metric">
+            <span class="metric__n">20 años</span>
+            <span class="metric__l">Trayectoria</span>
+          </div>
+          <div class="metric">
+            <span class="metric__n">98%</span>
+            <span class="metric__l">Satisfacción</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aside -->
+      <aside class="hero__aside">
+        <div class="hero__card">
+          <span class="hero__card-label">Urgencias · 24 horas</span>
+          <h3>¿Necesita atención urgente?</h3>
+          <p>Atención telefónica ininterrumpida los 365 días del año.</p>
+          <a href="tel:+34900000000" class="contact-row" style="display:flex;align-items:center;gap:10px;">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.36 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.4 6.4l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="contact-row__main">900 00 00 00</span>
+            <span class="contact-row__arrow" style="margin-left:auto;">→</span>
+          </a>
+          <a href="#contacto" class="btn btn--solid btn--block" style="margin-top:10px;">Reservar cita</a>
+        </div>
+        <div class="hero__card" style="flex:1;">
+          <span class="hero__card-label">Horario de atención</span>
+          <table class="schedule-table">
+            <tbody>
+              <tr><td>Lunes – Viernes</td><td>09:00 – 21:00</td></tr>
+              <tr><td>Sábado</td><td>10:00 – 14:00</td></tr>
+              <tr><td>Urgencias</td><td class="td-emerg">24 horas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- BAND institucional -->
+<div class="band">
+  <div class="container">
+    <div class="band__inner" id="bandInner">
+      <span class="band__item">SEPA</span><span class="band__sep">·</span>
+      <span class="band__item">Colegio Oficial de Odontólogos</span><span class="band__sep">·</span>
+      <span class="band__item">ISO 9001</span><span class="band__sep">·</span>
+      <span class="band__item">Invisalign Diamond Provider</span><span class="band__sep">·</span>
+      <span class="band__item">Nobel Biocare</span><span class="band__sep">·</span>
+      <span class="band__item">Straumann</span><span class="band__sep">·</span>
+      <span class="band__item">DSD Certified</span><span class="band__sep">·</span>
+      <span class="band__item">Dentsply Sirona</span><span class="band__sep">·</span>
+      <span class="band__item">3Shape Partner</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     SERVICIOS — con imágenes reales
+════════════════════════════ -->
+<section id="servicios" class="section section--alt">
+  <div class="container">
+    <div class="section-head--row">
+      <div>
+        <span class="section-head__num" aria-hidden="true">01</span>
+        <span class="label label--brand">Servicios clínicos</span>
+        <h2 style="margin-top:8px;">Especialistas en cada disciplina odontológica.</h2>
+      </div>
+      <p class="section-head__lead">Todos nuestros tratamientos siguen protocolos clínicos contrastados, esterilización certificada y trazabilidad completa del material utilizado en cada intervención.</p>
+    </div>
+
+    <div class="services__grid">
+      <!-- Servicio 1 -->
+      <article class="service" data-reveal>
+        <div class="service__img">
+          <img src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=700&q=80" alt="Odontología general" loading="lazy" />
+        </div>
+        <div class="service__body">
+          <span class="service__num" aria-hidden="true">01</span>
+          <span class="service__icon">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </span>
+          <h3>Odontología General</h3>
+          <p>Diagnóstico integral, revisiones periódicas, empastes, higiene profesional y tratamientos preventivos para preservar tu salud bucal a largo plazo.</p>
+          <ul class="service__list">
+            <li><span class="check">✓</span> Limpieza dental profesional</li>
+            <li><span class="check">✓</span> Empastes y endodoncias</li>
+            <li><span class="check">✓</span> Bruxismo y férulas de descarga</li>
+          </ul>
+          <button class="link-more" onclick="toggleService(this,'svc1')">Ver más <span>→</span></button>
+          <div class="service-expand" id="svc1">
+            <div class="expand-inner">
+              <p>La odontología general es la base de una buena salud bucal. Diagnóstico completo con radiografías digitales de baja radiación y escáner intraoral.</p>
+              <h4>Primera visita incluye</h4>
+              <ul class="service__list">
+                <li><span class="check">✓</span> Exploración clínica completa</li>
+                <li><span class="check">✓</span> Radiografías panorámica y periapical</li>
+                <li><span class="check">✓</span> Plan de tratamiento personalizado</li>
+                <li><span class="check">✓</span> Presupuesto cerrado sin sorpresas</li>
+              </ul>
+              <span class="price-note">Primera revisión gratuita</span>
+              <div style="margin-top:16px;"><button class="btn btn--solid btn--sm" onclick="openModal('general')">Ver tratamientos completos</button></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Servicio 2 -->
+      <article class="service" data-reveal>
+        <div class="service__img">
+          <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=700&q=80" alt="Ortodoncia avanzada" loading="lazy" />
+        </div>
+        <div class="service__body">
+          <span class="service__num" aria-hidden="true">02</span>
+          <span class="service__icon">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </span>
+          <h3>Ortodoncia Avanzada</h3>
+          <p>Plan ortodóncico personalizado con escáner 3D. Trabajamos con Invisalign certificado y brackets estéticos de zafiro o cerámica de última generación.</p>
+          <ul class="service__list">
+            <li><span class="check">✓</span> Invisalign Diamond Provider</li>
+            <li><span class="check">✓</span> Brackets de zafiro y cerámica</li>
+            <li><span class="check">✓</span> Ortodoncia infantil desde 7 años</li>
+          </ul>
+          <button class="link-more" onclick="toggleService(this,'svc2')">Ver más <span>→</span></button>
+          <div class="service-expand" id="svc2">
+            <div class="expand-inner">
+              <p>Utilizamos el escáner iTero para crear una simulación 3D del resultado final antes de comenzar cualquier tratamiento. Planificación digital completa.</p>
+              <h4>Opciones disponibles</h4>
+              <ul class="service__list">
+                <li><span class="check">✓</span> Invisalign Full, Lite y Teen</li>
+                <li><span class="check">✓</span> Ortodoncia lingual invisible</li>
+                <li><span class="check">✓</span> Brackets metálicos de alta eficacia</li>
+                <li><span class="check">✓</span> Retenedores fijos y removibles</li>
+              </ul>
+              <span class="price-note">Desde 1.800€ · Financiación 0%</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Servicio 3 -->
+      <article class="service" data-reveal>
+        <div class="service__img">
+          <img src="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&fit=crop&w=700&q=80" alt="Implantología y estética dental" loading="lazy" />
+        </div>
+        <div class="service__body">
+          <span class="service__num" aria-hidden="true">03</span>
+          <span class="service__icon">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+          </span>
+          <h3>Implantología y Estética</h3>
+          <p>Implantes de carga inmediata, prótesis fijas, carillas de porcelana y diseño digital de sonrisa con resultados predecibles y documentados.</p>
+          <ul class="service__list">
+            <li><span class="check">✓</span> Implantes Nobel Biocare y Straumann</li>
+            <li><span class="check">✓</span> Carillas DSD (Digital Smile Design)</li>
+            <li><span class="check">✓</span> Blanqueamiento LED profesional</li>
+          </ul>
+          <button class="link-more" onclick="toggleService(this,'svc3')">Ver más <span>→</span></button>
+          <div class="service-expand" id="svc3">
+            <div class="expand-inner">
+              <p>Los implantes dentales son la solución más natural y duradera para reponer dientes perdidos. Marcas líderes con garantía de por vida en el implante.</p>
+              <h4>Proceso del implante</h4>
+              <ul class="service__list">
+                <li><span class="check">✓</span> TAC 3D y planificación virtual</li>
+                <li><span class="check">✓</span> Cirugía guiada por ordenador</li>
+                <li><span class="check">✓</span> Implante Nobel Biocare o Straumann</li>
+                <li><span class="check">✓</span> Garantía escrita 10 años</li>
+              </ul>
+              <span class="price-note">Implante completo desde 990€</span>
+              <div style="margin-top:16px;"><button class="btn btn--solid btn--sm" onclick="openModal('implantes')">Solicitar valoración</button></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════
+     AUTHORITY — con foto real de clínica
+════════════════════════════ -->
+<section id="especialidades" class="section">
+  <div class="container">
+    <div class="authority__grid">
+      <div class="authority__media" data-reveal>
+        <img
+          class="authority__img"
+          src="https://images.unsplash.com/photo-1588776814546-daab30f310e5?auto=format&fit=crop&w=900&q=80"
+          alt="Clínica dental AEOD — equipo profesional"
+          loading="lazy"
+        />
+        <div class="authority__badge">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--brand)"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+          <div>
+            <p class="authority__badge-n">15</p>
+            <p class="authority__badge-l">Años de exp.</p>
+          </div>
+        </div>
+      </div>
+      <div class="authority__copy" data-reveal>
+        <span class="label label--brand">Quiénes somos</span>
+        <div class="rule rule--brand" style="margin:12px 0 16px;"></div>
+        <h2>Asociación profesional dedicada a la odontología clínica y rehabilitación oral.</h2>
+        <p>Somos una clínica de referencia formada por odontólogos colegiados, especialistas en implantología, ortodoncia, periodoncia y estética dental. Combinamos experiencia, formación continua y tecnología puntera para ofrecer un servicio serio, transparente y centrado en el paciente.</p>
+        <p>Cada caso se aborda con un comité clínico que evalúa el diagnóstico, el plan de tratamiento y el presupuesto antes de iniciar cualquier intervención.</p>
+        <div class="stat-bars" id="statBars">
+          <div class="stat-bar-item">
+            <div class="stat-bar__header">Satisfacción del paciente <span>98%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="98"></div></div>
+          </div>
+          <div class="stat-bar-item">
+            <div class="stat-bar__header">Éxito en implantología <span>99.2%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="99"></div></div>
+          </div>
+          <div class="stat-bar-item">
+            <div class="stat-bar__header">Casos de ortodoncia finalizados <span>94%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="94"></div></div>
+          </div>
+          <div class="stat-bar-item">
+            <div class="stat-bar__header">Pacientes que repiten y refieren <span>87%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="87"></div></div>
+          </div>
+        </div>
+        <div class="pillars">
+          <div class="pillar"><div class="pillar__icon">✦</div><p class="pillar__t">Equipo colegiado</p><p>Profesionales certificados con formación continua.</p></div>
+          <div class="pillar"><div class="pillar__icon">✦</div><p class="pillar__t">Comité clínico</p><p>Cada caso revisado por un equipo multidisciplinar.</p></div>
+          <div class="pillar"><div class="pillar__icon">✦</div><p class="pillar__t">Instalaciones propias</p><p>Quirófano, escáner 3D y laboratorio interno.</p></div>
+          <div class="pillar"><div class="pillar__icon">✦</div><p class="pillar__t">Trato cercano</p><p>Acompañamos al paciente en todo el proceso.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════
+     EQUIPO — con fotos reales de doctores
+════════════════════════════ -->
+<section id="equipo" class="section section--alt">
+  <div class="container">
+    <div class="section-head--row">
+      <div>
+        <span class="section-head__num" aria-hidden="true">02</span>
+        <span class="label label--brand">Equipo médico</span>
+        <h2 style="margin-top:8px;">Especialistas colegiados en cada disciplina dental.</h2>
+      </div>
+      <p class="section-head__lead">Cada profesional cuenta con más de 10 años de experiencia en su especialidad y formación continua en los principales centros de Europa.</p>
+    </div>
+
+    <div class="team__grid">
+      <div class="team-card" data-reveal>
+        <div class="team-avatar">
+          <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=700&q=80" alt="Dra. Rocío Fernández" loading="lazy" />
+        </div>
+        <div class="team-info">
+          <p class="team-name">Dra. Rocío Fernández</p>
+          <span class="team-role">Directora Clínica · Implantología</span>
+          <p class="team-bio">Doctora por la UCM. Máster en Implantología Oral por la UAB. Más de 3.000 implantes realizados con éxito documentado.</p>
+          <button class="team-expand-btn" onclick="toggleTeam(this)">Ver formación ↓</button>
+          <div class="team-details">
+            <div class="team-details-inner">
+              <ul>
+                <li>Licenciada en Odontología, UCM 2004</li>
+                <li>Máster en Implantología, UAB 2007</li>
+                <li>Fellowship Nobel Biocare – Zúrich, 2010</li>
+                <li>Miembro de la SEPA y SEOM</li>
+                <li>+3.200 implantes colocados con éxito</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card" data-reveal>
+        <div class="team-avatar">
+          <img src="https://images.unsplash.com/photo-1618498082410-b4aa22193b54?auto=format&fit=crop&w=700&q=80" alt="Dr. Marcos Ortega" loading="lazy" />
+        </div>
+        <div class="team-info">
+          <p class="team-name">Dr. Marcos Ortega</p>
+          <span class="team-role">Ortodoncista</span>
+          <p class="team-bio">Especialista en ortodoncia invisible. Invisalign Diamond Provider con más de 800 casos tratados exitosamente.</p>
+          <button class="team-expand-btn" onclick="toggleTeam(this)">Ver formación ↓</button>
+          <div class="team-details">
+            <div class="team-details-inner">
+              <ul>
+                <li>Licenciado en Odontología, Sevilla 2006</li>
+                <li>Máster en Ortodoncia, UCAM 2009</li>
+                <li>Invisalign Diamond Provider (top 1% España)</li>
+                <li>Certificado en ortodoncia lingual Incognito</li>
+                <li>Miembro de la SEDO</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card" data-reveal>
+        <div class="team-avatar">
+          <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=700&q=80" alt="Dra. Ana Villar" loading="lazy" />
+        </div>
+        <div class="team-info">
+          <p class="team-name">Dra. Ana Villar</p>
+          <span class="team-role">Periodoncia · Cirugía Oral</span>
+          <p class="team-bio">Especialista en enfermedades periodontales y cirugía reconstructiva. Referente en regeneración ósea guiada.</p>
+          <button class="team-expand-btn" onclick="toggleTeam(this)">Ver formación ↓</button>
+          <div class="team-details">
+            <div class="team-details-inner">
+              <ul>
+                <li>Licenciada en Odontología, Valencia 2005</li>
+                <li>Máster en Periodoncia e Implantología, UB 2008</li>
+                <li>PhD en Regeneración Periodontal, 2012</li>
+                <li>Profesora asociada UAM</li>
+                <li>14 publicaciones científicas indexadas</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card" data-reveal>
+        <div class="team-avatar">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=700&q=80" alt="Dr. Carlos Méndez" loading="lazy" />
+        </div>
+        <div class="team-info">
+          <p class="team-name">Dr. Carlos Méndez</p>
+          <span class="team-role">Estética Dental · DSD</span>
+          <p class="team-bio">Diseñador de sonrisas certificado DSD. Especialista en carillas de porcelana y estética mínimamente invasiva.</p>
+          <button class="team-expand-btn" onclick="toggleTeam(this)">Ver formación ↓</button>
+          <div class="team-details">
+            <div class="team-details-inner">
+              <ul>
+                <li>Licenciado en Odontología, Granada 2008</li>
+                <li>Máster en Estética Dental, SEPE 2011</li>
+                <li>Certificado Digital Smile Design, Niza 2014</li>
+                <li>+500 diseños de sonrisa realizados</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MVV -->
+<section class="section">
+  <div class="container">
+    <div class="mvv__grid">
+      <div class="mvv__media">
+        <span class="mvv__media-num" aria-hidden="true">03</span>
+        <h2>Siempre a disposición del paciente, en cualquiera de sus necesidades clínicas.</h2>
+        <p style="margin-top:16px;">Desde una primera revisión hasta una rehabilitación oral completa: protocolos claros, presupuestos cerrados y seguimiento personal en cada fase.</p>
+      </div>
+      <div class="mvv__panels">
+        <div class="panel-mvv">
+          <span class="panel-mvv__tag">Misión</span>
+          <div class="panel-mvv__body">
+            <h4>Mejorar la calidad de vida</h4>
+            <p>Mejorar la salud bucal y la calidad de vida de nuestros pacientes mediante una odontología seria, basada en evidencia y centrada en la persona.</p>
+          </div>
+        </div>
+        <div class="panel-mvv">
+          <span class="panel-mvv__tag">Visión</span>
+          <div class="panel-mvv__body">
+            <h4>Referencia nacional</h4>
+            <p>Ser una clínica de referencia en odontología avanzada, formando profesionales e incorporando las mejores tecnologías disponibles.</p>
+          </div>
+        </div>
+        <div class="panel-mvv">
+          <span class="panel-mvv__tag">Valores</span>
+          <div class="panel-mvv__body">
+            <h4>Rigor y transparencia</h4>
+            <p>Rigor clínico, transparencia en presupuestos, cercanía con el paciente y compromiso con la formación continua del equipo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="testimonials" id="testimonios">
+  <div class="container">
+    <div class="section-head">
+      <span class="label" style="color:rgba(255,255,255,.35);">Testimonios verificados</span>
+      <div class="rule" style="background:rgba(255,255,255,.1);margin:12px 0;"></div>
+      <h2 style="color:#fff;">Lo que dicen nuestros pacientes</h2>
+    </div>
+    <div class="testimonials__viewport">
+      <div class="testimonials__track" id="testimonialsTrack">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Llevaba años con miedo al dentista. La Dra. Fernández me explicó cada paso del tratamiento de implantes y en ningún momento sentí dolor. El resultado es increíble."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">ML</div>
+            <div><p class="testimonial-name">María L. González</p><p class="testimonial-detail">Implante dental · Madrid, 2024</p></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Hice la ortodoncia con Invisalign y el Dr. Ortega fue extraordinario. Cada revisión era puntual y detallada. En 14 meses conseguí la sonrisa que siempre quise."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JR</div>
+            <div><p class="testimonial-name">Javier R. Pérez</p><p class="testimonial-detail">Invisalign Full · Barcelona, 2024</p></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Me hicieron 8 carillas de zirconio con el Dr. Méndez. El diseño digital previo fue genial porque pude ver el resultado antes de empezar. En 3 días cambió toda mi sonrisa."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SC</div>
+            <div><p class="testimonial-name">Sara C. Martínez</p><p class="testimonial-detail">Carillas DSD · Madrid, 2023</p></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"La atención de urgencias fue impecable. Llamé un domingo a las 22h con un dolor insoportable y en 40 minutos ya me estaban atendiendo. Profesionalidad absoluta."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AP</div>
+            <div><p class="testimonial-name">Alberto P. Ruiz</p><p class="testimonial-detail">Urgencia nocturna · Sevilla, 2024</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonials__controls">
+      <button class="slider-btn" id="sliderPrev">←</button>
+      <div class="slider-dots" id="sliderDots"></div>
+      <button class="slider-btn" id="sliderNext">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONFIDENCE STACK -->
+<section id="nosotros" class="stack">
+  <div class="container">
+    <div class="section-head--dark section-head">
+      <span class="label" style="color:rgba(255,255,255,.35);">Por qué elegirnos</span>
+      <div class="rule" style="background:rgba(255,255,255,.1);margin:12px 0;"></div>
+      <h2 style="color:#fff;max-width:36rem;">Más de 12.000 pacientes han confiado en nosotros. Estas son las razones.</h2>
+    </div>
+  </div>
+  <div class="stack-cards">
+    <div class="stack-card">
+      <div>
+        <span class="stack-tag">01 — Diagnóstico</span>
+        <h3>Valoración digital gratuita</h3>
+        <p>Primera visita con diagnóstico por imagen 3D, sin coste y sin compromiso. Plan de tratamiento completo en 48 horas.</p>
+        <a href="#contacto" class="btn btn--accent-solid btn--sm">Solicitar cita</a>
+      </div>
+      <div class="stack-right">
+        <div class="stat-block"><span class="stat-big">+12.000</span><span class="stat-label">Pacientes atendidos</span></div>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div>
+        <span class="stack-tag">02 — Transparencia</span>
+        <h3>Presupuesto cerrado, sin sorpresas</h3>
+        <p>El precio acordado es el final. Sin extras ocultos. Financiación hasta 60 meses sin intereses con cualquier banco.</p>
+        <a href="#contacto" class="btn btn--light btn--sm">Más información</a>
+      </div>
+      <div class="stack-right">
+        <ul class="stack-checklist">
+          <li>Presupuesto escrito y firmado</li>
+          <li>Financiación sin intereses</li>
+          <li>Garantía escrita en implantes</li>
+          <li>Sin letra pequeña</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div>
+        <span class="stack-tag">03 — Equipo</span>
+        <h3>Especialistas colegiados en cada área</h3>
+        <p>Implantología, periodoncia, ortodoncia y estética: cada tratamiento en manos de quien lleva años dedicado a ello.</p>
+        <a href="#equipo" class="btn btn--light btn--sm">Conocer al equipo</a>
+      </div>
+      <div class="stack-right">
+        <div class="stack-checklist" style="gap:24px;">
+          <div class="stat-block"><span class="stat-big">20</span><span class="stat-label">Años de trayectoria</span></div>
+          <div class="stat-block"><span class="stat-big">4.9</span><span class="stat-label">Valoración Google</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div>
+        <span class="stack-tag">04 — Seguimiento</span>
+        <h3>Acompañamos cada fase del tratamiento</h3>
+        <p>Un coordinador clínico asignado desde el primer día. Acceso directo al equipo durante todo el proceso y en el postoperatorio.</p>
+        <a href="#contacto" class="btn btn--accent-solid btn--sm">Hablar con nosotros</a>
+      </div>
+      <div class="stack-right">
+        <div class="stat-block"><span class="stat-big">98%</span><span class="stat-label">Tasa de satisfacción</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO BAND -->
+<div class="logo-band">
+  <div id="logoBandTrack" class="logo-band__track">
+    <ul class="logo-band__list" id="logoBandList"></ul>
+  </div>
+</div>
+
+<!-- TECNOLOGÍA -->
+<section id="tecnologia" class="section">
+  <div class="container">
+    <div class="section-head--row">
+      <div>
+        <span class="section-head__num" aria-hidden="true">04</span>
+        <span class="label label--brand">Tecnología clínica</span>
+        <h2 style="margin-top:8px;">Equipamiento de referencia mundial.</h2>
+      </div>
+      <p class="section-head__lead">Invertimos en la mejor tecnología disponible para garantizar diagnósticos más precisos, tratamientos más seguros y resultados más predecibles.</p>
+    </div>
+    <div class="tech__grid">
+      <div class="tech-card" onclick="toggleTech(this)" data-reveal>
+        <div class="tech-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Escáner iTero 3D</h3>
+        <p>Escáner intraoral que sustituye a las impresiones tradicionales con una precisión de 0.01mm. Resultado en 3 minutos.</p>
+        <span class="tech-toggle">+ Ver especificaciones</span>
+        <div class="tech-expand"><div class="tech-expand-inner">
+          <p>El iTero Element 5D captura más de 6.000 imágenes por segundo para crear un modelo digital 3D exacto de tu boca.</p>
+          <ul><li>Precisión de 0.01mm sin distorsión</li><li>Compatible con Invisalign, prótesis e implantes</li><li>Simulación del resultado final previo al tratamiento</li><li>Archivo digital permanente del paciente</li></ul>
+        </div></div>
+      </div>
+      <div class="tech-card" onclick="toggleTech(this)" data-reveal>
+        <div class="tech-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg></div>
+        <h3>TAC Cone Beam 3D</h3>
+        <p>Tomografía computarizada de haz cónico. Dosis de radiación hasta 10 veces menor que un TAC médico convencional.</p>
+        <span class="tech-toggle">+ Ver especificaciones</span>
+        <div class="tech-expand"><div class="tech-expand-inner">
+          <p>Permite ver en 3D la cantidad y calidad del hueso para implantes y planificar la cirugía de forma virtual antes de operar.</p>
+          <ul><li>Resolución vóxel de hasta 0.075mm</li><li>Radiación mínima (comparable a vuelo transatlántico)</li><li>Software de planificación quirúrgica integrado</li><li>Guías quirúrgicas impresas en 3D</li></ul>
+        </div></div>
+      </div>
+      <div class="tech-card" onclick="toggleTech(this)" data-reveal>
+        <div class="tech-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <h3>Impresora 3D Dental</h3>
+        <p>Fabricación de guías quirúrgicas, modelos y provisionales en nuestro laboratorio interno con materiales biocompatibles certificados.</p>
+        <span class="tech-toggle">+ Ver especificaciones</span>
+        <div class="tech-expand"><div class="tech-expand-inner">
+          <p>Formlabs Form 3B para producir piezas de alta precisión en horas, sin tiempos de espera de laboratorios externos.</p>
+          <ul><li>Resolución de 25 micras</li><li>Resinas clase IIa certificadas</li><li>Temporales estéticos el mismo día</li></ul>
+        </div></div>
+      </div>
+      <div class="tech-card" onclick="toggleTech(this)" data-reveal>
+        <div class="tech-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg></div>
+        <h3>Láser Dental Fotona</h3>
+        <p>Sistema láser de doble longitud de onda para cirugías sin bisturí, blanqueamiento acelerado y tratamientos periodontales.</p>
+        <span class="tech-toggle">+ Ver especificaciones</span>
+        <div class="tech-expand"><div class="tech-expand-inner">
+          <p>El Fotona LightWalker permite mayor precisión, menos sangrado y cicatrización más rápida.</p>
+          <ul><li>Cirugía gingival sin bisturí ni puntos</li><li>Blanqueamiento en 45 minutos</li><li>Reducción del 70% del dolor postoperatorio</li></ul>
+        </div></div>
+      </div>
+      <div class="tech-card" onclick="toggleTech(this)" data-reveal>
+        <div class="tech-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
+        <h3>Quirófano Certificado</h3>
+        <p>Quirófano certificado ISO con presión positiva, esterilización autoclave clase B y protocolo de trazabilidad completa.</p>
+        <span class="tech-toggle">+ Ver especificaciones</span>
+        <div class="tech-expand"><div class="tech-expand-inner">
+          <p>Intervenciones bajo sedación consciente con monitorización del paciente durante todo el procedimiento.</p>
+          <ul><li>Certificación sanitaria Comunidad de Madrid</li><li>Filtros HEPA y presión positiva certificada</li><li>Sedación consciente con anestesiólogo</li></ul>
+        </div></div>
+      </div>
+      <div class="tech-card" onclick="toggleTech(this)" data-reveal>
+        <div class="tech-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <h3>App Paciente Digital</h3>
+        <p>Historial, radiografías, presupuesto y citas desde el móvil. Comunicación directa con tu coordinador clínico.</p>
+        <span class="tech-toggle">+ Ver funcionalidades</span>
+        <div class="tech-expand"><div class="tech-expand-inner">
+          <p>Gestión digital completa del proceso con notificaciones automatizadas y seguimiento fotográfico.</p>
+          <ul><li>Historia clínica accesible 24/7</li><li>Pago de facturas y financiación</li><li>Chat directo con el equipo clínico</li></ul>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section id="precios" class="section section--alt">
+  <div class="container">
+    <div class="section-head--row">
+      <div>
+        <span class="section-head__num" aria-hidden="true">05</span>
+        <span class="label label--brand">Tarifas y financiación</span>
+        <h2 style="margin-top:8px;">Precios claros, sin sorpresas.</h2>
+      </div>
+      <p class="section-head__lead">Todos los tratamientos tienen presupuesto cerrado por escrito. Financiación hasta 60 meses sin intereses con aprobación inmediata.</p>
+    </div>
+    <div class="chips">
+      <button class="chip active" onclick="filterPricing('todos',this)">Todos</button>
+      <button class="chip" onclick="filterPricing('prevencion',this)">Prevención</button>
+      <button class="chip" onclick="filterPricing('estetica',this)">Estética</button>
+      <button class="chip" onclick="filterPricing('cirugia',this)">Cirugía</button>
+      <button class="chip" onclick="filterPricing('ortodoncia',this)">Ortodoncia</button>
+    </div>
+    <div class="pricing__grid" style="margin-top:32px;">
+      <div class="pricing-card" data-category="prevencion estetica">
+        <span class="pricing-name">Plan básico</span>
+        <p class="pricing-price">Desde <small>€</small>0</p>
+        <p class="pricing-desc">Primera visita y diagnóstico completo sin compromiso de tratamiento.</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-feats">
+          <li><span class="pf-check">✓</span> Exploración clínica completa</li>
+          <li><span class="pf-check">✓</span> Radiografía panorámica</li>
+          <li><span class="pf-check">✓</span> Plan de tratamiento</li>
+          <li><span class="pf-check">✓</span> Presupuesto sin compromiso</li>
+          <li class="dim"><span class="pf-x">–</span> Limpieza incluida</li>
+          <li class="dim"><span class="pf-x">–</span> Escáner 3D</li>
+        </ul>
+        <a href="#contacto" class="btn btn--outline btn--block">Solicitar cita gratuita</a>
+      </div>
+      <div class="pricing-card pricing-card--featured" data-category="prevencion estetica ortodoncia">
+        <span class="pricing-featured-label">Más solicitado</span>
+        <span class="pricing-name">Revisión completa</span>
+        <p class="pricing-price">89 <small>€</small></p>
+        <p class="pricing-desc">Diagnóstico completo con escáner 3D, limpieza y plan de tratamiento detallado.</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-feats">
+          <li><span class="pf-check">✓</span> Todo del plan básico</li>
+          <li><span class="pf-check">✓</span> Escáner intraoral iTero</li>
+          <li><span class="pf-check">✓</span> Limpieza dental profesional</li>
+          <li><span class="pf-check">✓</span> Fotografías clínicas</li>
+          <li><span class="pf-check">✓</span> Asesoramiento de higiene</li>
+          <li><span class="pf-check">✓</span> Historia clínica digital</li>
+        </ul>
+        <a href="#contacto" class="btn btn--accent-solid btn--block">Reservar revisión completa</a>
+      </div>
+      <div class="pricing-card" data-category="cirugia ortodoncia estetica">
+        <span class="pricing-name">Tratamiento</span>
+        <p class="pricing-price">Desde <small>€</small>990</p>
+        <p class="pricing-desc">Presupuesto personalizado según tu caso. Financiación hasta 60 meses al 0%.</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-feats">
+          <li><span class="pf-check">✓</span> Implante completo desde 990€</li>
+          <li><span class="pf-check">✓</span> Invisalign desde 1.800€</li>
+          <li><span class="pf-check">✓</span> Carilla desde 390€/ud</li>
+          <li><span class="pf-check">✓</span> Garantía escrita incluida</li>
+          <li><span class="pf-check">✓</span> Coordinador asignado</li>
+          <li><span class="pf-check">✓</span> Financiación 0% incluida</li>
+        </ul>
+        <button class="btn btn--solid btn--block" onclick="openModal('presupuesto')">Solicitar presupuesto</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULADORA -->
+<section class="calculator" id="calculadora">
+  <div class="container">
+    <div class="center">
+      <span class="label" style="color:rgba(255,255,255,.35);">Estimación orientativa</span>
+      <div class="rule" style="background:rgba(255,255,255,.08);margin:12px auto;"></div>
+      <h2 style="color:#fff;max-width:36rem;margin:0 auto;">Calcula el coste aproximado de tu tratamiento</h2>
+    </div>
+    <div class="calc-wrap">
+      <p class="calc-title">Calculadora de tratamiento</p>
+      <p class="calc-sub">Los precios son orientativos. El presupuesto definitivo se entrega tras la exploración clínica.</p>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Tratamiento</label>
+          <select id="calcTreatment" onchange="calcPrice()">
+            <option value="">— Selecciona —</option>
+            <option value="limpieza">Limpieza dental</option>
+            <option value="empaste">Empaste (composite)</option>
+            <option value="endodoncia">Endodoncia</option>
+            <option value="extraccion">Extracción simple</option>
+            <option value="implante">Implante dental completo</option>
+            <option value="invisalign-lite">Invisalign Lite</option>
+            <option value="invisalign-full">Invisalign Full</option>
+            <option value="brackets">Brackets metálicos</option>
+            <option value="carilla">Carilla de porcelana</option>
+            <option value="blanqueamiento">Blanqueamiento LED</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>N.º de piezas / arcadas</label>
+          <select id="calcQty" onchange="calcPrice()">
+            <option value="1">1 pieza / 1 arcada</option>
+            <option value="2">2 piezas / ambas arcadas</option>
+            <option value="4">4 piezas</option>
+            <option value="6">6 piezas</option>
+            <option value="8">8 piezas</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>Meses de financiación</label>
+          <select id="calcMonths" onchange="calcPrice()">
+            <option value="1">Pago al contado</option>
+            <option value="12">12 meses (0%)</option>
+            <option value="24">24 meses (0%)</option>
+            <option value="36">36 meses (0%)</option>
+            <option value="60">60 meses (0%)</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>¿Tienes seguro dental?</label>
+          <select id="calcInsurance" onchange="calcPrice()">
+            <option value="no">No tengo seguro</option>
+            <option value="si">Sí, tengo seguro</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-result" id="calcResult" style="display:none;">
+        <span class="calc-result-label">Estimación orientativa</span>
+        <p class="calc-result-price" id="calcResultPrice"></p>
+        <p class="calc-result-monthly" id="calcMonthly"></p>
+        <p class="calc-result-note">* Precio orientativo. El presupuesto definitivo se realiza tras exploración clínica gratuita. IVA incluido donde aplica.</p>
+      </div>
+      <button class="btn btn--accent-solid btn--block" style="margin-top:20px;" onclick="requestBudget()">Solicitar presupuesto exacto gratuito →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="section">
+  <div class="container">
+    <div class="section-head--row">
+      <div>
+        <span class="section-head__num" aria-hidden="true">06</span>
+        <span class="label label--brand">Preguntas frecuentes</span>
+        <h2 style="margin-top:8px;">Todo lo que necesitas saber antes de tu primera cita.</h2>
+      </div>
+      <p class="section-head__lead">Resolvemos las dudas más habituales de nuestros pacientes. Si no encuentras tu respuesta, llámanos o escríbenos.</p>
+    </div>
+    <div class="faq__grid">
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Cuánto dura un tratamiento de implantes?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">El proceso completo dura entre 3 y 6 meses dependiendo de la necesidad de injerto óseo previo. En casos de carga inmediata es posible colocar un diente provisional el mismo día de la cirugía.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Duele el tratamiento de ortodoncia?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">La ortodoncia no es dolorosa, pero puede generar molestias durante los primeros días tras cada revisión o cambio de alineadores. Este malestar suele desaparecer en 24-48 horas.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Ofrecéis financiación sin intereses?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">Sí. Trabajamos con múltiples entidades para ofrecer planes de pago a 12, 24, 36 y 60 meses al 0% de interés. La aprobación suele ser inmediata y el trámite lo gestionamos desde la propia clínica.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Qué diferencia hay entre Invisalign y brackets?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">Ambos sistemas son eficaces para corregir la mayoría de maloclusiones. Invisalign usa alineadores transparentes removibles. Los brackets son fijos y no requieren disciplina del paciente para llevarlos.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Cómo funciona la garantía de implantes?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">Todos nuestros implantes incluyen garantía escrita de 10 años sobre el implante y de 5 años sobre la corona. En el improbable caso de fracaso, lo reponemos sin coste.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Atendéis urgencias por la noche o fin de semana?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">Sí. Disponemos de servicio de urgencias las 24 horas, los 365 días del año. Llama al 900 00 00 00 y un odontólogo de guardia te atenderá de inmediato.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Cuánto dura un blanqueamiento profesional?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">El blanqueamiento con láser Fotona dura 45-60 minutos y se puede completar en una sola sesión, con hasta 8 tonos de mejora inmediata.</div></div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">¿Trabajáis con seguros dentales privados?<span class="faq-q-icon">+</span></button><div class="faq-answer"><div class="faq-answer-inner">Trabajamos con DKV, Sanitas, Adeslas, Asisa, AXA, Mapfre, Cigna y otros. Llámanos con tu número de póliza y verificamos tu cobertura al momento.</div></div></div>
+    </div>
+    <div class="center" style="margin-top:36px;">
+      <button class="btn btn--outline" onclick="openModal('maspreguntas')">Ver más preguntas frecuentes</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="contact">
+  <div class="container contact__grid">
+    <div class="contact__intro">
+      <span class="label" style="color:rgba(255,255,255,.4);">Contacto directo</span>
+      <div class="rule" style="background:rgba(255,255,255,.12);margin:12px 0;"></div>
+      <h2>Déjanos tu número y te llamamos en menos de 4 horas.</h2>
+      <p>Un asesor clínico te contactará para entender tu caso, resolver tus dudas y agendar una primera valoración gratuita y sin compromiso.</p>
+      <div class="contact-rows">
+        <div class="c-row">
+          <span class="c-row__icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.36 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.4 6.4l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          <div><p>900 00 00 00</p><p class="c-row__s">Atención telefónica 24h</p></div>
+        </div>
+        <div class="c-row">
+          <span class="c-row__icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+          <div><p>atencion@aeod.es</p><p class="c-row__s">Respondemos en menos de 24h</p></div>
+        </div>
+        <div class="c-row">
+          <span class="c-row__icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <div><p>Calle Mayor 12, 28013 Madrid</p><p class="c-row__s">Metro Sol · Parking gratuito</p></div>
+        </div>
+        <div class="c-row">
+          <span class="c-row__icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <div><p>Lun–Sáb · 09:00 – 21:00</p><p class="c-row__s">Urgencias 24h · 365 días</p></div>
+        </div>
+      </div>
+    </div>
+    <form id="contactForm" class="contact__form" novalidate>
+      <div class="form__head">
+        <h3>Formulario de contacto</h3>
+        <p>Todos los campos marcados con * son obligatorios.</p>
+      </div>
+      <div class="form__grid">
+        <div class="field"><label for="name">Nombre completo <span>*</span></label><input id="name" name="name" type="text" required placeholder="María García" /></div>
+        <div class="field"><label for="phone">Teléfono <span>*</span></label><input id="phone" name="phone" type="tel" required placeholder="600 123 456" /></div>
+        <div class="field field--full"><label for="email">Correo electrónico <span>*</span></label><input id="email" name="email" type="email" required placeholder="tu@email.com" /></div>
+        <div class="field field--full">
+          <label for="tratamiento">Tratamiento de interés</label>
+          <select id="tratamiento" name="tratamiento">
+            <option value="">— Selecciona (opcional) —</option>
+            <option>Implantes dentales</option><option>Ortodoncia / Invisalign</option>
+            <option>Estética dental / Carillas</option><option>Limpieza dental</option>
+            <option>Urgencia dental</option><option>Revisión general</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="field field--full"><label for="message">Mensaje</label><textarea id="message" name="message" rows="4" maxlength="1000" placeholder="Cuéntanos brevemente qué necesitas…"></textarea></div>
+      </div>
+      <button type="submit" class="btn btn--solid btn--block" style="margin-top:4px;" id="submitBtn">Enviar solicitud</button>
+      <p id="formStatus" class="form__status"></p>
+      <p class="form__legal">Al enviar aceptas nuestra política de privacidad. Nunca compartiremos tus datos con terceros.</p>
+    </form>
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section class="section">
+  <div class="container">
+    <div class="location__grid">
+      <div class="location__copy">
+        <span class="label label--brand">Ubicación · Cómo llegar</span>
+        <div class="rule rule--brand"></div>
+        <h2>Nuestra clínica en el centro de Madrid</h2>
+        <p>Estamos en pleno centro, a 3 minutos andando de Metro Sol y con parking público a menos de 100 metros.</p>
+        <ul class="info-list">
+          <li><svg class="info-icon icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span><strong>Dirección:</strong> Calle Mayor 12, 3ª planta, 28013 Madrid</span></li>
+          <li><svg class="info-icon icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.36 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.4 6.4l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span><strong>Teléfono:</strong> 900 00 00 00</span></li>
+          <li><svg class="info-icon icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span><strong>Email:</strong> atencion@aeod.es</span></li>
+          <li><svg class="info-icon icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span><strong>Horario:</strong> Lun–Vie 09:00–21:00 · Sáb 10:00–14:00</span></li>
+        </ul>
+      </div>
+      <div class="map">
+        <iframe title="Ubicación Clínica AEOD" src="https://www.openstreetmap.org/export/embed.html?bbox=-3.7100%2C40.4140%2C-3.6980%2C40.4210&layer=mapnik&marker=40.4175%2C-3.7040" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <div class="logo">
+        <span class="logo__mark" style="border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.8-1.3 3.8L12 22l-2.7-12.2A5.5 5.5 0 0 1 8 6a4 4 0 0 1 4-4z"/></svg>
+        </span>
+        <span class="logo__text">
+          <span class="logo__name" style="color:rgba(255,255,255,.75);">AEOD</span>
+          <span class="logo__sub" style="color:rgba(255,255,255,.3);">Odontología profesional</span>
+        </span>
+      </div>
+      <p class="footer__about">Clínica dental con más de 20 años de experiencia. Atendemos a pacientes de toda España con un protocolo clínico serio y transparente.</p>
+      <div class="footer__certs">
+        <span class="footer__cert">SEPA</span><span class="footer__cert">ISO 9001</span>
+        <span class="footer__cert">Col. Odontólogos</span><span class="footer__cert">Invisalign Diamond</span>
+        <span class="footer__cert">Nobel Biocare</span>
+      </div>
+    </div>
+    <div>
+      <h4>Contacto</h4>
+      <ul>
+        <li>900 00 00 00</li><li>914 650 095</li>
+        <li>atencion@aeod.es</li><li>Calle Mayor 12, Madrid</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#servicios">Implantología</a></li>
+        <li><a href="#servicios">Ortodoncia</a></li>
+        <li><a href="#servicios">Estética dental</a></li>
+        <li><a href="#tecnologia">Tecnología</a></li>
+        <li><a href="#equipo">Nuestro equipo</a></li>
+        <li><a href="#precios">Precios</a></li>
+        <li><a href="#faq">Preguntas frecuentes</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <div class="footer__bottom-inner" style="max-width:var(--container);margin:0 auto;">
+      <p>© <span id="year"></span> AEOD · Asociación Española de Odontología Profesional</p>
+      <div class="footer__links">
+        <a href="#">Aviso legal</a><a href="#">Privacidad</a><a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+    /* ── PRELOADER REAL ── */
+  const preloader = document.getElementById('preloader');
+  const preloaderBar = document.getElementById('preloaderBar');
+  const preloaderPercent = document.getElementById('preloaderPercent');
+  const preloaderStatus = document.getElementById('preloaderStatus');
+
+  document.body.classList.add('is-loading');
+
+  const setProgress = (value, label) => {
+    const pct = Math.max(0, Math.min(100, Math.round(value)));
+    if (preloaderBar) preloaderBar.style.width = pct + '%';
+    if (preloaderPercent) preloaderPercent.textContent = pct + '%';
+    if (label && preloaderStatus) preloaderStatus.textContent = label;
+  };
+
+  const tasks = [];
+  let completed = 0;
+  let started = performance.now();
+  let hidden = false;
+
+  const totalTasks = () => Math.max(tasks.length, 1);
+
+  const renderProgress = () => {
+    const progress = (completed / totalTasks()) * 100;
+    setProgress(progress, completed >= totalTasks() ? 'Listo' : 'Cargando recursos');
+  };
+
+  const markDone = () => {
+    completed += 1;
+    renderProgress();
+    tryHideWhenReady();
+  };
+
+  const trackPromise = (promise) => {
+    tasks.push(promise);
+    renderProgress();
+    promise.finally(markDone);
+  };
+
+  const loadImage = (img) => {
+    if (!img || img.dataset.preloaderTracked === '1') return;
+    img.dataset.preloaderTracked = '1';
+
+    if (img.complete && img.naturalWidth > 0) {
+      tasks.push(Promise.resolve());
+      completed += 1;
+      renderProgress();
+      return;
+    }
+
+    trackPromise(new Promise((resolve) => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+    }));
+  };
+
+  const loadStylesheet = (link) => {
+    if (!link || link.dataset.preloaderTracked === '1') return;
+    link.dataset.preloaderTracked = '1';
+
+    // Si ya está cargada, la contamos al instante.
+    if (link.sheet) {
+      tasks.push(Promise.resolve());
+      completed += 1;
+      renderProgress();
+      return;
+    }
+
+    trackPromise(new Promise((resolve) => {
+      link.addEventListener('load', resolve, { once: true });
+      link.addEventListener('error', resolve, { once: true });
+    }));
+  };
+
+  const loadFonts = () => {
+    if (document.fonts && document.fonts.ready) {
+      trackPromise(document.fonts.ready.catch(() => {}));
+    }
+  };
+
+  const collectResources = () => {
+    document.querySelectorAll('img').forEach(loadImage);
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(loadStylesheet);
+    loadFonts();
+  };
+
+  const hidePreloader = () => {
+    if (hidden) return;
+    hidden = true;
+    setProgress(100, 'Bienvenido');
+    window.setTimeout(() => {
+      preloader?.classList.add('is-hidden');
+      document.body.classList.remove('is-loading');
+      window.setTimeout(() => {
+        if (preloader && preloader.parentNode) preloader.parentNode.removeChild(preloader);
+      }, 750);
+    }, 180);
+  };
+
+  const tryHideWhenReady = () => {
+    // Se oculta cuando la ventana terminó de cargar y todos los recursos observados ya resolvieron.
+    if (document.readyState === 'complete' && completed >= totalTasks()) {
+      hidePreloader();
+    }
+  };
+
+  collectResources();
+
+  window.addEventListener('load', () => {
+    // pequeño margen visual para que no desaparezca “de golpe”
+    window.requestAnimationFrame(() => {
+      tryHideWhenReady();
+      if (!hidden) {
+        // Fallback suave: evita bloqueo si algún recurso externo se queda colgado.
+        window.setTimeout(() => {
+          hidePreloader();
+        }, 1200);
+      }
+    });
+  });
+
+  // Seguridad: si algo ya estaba cargado antes del script, re-chequea.
+  window.addEventListener('DOMContentLoaded', renderProgress);
+
+  /* ── YEAR ── */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ── HEADER SCROLL ── */
+  const header = document.getElementById('header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 10);
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* ── TOPBAR MAIL ── */
+  if (window.innerWidth >= 1024) {
+    const m = document.getElementById('topbar-mail');
+    if (m) m.style.display = 'inline-flex';
+  }
+
+  /* ── MOBILE MENU ── */
+  const menuBtn = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuBtn.textContent = open ? '✕' : '☰';
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.textContent = '☰';
+    }));
+  }
+
+  /* ── REVEAL ── */
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      el.style.transitionDelay = (i % 3) * 0.1 + 's';
+      obs.observe(el);
+    });
+  } else {
+    document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('visible'));
+  }
+
+  /* ── STAT BARS ── */
+  const bars = document.querySelectorAll('.bar-fill');
+  if (bars.length) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => { e.target.style.width = e.target.dataset.pct + '%'; }, 200);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    bars.forEach(b => obs.observe(b));
+  }
+
+  /* ── TESTIMONIALS SLIDER ── */
+  const track = document.getElementById('testimonialsTrack');
+  const dotsC = document.getElementById('sliderDots');
+  const prevBtn = document.getElementById('sliderPrev');
+  const nextBtn = document.getElementById('sliderNext');
+  if (track) {
+    const cards = track.querySelectorAll('.testimonial-card');
+    const isMd = () => window.innerWidth >= 768;
+    let current = 0;
+    const total = () => isMd() ? Math.ceil(cards.length / 2) : cards.length;
+    const buildDots = () => {
+      dotsC.innerHTML = '';
+      for (let i = 0; i < total(); i++) {
+        const d = document.createElement('button');
+        d.className = 'slider-dot' + (i === current ? ' active' : '');
+        d.addEventListener('click', () => goTo(i));
+        dotsC.appendChild(d);
+      }
+    };
+    const goTo = n => {
+      current = Math.max(0, Math.min(n, total() - 1));
+      track.style.transform = `translateX(-${current * 100}%)`;
+      buildDots();
+    };
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+    buildDots();
+    window.addEventListener('resize', () => { current = 0; goTo(0); });
+    let autoInterval = setInterval(() => goTo(current + 1 >= total() ? 0 : current + 1), 5500);
+    track.parentElement.addEventListener('mouseenter', () => clearInterval(autoInterval));
+    track.parentElement.addEventListener('mouseleave', () => {
+      autoInterval = setInterval(() => goTo(current + 1 >= total() ? 0 : current + 1), 5500);
+    });
+  }
+
+  /* ── LOGO BAND ── */
+  (function() {
+    const LOGOS = ['SEPA','Invisalign','Nobel Biocare','Straumann','ISO 9001','Col. Odontólogos','DSD','Dentsply Sirona','Camlog','BioHorizons','Zimmer Biomet','3Shape','Fotona','Formlabs','SEDO','SEOM'];
+    const track = document.getElementById('logoBandTrack');
+    const list  = document.getElementById('logoBandList');
+    if (!track || !list) return;
+    const buildList = (hidden) => {
+      const ul = document.createElement('ul'); ul.className = 'logo-band__list';
+      if (hidden) ul.setAttribute('aria-hidden', 'true');
+      LOGOS.forEach(name => {
+        const li = document.createElement('li'); li.className = 'logo-band__item';
+        const span = document.createElement('span'); span.className = 'logo-badge'; span.textContent = name;
+        li.appendChild(span); ul.appendChild(li);
+      });
+      return ul;
+    };
+    const m = buildList(false);
+    track.appendChild(m);
+    requestAnimationFrame(() => {
+      const w = m.getBoundingClientRect().width;
+      if (!w) return;
+      const copies = Math.ceil(window.innerWidth / w) + 2;
+      track.innerHTML = '';
+      for (let i = 0; i < copies; i++) track.appendChild(buildList(i > 0));
+      let offset = 0, last = null;
+      const animate = ts => {
+        if (last === null) last = ts;
+        const dt = (ts - last) / 1000; last = ts;
+        offset += 60 * dt;
+        if (offset >= w) offset -= w;
+        track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+        requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    });
+  })();
+
+  /* ── CONTACT FORM ── */
+  const form = document.getElementById('contactForm');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+  if (form) {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      statusEl.className = 'form__status';
+      const data = { name: form.name.value.trim(), phone: form.phone.value.trim(), email: form.email.value.trim() };
+      const setErr = msg => { statusEl.className = 'form__status err'; statusEl.textContent = msg; };
+      if (data.name.length < 2) return setErr('Introduce un nombre válido.');
+      if (data.phone.length < 6) return setErr('Teléfono inválido.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return setErr('Correo inválido.');
+      submitBtn.disabled = true; submitBtn.textContent = 'Enviando…';
+      try {
+        await new Promise(r => setTimeout(r, 800));
+        statusEl.className = 'form__status ok';
+        statusEl.textContent = '¡Gracias! Te llamaremos en breve.';
+        form.reset();
+        showToast('Solicitud enviada. Te contactamos en menos de 4 horas.');
+      } finally {
+        submitBtn.disabled = false; submitBtn.textContent = 'Enviar solicitud';
+      }
+    });
+  }
+})();
+
+/* ═══════════ GLOBALES ═══════════ */
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+/* MODAL */
+const MODAL_CONTENT = {
+  general: {
+    title: 'Odontología General — Catálogo completo',
+    subtitle: 'Todos los tratamientos incluyen diagnóstico y presupuesto cerrado.',
+    body: `
+      <p>Nuestro departamento de odontología general abarca todos los tratamientos básicos y preventivos:</p>
+      <h4>Prevención y Diagnóstico</h4>
+      <ul>
+        <li><span class="m-check">✓</span> Revisión y diagnóstico completo (gratuita)</li>
+        <li><span class="m-check">✓</span> Radiografías digitales de baja radiación</li>
+        <li><span class="m-check">✓</span> Limpieza dental profesional (desde 60€)</li>
+        <li><span class="m-check">✓</span> Tratamiento de la halitosis</li>
+        <li><span class="m-check">✓</span> Sellado de fisuras en niños</li>
+      </ul>
+      <h4>Tratamientos restauradores</h4>
+      <ul>
+        <li><span class="m-check">✓</span> Empastes de composite (desde 80€)</li>
+        <li><span class="m-check">✓</span> Endodoncias (desde 280€)</li>
+        <li><span class="m-check">✓</span> Coronas de porcelana y zirconio</li>
+      </ul>
+      <a href="#contacto" onclick="closeModal()" class="btn btn--solid" style="margin-top:20px;width:100%;">Pedir cita de revisión gratuita</a>
+    `
+  },
+  implantes: {
+    title: 'Implantes — Valoración de tu caso',
+    subtitle: 'Diagnóstico con TAC 3D y presupuesto cerrado en 48 horas.',
+    body: `
+      <p>Para un implante exitoso, el primer paso es saber si eres candidato. Realizamos una valoración completa con TAC 3D sin coste:</p>
+      <ul>
+        <li><span class="m-check">✓</span> TAC 3D para medir cantidad y calidad ósea</li>
+        <li><span class="m-check">✓</span> Valoración periodontal completa</li>
+        <li><span class="m-check">✓</span> Simulación virtual del implante</li>
+        <li><span class="m-check">✓</span> Presupuesto cerrado por escrito</li>
+        <li><span class="m-check">✓</span> Opciones de financiación al 0%</li>
+      </ul>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+        <div style="background:var(--paper);padding:14px;border:1px solid var(--paper-3);text-align:center;"><strong style="font-family:var(--font-serif);font-size:1.4rem;color:var(--brand);">990€</strong><p style="font-size:12px;color:var(--muted);margin-top:4px;">Implante completo desde</p></div>
+        <div style="background:var(--paper);padding:14px;border:1px solid var(--paper-3);text-align:center;"><strong style="font-family:var(--font-serif);font-size:1.4rem;color:var(--brand);">10 años</strong><p style="font-size:12px;color:var(--muted);margin-top:4px;">Garantía escrita incluida</p></div>
+      </div>
+      <a href="#contacto" onclick="closeModal()" class="btn btn--solid" style="margin-top:20px;width:100%;">Solicitar valoración gratuita</a>
+    `
+  },
+  presupuesto: {
+    title: 'Presupuesto personalizado gratuito',
+    subtitle: 'Sin compromiso de tratamiento. Respuesta en 48 horas.',
+    body: `
+      <p>Precios orientativos de nuestros tratamientos más habituales:</p>
+      <div style="overflow:auto;margin-top:12px;">
+        <table style="width:100%;font-size:13px;border-collapse:collapse;">
+          <tbody>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Limpieza dental</td><td style="text-align:right;font-weight:600;color:var(--brand);">60 €</td></tr>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Empaste composite</td><td style="text-align:right;font-weight:600;color:var(--brand);">80 €</td></tr>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Endodoncia</td><td style="text-align:right;font-weight:600;color:var(--brand);">280 €</td></tr>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Implante completo</td><td style="text-align:right;font-weight:600;color:var(--brand);">990 €</td></tr>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Invisalign Lite</td><td style="text-align:right;font-weight:600;color:var(--brand);">1.800 €</td></tr>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Invisalign Full</td><td style="text-align:right;font-weight:600;color:var(--brand);">3.200 €</td></tr>
+            <tr style="border-bottom:1px solid var(--paper-3);"><td style="padding:8px 0;color:var(--ink-3);">Carilla de porcelana</td><td style="text-align:right;font-weight:600;color:var(--brand);">390 €/ud</td></tr>
+            <tr><td style="padding:8px 0;color:var(--ink-3);">Blanqueamiento LED</td><td style="text-align:right;font-weight:600;color:var(--brand);">250 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#contacto" onclick="closeModal()" class="btn btn--solid" style="margin-top:20px;width:100%;">Solicitar presupuesto exacto</a>
+    `
+  },
+  maspreguntas: {
+    title: 'Más preguntas frecuentes',
+    subtitle: 'Resolvemos todas tus dudas antes de la primera visita.',
+    body: `
+      <ul>
+        <li><span class="m-check">✓</span> <strong>¿Desde qué edad se puede poner implante?</strong><br><span style="font-size:13px;color:var(--muted);">A partir de los 18-20 años, cuando el desarrollo óseo está completado. No hay límite de edad máxima.</span></li>
+        <li><span class="m-check">✓</span> <strong>¿Cuánto tiempo duran los implantes?</strong><br><span style="font-size:13px;color:var(--muted);">Con higiene adecuada y revisiones periódicas, los implantes Nobel Biocare duran toda la vida. Tasa de supervivencia a 20 años superior al 97%.</span></li>
+        <li><span class="m-check">✓</span> <strong>¿Puedo comer normal con Invisalign?</strong><br><span style="font-size:13px;color:var(--muted);">Sí. Los alineadores se retiran para comer y beber. Puedes comer cualquier alimento sin restricciones.</span></li>
+        <li><span class="m-check">✓</span> <strong>¿Las carillas dañan los dientes?</strong><br><span style="font-size:13px;color:var(--muted);">Las carillas modernas con técnica mínimamente invasiva requieren un desgaste mínimo del esmalte (0.3-0.5mm).</span></li>
+        <li><span class="m-check">✓</span> <strong>¿Aceptáis pacientes de fuera de Madrid?</strong><br><span style="font-size:13px;color:var(--muted);">Sí. Organizamos la agenda para minimizar las visitas necesarias y ofrecemos seguimiento por telemedicina.</span></li>
+      </ul>
+      <a href="tel:+34900000000" class="btn btn--solid" style="margin-top:20px;width:100%;">Llamar: 900 00 00 00</a>
+    `
+  }
+};
+
+function openModal(key) {
+  const content = MODAL_CONTENT[key]; if (!content) return;
+  document.getElementById('modalTitle').textContent = content.title;
+  document.getElementById('modalSubtitle').textContent = content.subtitle;
+  document.getElementById('modalBody').innerHTML = content.body;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* FAQ */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* SERVICE EXPAND */
+function toggleService(btn, id) {
+  const panel = document.getElementById(id);
+  const isOpen = panel.classList.contains('open');
+  document.querySelectorAll('.service-expand.open').forEach(p => {
+    p.classList.remove('open');
+    const prevBtn = p.previousElementSibling;
+    if (prevBtn) prevBtn.innerHTML = prevBtn.innerHTML.replace('↑','→');
+  });
+  if (!isOpen) {
+    panel.classList.add('open');
+    btn.innerHTML = btn.innerHTML.replace('→','↑');
+  }
+}
+
+/* TEAM EXPAND */
+function toggleTeam(btn) {
+  const details = btn.nextElementSibling;
+  const isOpen = details.classList.contains('open');
+  details.classList.toggle('open');
+  btn.textContent = isOpen ? 'Ver formación ↓' : 'Ocultar formación ↑';
+}
+
+/* TECH EXPAND */
+function toggleTech(card) {
+  const toggle = card.querySelector('.tech-toggle');
+  card.classList.toggle('expanded');
+  if (toggle) toggle.textContent = card.classList.contains('expanded') ? '– Ocultar' : '+ Ver especificaciones';
+}
+
+/* PRICING FILTER */
+function filterPricing(cat, chip) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('.pricing-card').forEach(card => {
+    const cats = card.dataset.category || '';
+    const show = cat === 'todos' || cats.includes(cat);
+    card.style.opacity = show ? '1' : '0.3';
+    card.style.pointerEvents = show ? '' : 'none';
+    card.style.transition = 'opacity .3s ease';
+  });
+}
+
+/* CALCULADORA */
+const PRICES = {
+  limpieza:{base:60,unit:false}, empaste:{base:80,unit:true}, endodoncia:{base:280,unit:true},
+  extraccion:{base:120,unit:true}, implante:{base:990,unit:true},
+  'invisalign-lite':{base:1800,unit:false}, 'invisalign-full':{base:3200,unit:false},
+  brackets:{base:2200,unit:false}, carilla:{base:390,unit:true}, blanqueamiento:{base:250,unit:false}
+};
+function calcPrice() {
+  const t = document.getElementById('calcTreatment').value;
+  const qty = parseInt(document.getElementById('calcQty').value) || 1;
+  const months = parseInt(document.getElementById('calcMonths').value) || 1;
+  const insurance = document.getElementById('calcInsurance').value === 'si';
+  const resultEl = document.getElementById('calcResult');
+  if (!t) { resultEl.style.display = 'none'; return; }
+  const info = PRICES[t];
+  let total = info.unit ? info.base * qty : info.base;
+  if (insurance) total = Math.round(total * 0.8);
+  resultEl.style.display = 'block';
+  document.getElementById('calcResultPrice').textContent = total.toLocaleString('es-ES') + ' €' + (insurance ? ' (con seguro)' : '');
+  document.getElementById('calcMonthly').textContent = months > 1
+    ? `O en ${months} cuotas de ${Math.ceil(total/months).toLocaleString('es-ES')} €/mes al 0%`
+    : 'Pago al contado · Financiación al 0% disponible';
+}
+function requestBudget() {
+  showToast('Redirigiendo al formulario…');
+  setTimeout(() => document.querySelector('#contacto').scrollIntoView({ behavior: 'smooth' }), 600);
+}
+
+/* ── SCROLL STACK ── */
+(function () {
+  const section = document.querySelector('.stack');
+  const cards = Array.from(document.querySelectorAll('.stack .stack-card'));
+  if (!section || !cards.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let ticking = false;
+  const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+  function updateStack() {
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const rect = section.getBoundingClientRect();
+    const total = Math.max(section.offsetHeight - vh, 1);
+    const progress = clamp((-rect.top) / total, 0, 1);
+    cards.forEach((card, index) => {
+      const start = index * 0.18;
+      const local = clamp((progress - start) / 0.18, 0, 1);
+      card.style.zIndex = String(100 - index);
+      card.style.transform = `translateY(${index * 18 - local * 80}px) scale(${1 - local * 0.08})`;
+      card.style.opacity = String(1 - local * 0.08);
+      card.style.filter = `brightness(${1 - local * 0.05})`;
+    });
+    ticking = false;
+  }
+  function requestUpdate() { if (ticking) return; ticking = true; requestAnimationFrame(updateStack); }
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate);
+  requestUpdate();
+})();
+</script>
+</body>
+</html>
