@@ -27,6 +27,7 @@ css/
   navbar.css        Cabecera sticky, menú móvil y barra inferior móvil
   hero.css · trust.css · services.css · about.css · team.css · technology.css
   testimonials.css · pricing.css · calculator.css · faq.css · contact.css
+  booking.css       Paso 1 del formulario: horarios disponibles, horario elegido y confirmación
   footer.css · modal.css
 js/
   core.js           Datos de la clínica (horario) y utilidades compartidas
@@ -39,7 +40,8 @@ js/
   faq.js            Acordeón accesible
   api.js            Capa única de llamadas a la API (backend/)
   api-data.js       Precios y equipo desde la API (si no responde, se queda el contenido estático)
-  contact-form.js   Validación, envío, estados, día/franja preferida, contador y borrador
+  booking.js        Reserva online: pide los horarios libres a la API y los muestra (no calcula nada)
+  contact-form.js   Validación, envío (reserva o contacto), estados, contador y borrador
   open-status.js    "Abierto ahora / Cerrado" con la hora de Madrid
   treatment-finder.js  Orientación rápida: 1–2 preguntas → tratamiento recomendado
   copy.js           Botones "Copiar" de teléfono, email y dirección
@@ -64,10 +66,15 @@ La URL de la API se indica en `index.html`:
 Con la API en marcha y la landing servida en `http://localhost:5500` o desde IntelliJ (`localhost:63342`):
 
 - La lista de precios, el estimador y el equipo usan los datos de la base de datos (se emparejan por nombre, así se conservan categorías, "por pieza" y credenciales del HTML).
-- El formulario envía una **solicitud de cita** (`POST /api/citas`) cuando hay día preferido y el tratamiento existe en la API (atributo `data-tratamiento` de cada opción); si no, un **contacto** (`POST /api/contacto`). La franja horaria va en el mensaje.
+- El formulario de cita reserva con **horarios reales**:
+  1. *Elige tu cita*: tratamiento (con su duración), odontólogo (opcional), día y franja. La landing pide los horarios libres a `GET /api/disponibilidad` y solo los muestra; si no hay, enseña «No encontramos disponibilidad para el horario seleccionado.», las próximas opciones y «Encontrar el horario más cercano».
+  2. *Tus datos* y **Confirmar cita** (`POST /api/citas`). Si alguien reservó ese horario un instante antes, el backend responde 409: la lista se recarga y aparece «Este horario acaba de ser reservado. Selecciona otra opción.».
+  3. Confirmación con tratamiento, día, hora, odontólogo y estado.
+- «Urgencia dental», «Otro» y «Ninguno me encaja, prefiero que me llaméis» envían un **contacto** (`POST /api/contacto`) con el día y la franja en el mensaje.
+- Los enlaces «Solicitar cita» con `data-treatment` (p. ej. «Implantes dentales») eligen el tratamiento indicado en el atributo `data-tratamiento` de la opción estática correspondiente.
 - Los errores de validación que devuelve la API se muestran en su campo.
 
-Si la API no está configurada (meta vacío) o no responde, la página usa sus datos estáticos y el formulario **no simula envíos**: muestra un error con el teléfono y el email.
+Si la API no está configurada (meta vacío) o no responde, la página usa sus datos estáticos, el formulario vuelve a ser una solicitud de contacto y **no simula envíos ni reservas**: muestra un error con el teléfono y el email.
 
 ## Imágenes
 
@@ -81,7 +88,7 @@ Son fotos de stock: no son los profesionales reales. Para usar fotos propias, gu
 
 ## Horario
 
-El horario de `js/core.js` alimenta el indicador "Abierto ahora" y la validación del día preferido. No contempla festivos.
+El horario de `js/core.js` solo alimenta el indicador "Abierto ahora" (no contempla festivos). Qué días y horas se pueden reservar lo decide el backend con su propio horario, turnos y bloqueos (ver [backend/README.md](backend/README.md#agenda)); si cambias el horario, cámbialo en los dos sitios y en el texto de Contacto.
 
 ## Precios
 
