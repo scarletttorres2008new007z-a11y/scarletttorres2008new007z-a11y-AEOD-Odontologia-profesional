@@ -1,0 +1,198 @@
+/* ═══════════════════════════════════════════════
+   RESERVA ONLINE (formulario de cita)
+   Paso 1: tratamiento, día y horarios disponibles.
+   Paso 2: datos del paciente. Usa los tokens de variables.css.
+═══════════════════════════════════════════════ */
+.booking-step {
+  min-width: 0;
+  margin: 24px 0 0;
+  padding: 0;
+  border: 0;
+}
+.booking-step + .booking-step {
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--paper-3);
+}
+/* La leyenda flota para que el separador quede por encima y no la atraviese */
+.booking-step__title {
+  float: left;
+  width: 100%;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+.booking-step__num {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: var(--on-dark);
+  font-family: var(--font-sans);
+  font-size: .75rem;
+  font-weight: 600;
+}
+.booking-step__title + * { clear: both; }
+.booking-step .contact-form__grid { margin: 0; }
+
+/* Panel de horarios */
+.slots {
+  margin-top: 20px;
+  padding: 18px 16px;
+  background: var(--paper);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+}
+.slots:focus { outline: none; }
+.slots:focus-visible { box-shadow: var(--focus-ring); }
+.slots[aria-invalid="true"] { border-color: var(--error); }
+.slots[aria-busy="true"] .slots__list { opacity: .5; }
+
+.slots__title {
+  font-size: .8125rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.slots__status { margin-top: 10px; font-size: .9375rem; color: var(--ink-3); line-height: 1.55; }
+.slots__status:empty { display: none; }
+.slots__notice {
+  padding: 12px 14px;
+  background: var(--white);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  color: var(--ink-2);
+}
+.slots__notice.is-error {
+  background: var(--error-bg);
+  border-color: var(--error);
+  color: var(--error);
+  font-weight: 500;
+}
+
+.slots__list { transition: opacity var(--t-base) var(--ease); }
+.slots__head { margin-top: 10px; font-size: .875rem; color: var(--muted); }
+.slots__head strong {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--ink);
+}
+.slots__subhead {
+  margin-top: 16px;
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.slots__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.slot {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  min-height: 56px;
+  padding: 9px 12px;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.slot input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.slot:hover { border-color: var(--brand); }
+.slot:has(input:focus-visible) { box-shadow: var(--focus-ring); }
+.slot__time {
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.slot__meta {
+  font-size: .75rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.slot.is-selected { background: var(--brand); border-color: var(--brand); }
+.slot.is-selected .slot__time { color: var(--on-dark); }
+.slot.is-selected .slot__meta { color: var(--on-dark-2); }
+
+.slots .field__error { margin-top: 12px; }
+.slots__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 18px;
+}
+.slots__callback { font-size: .875rem; }
+
+.slots-callback {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--paper);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  font-size: .9375rem;
+  color: var(--ink-2);
+}
+.slots-callback .text-link { margin-top: 6px; font-size: .875rem; }
+
+/* Resumen del horario elegido, junto al botón de confirmar */
+.booking-pick {
+  margin: 24px 0 16px;
+  padding: 14px 16px;
+  background: var(--paper);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--r-sm);
+}
+.booking-pick__label {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.booking-pick__value {
+  margin-top: 4px;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+.booking-pick__meta { margin-top: 2px; font-size: .875rem; color: var(--ink-3); }
+.booking-pick[hidden] + [data-submit] { margin-top: 24px; }
+
+/* Confirmación de la cita (dentro del aviso de éxito) */
+.booking-confirmation {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+.booking-confirmation div { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.booking-confirmation dt { min-width: 104px; font-size: .8125rem; color: var(--ink-3); }
+.booking-confirmation dd { margin: 0; font-weight: 500; color: var(--ink); }
+
+@media (min-width: 600px) {
+  .slots { padding: 20px; }
+}

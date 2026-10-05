@@ -27,6 +27,7 @@ css/
   navbar.css        Cabecera sticky, menú móvil y barra inferior móvil
   hero.css · trust.css · services.css · about.css · team.css · technology.css
   testimonials.css · pricing.css · calculator.css · faq.css · contact.css
+  booking.css       Paso 1 del formulario: horarios disponibles, horario elegido y confirmación
   footer.css · modal.css
 js/
   core.js           Datos de la clínica (horario) y utilidades compartidas
@@ -37,8 +38,10 @@ js/
   pricing.js        Filtro de la lista de precios
   calculator.js     Estimador orientativo (lee los precios de la lista HTML)
   faq.js            Acordeón accesible
-  api.js            Envío al backend (punto único de integración)
-  contact-form.js   Validación, envío, estados, día/franja preferida, contador y borrador
+  api.js            Capa única de llamadas a la API (backend/)
+  api-data.js       Precios y equipo desde la API (si no responde, se queda el contenido estático)
+  booking.js        Reserva online: pide los horarios libres a la API y los muestra (no calcula nada)
+  contact-form.js   Validación, envío (reserva o contacto), estados, contador y borrador
   open-status.js    "Abierto ahora / Cerrado" con la hora de Madrid
   treatment-finder.js  Orientación rápida: 1–2 preguntas → tratamiento recomendado
   copy.js           Botones "Copiar" de teléfono, email y dirección
@@ -50,17 +53,28 @@ Las media queries viven en el archivo de cada sección (mobile-first), por eso n
 
 Los scripts son clásicos con `defer` (no `type="module"`) para que la página siga funcionando al abrir el archivo directamente (`file://`).
 
-## Conectar el formulario a un backend
+## Backend (API)
 
-El formulario **no simula envíos**. Mientras no haya backend, muestra un error con el teléfono y el email.
+La carpeta `backend/` contiene la API (Java 21 + Spring Boot + SQL Server). Cómo arrancarla: [backend/README.md](backend/README.md).
 
-Para activarlo, indica la URL de la API en `index.html`:
+La URL de la API se indica en `index.html`:
 
 ```html
-<form ... data-contact-form data-endpoint="https://tu-api.com/citas">
+<meta name="aeod-api" content="http://localhost:8080/api">
 ```
 
-Se envía un `POST` con JSON `{ name, phone, email, treatment, message }`. Cualquier respuesta 2xx se trata como éxito. La lógica está en `js/api.js`.
+Con la API en marcha y la landing servida en `http://localhost:5500` o desde IntelliJ (`localhost:63342`):
+
+- La lista de precios, el estimador y el equipo usan los datos de la base de datos (se emparejan por nombre, así se conservan categorías, "por pieza" y credenciales del HTML).
+- El formulario de cita reserva con **horarios reales**:
+  1. *Elige tu cita*: tratamiento (con su duración), odontólogo (opcional), día y franja. La landing pide los horarios libres a `GET /api/disponibilidad` y solo los muestra; si no hay, enseña «No encontramos disponibilidad para el horario seleccionado.», las próximas opciones y «Encontrar el horario más cercano».
+  2. *Tus datos* y **Confirmar cita** (`POST /api/citas`). Si alguien reservó ese horario un instante antes, el backend responde 409: la lista se recarga y aparece «Este horario acaba de ser reservado. Selecciona otra opción.».
+  3. Confirmación con tratamiento, día, hora, odontólogo y estado.
+- «Urgencia dental», «Otro» y «Ninguno me encaja, prefiero que me llaméis» envían un **contacto** (`POST /api/contacto`) con el día y la franja en el mensaje.
+- Los enlaces «Solicitar cita» con `data-treatment` (p. ej. «Implantes dentales») eligen el tratamiento indicado en el atributo `data-tratamiento` de la opción estática correspondiente.
+- Los errores de validación que devuelve la API se muestran en su campo.
+
+Si la API no está configurada (meta vacío) o no responde, la página usa sus datos estáticos, el formulario vuelve a ser una solicitud de contacto y **no simula envíos ni reservas**: muestra un error con el teléfono y el email.
 
 ## Imágenes
 
@@ -74,16 +88,16 @@ Son fotos de stock: no son los profesionales reales. Para usar fotos propias, gu
 
 ## Horario
 
-El horario de `js/core.js` alimenta el indicador "Abierto ahora" y la validación del día preferido. No contempla festivos.
+El horario de `js/core.js` solo alimenta el indicador "Abierto ahora" (no contempla festivos). Qué días y horas se pueden reservar lo decide el backend con su propio horario, turnos y bloqueos (ver [backend/README.md](backend/README.md#agenda)); si cambias el horario, cámbialo en los dos sitios y en el texto de Contacto.
 
 ## Precios
 
-Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí.
+Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí. Con la API en marcha, los precios vienen de la columna `precio_desde` de la base de datos y sustituyen a los del HTML.
 
 ## Pendiente antes de producción
 
 - Sustituir las fotos de stock por fotos propias de la clínica y del equipo (ver «Imágenes»).
 - Crear `aviso-legal.html`, `privacidad.html` y `cookies.html`.
-- Configurar `data-endpoint` del formulario.
+- Desplegar la API (`backend/`) y poner su URL pública en `<meta name="aeod-api">` y en `app.cors.origenes`.
 - Añadir `og:url`, `og:image` y `link rel="canonical"` con el dominio definitivo.
 - Verificar los datos de negocio (teléfonos, dirección, horario, cifras, credenciales y testimonios) antes de añadir datos estructurados de schema.org.

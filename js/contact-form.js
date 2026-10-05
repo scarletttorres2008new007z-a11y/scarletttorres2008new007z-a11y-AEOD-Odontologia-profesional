@@ -2,10 +2,15 @@
  * Formulario de cita.
  * Responsabilidades separadas:
  *   1. Validación (reglas puras + pintado de errores accesible)
- *   2. Envío (delegado en AEOD.api.submitContactRequest)
+ *   2. Envío a la API (AEOD.api):
+ *      - con un horario elegido en el paso 1 (booking.js) reserva la cita (POST /citas);
+ *        si otra persona se adelantó (409), se recargan los horarios y se pide elegir otro
+ *      - si no (urgencia, "prefiero que me llaméis", API sin catálogo) envía un contacto (POST /contacto)
  *   3. Estados de UI: carga, éxito y error
  *   4. Ayudas: contador de caracteres, borrador en la pestaña y
  *      relleno desde otros módulos (estimador, orientación, CTA)
+ *
+ * Qué días y horas hay libres lo decide siempre el backend, nunca este archivo.
  */
 (function () {
   'use strict';
@@ -24,7 +29,9 @@
   const submitLabel = form.querySelector('[data-submit-label]');
   const summary = form.querySelector('[data-form-status]');
   const charCount = form.querySelector('[data-char-count]');
-  const idleLabel = submitLabel.textContent;
+  const booking = () => AEOD.booking;
+  const isBooking = () => Boolean(booking() && booking().mode() === 'cita');
+  const idleLabel = () => (isBooking() ? 'Confirmar cita' : 'Enviar solicitud');
 
   /* ── Fechas (día preferido) ── */
   const today = () => (AEOD.clinicNow ? AEOD.clinicNow().isoDate : new Date().toISOString().slice(0, 10));
@@ -37,7 +44,6 @@
     date.setUTCDate(date.getUTCDate() + days);
     return date.toISOString().slice(0, 10);
   };
-  const weekday = (iso) => parseISO(iso).getUTCDay();
 
   form.elements.date.min = today();
   form.elements.date.max = addDays(today(), MAX_DAYS_AHEAD);
@@ -70,13 +76,6 @@
       if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return 'Revisa la fecha.';
       if (value < today()) return 'Elige una fecha a partir de hoy.';
       if (value > addDays(today(), MAX_DAYS_AHEAD)) return 'Elige una fecha dentro de los próximos 6 meses.';
-      if (weekday(value) === 0) return 'Los domingos solo atendemos urgencias por teléfono. Elige de lunes a sábado.';
-      return '';
-    },
-    slot(value, data) {
-      if (value === 'tarde' && data.date && weekday(data.date) === 6) {
-        return 'Los sábados atendemos de 10:00 a 14:00. Elige la mañana o cambia el día.';
-      }
       return '';
     },
     message(value) {
@@ -127,8 +126,6 @@
     });
     field.addEventListener('input', () => {
       if (touched.has(field.name)) validateField(field);
-      // El día condiciona la franja: se revalida en cuanto cambia
-      if (field.name === 'date' && touched.has('slot')) validateField(form.elements.slot);
     });
   });
 
@@ -139,7 +136,7 @@
   form.elements.message.addEventListener('input', updateCount);
 
   /* ── 4b. Borrador en esta pestaña (sessionStorage, se borra al enviar) ── */
-  const DRAFT_FIELDS = ['name', 'phone', 'email', 'treatment', 'date', 'slot', 'message'];
+  const DRAFT_FIELDS = ['name', 'phone', 'email', 'treatment', 'dentist', 'date', 'slot', 'message'];
   let draftTimer = null;
   function saveDraft() {
     if (!AEOD.session) return;
@@ -154,7 +151,11 @@
     const draft = AEOD.session && AEOD.session.get(DRAFT_KEY);
     if (!draft) return;
     DRAFT_FIELDS.forEach((name) => {
-      if (typeof draft[name] === 'string' && !form.elements[name].value) form.elements[name].value = draft[name];
+      if (typeof draft[name] !== 'string' || form.elements[name].value) return;
+      // Tratamiento y odontólogo dependen del catálogo de la API, que llega después
+      if (name === 'treatment' && booking()) booking().selectTreatment(draft.treatment, { silent: true });
+      else if (name === 'dentist' && booking()) booking().restoreDentist(draft.dentist);
+      else form.elements[name].value = draft[name];
     });
   }
   form.addEventListener('input', saveDraft);
@@ -175,8 +176,17 @@
     submitButton.disabled = loading;
     submitButton.classList.toggle('is-loading', loading);
     form.setAttribute('aria-busy', String(loading));
-    submitLabel.textContent = loading ? 'Enviando…' : idleLabel;
+    submitLabel.textContent = loading ? (isBooking() ? 'Reservando…' : 'Enviando…') : idleLabel();
   }
+
+  form.addEventListener('aeod:booking-mode', () => {
+    if (!submitButton.disabled) submitLabel.textContent = idleLabel();
+  });
+  // Errores de campo que detecta el paso 1 al consultar horarios (p. ej. una fecha fuera de rango)
+  form.addEventListener('aeod:booking-field-error', (event) => {
+    const field = form.elements[event.detail.field];
+    if (field) showFieldError(field, event.detail.message);
+  });
 
   function showSummary(type, html) {
     summary.className = `contact-form__summary is-${type}`;
@@ -191,6 +201,85 @@
   }
 
   /* ── 2. Envío ── */
+  const SLOT_LABELS = { manana: 'mañana', tarde: 'tarde' };
+  const ESTADOS = { PENDIENTE: 'Pendiente de confirmación', CONFIRMADA: 'Confirmada' };
+  // Campos de la API → campos del formulario, para pintar los errores que devuelve el backend
+  const API_FIELDS = {
+    nombre: 'name', telefono: 'phone', email: 'email', tratamiento: 'treatment', tratamiento_id: 'treatment',
+    fecha: 'date', mensaje: 'message',
+  };
+  const API_SLOT_FIELDS = ['hora_inicio', 'odontologo_id'];
+
+  /** Mensaje final: añade lo que la API de contacto no guarda en un campo propio (día, franja). */
+  function buildMessage(data, extras) {
+    const notes = extras.filter(Boolean).join(' ');
+    const text = [notes, data.message].filter(Boolean).join('\n');
+    return text.slice(0, 1000);
+  }
+
+  async function send(data) {
+    const { api } = AEOD;
+    if (isBooking()) {
+      const respuesta = await api.reservarCita({
+        ...booking().request(),
+        nombre: data.name,
+        telefono: data.phone,
+        email: data.email,
+        mensaje: data.message || null,
+      });
+      return { kind: 'cita', respuesta };
+    }
+    const slot = SLOT_LABELS[data.slot] ? `Franja preferida: ${SLOT_LABELS[data.slot]}.` : '';
+    await api.enviarContacto({
+      nombre: data.name,
+      telefono: data.phone,
+      email: data.email,
+      tratamiento: data.treatment,
+      mensaje: buildMessage(data, [data.date ? `Día preferido: ${data.date}.` : '', slot]),
+    });
+    return { kind: 'contacto' };
+  }
+
+  /** Confirmación de la cita con los datos que devuelve el backend. */
+  function bookingConfirmation(respuesta) {
+    const cita = respuesta.datos || {};
+    const escape = (text) => {
+      const div = document.createElement('div');
+      div.textContent = text == null ? '' : String(text);
+      return div.innerHTML;
+    };
+    const [y, m, d] = String(cita.fecha || '').split('-').map(Number);
+    const fecha = y ? new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })
+      .format(new Date(Date.UTC(y, m - 1, d))) : '';
+    const rows = [
+      ['Tratamiento', cita.tratamiento],
+      ['Día', fecha.charAt(0).toLocaleUpperCase('es') + fecha.slice(1)],
+      ['Hora', cita.hora_inicio && cita.hora_fin ? `${cita.hora_inicio} – ${cita.hora_fin}` : cita.hora_inicio],
+      ['Odontólogo/a', cita.odontologo],
+      ['Estado', ESTADOS[cita.estado] || cita.estado],
+    ].filter(([, value]) => value);
+    return `<strong>${escape(respuesta.message || 'Tu cita está reservada.')}</strong>`
+      + `<dl class="booking-confirmation">${rows.map(([label, value]) =>
+        `<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>`
+      + '<p>Si no puedes venir, avísanos llamando al <a href="tel:+34900000000">900 00 00 00</a>.</p>';
+  }
+
+  function showApiFieldErrors(errores) {
+    const invalid = [];
+    Object.entries(errores).forEach(([apiField, message]) => {
+      if (API_SLOT_FIELDS.includes(apiField) && booking()) {
+        booking().showError(message);
+        invalid.push({ focus: () => booking().focus() });
+        return;
+      }
+      const field = form.elements[API_FIELDS[apiField]];
+      if (!field) return;
+      showFieldError(field, message);
+      invalid.push(field);
+    });
+    return invalid;
+  }
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearSummary();
@@ -199,7 +288,18 @@
       touched.add(field.name);
       return validateField(field);
     });
+    // Paso 1: en una reserva hace falta elegir uno de los horarios disponibles
+    const missingSlot = booking() ? booking().validate() : '';
+    const stepOne = invalid.filter((field) => field === form.elements.treatment || field === form.elements.date);
 
+    if (stepOne.length) {
+      stepOne[0].focus();
+      return;
+    }
+    if (missingSlot) {
+      booking().focus();
+      return;
+    }
     if (invalid.length) {
       invalid[0].focus();
       return;
@@ -208,18 +308,31 @@
     const { api } = AEOD;
     setLoading(true);
     try {
-      await api.submitContactRequest(getData(), { endpoint: form.dataset.endpoint });
+      const { kind, respuesta } = await send(getData());
       form.reset();
       touched.clear();
       updateCount();
       AEOD.session.remove(DRAFT_KEY);
-      showSummary('success',
-        '<strong>Hemos recibido tu solicitud.</strong> Te llamaremos para confirmar tu cita.');
+      if (booking()) booking().reset();
+      showSummary('success', kind === 'cita'
+        ? bookingConfirmation(respuesta)
+        : '<strong>Hemos recibido tu solicitud.</strong> Te llamaremos para ayudarte y, si lo necesitas, darte cita.');
     } catch (error) {
       const notConfigured = api && error instanceof api.ApiNotConfiguredError;
-      showSummary('error', notConfigured
-        ? `<strong>Por ahora no podemos recibir solicitudes online.</strong> ${CONTACT_FALLBACK}`
-        : `<strong>No hemos podido enviar tu solicitud.</strong> Inténtalo de nuevo en unos minutos. ${CONTACT_FALLBACK}`);
+      const rejected = api && error instanceof api.ApiRequestError && error.status === 400;
+      const taken = api && error instanceof api.ApiRequestError && error.status === 409;
+      const invalidFields = rejected ? showApiFieldErrors(error.errores) : [];
+      if (taken && booking()) {
+        // Otra persona reservó ese horario antes: nueva lista y aviso junto a los horarios
+        await booking().conflict(error.message);
+      } else if (invalidFields.length) {
+        showSummary('error', '<strong>Revisa los campos marcados.</strong>');
+        invalidFields[0].focus();
+      } else {
+        showSummary('error', notConfigured
+          ? `<strong>Por ahora no podemos recibir solicitudes online.</strong> ${CONTACT_FALLBACK}`
+          : `<strong>No hemos podido enviar tu solicitud.</strong> Inténtalo de nuevo en unos minutos. ${CONTACT_FALLBACK}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -228,8 +341,12 @@
   /* ── 4c. Relleno desde otros módulos ── */
   function selectTreatment(value) {
     const select = form.elements.treatment;
-    if (!value || !Array.from(select.options).some((option) => option.value === value)) return;
-    select.value = value;
+    if (booking()) {
+      // booking.js traduce "Implantes dentales" al tratamiento de la API y recarga los horarios
+      booking().selectTreatment(value);
+    } else if (value && Array.from(select.options).some((option) => option.value === value)) {
+      select.value = value;
+    }
     if (touched.has('treatment')) validateField(select);
   }
 

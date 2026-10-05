@@ -6,6 +6,8 @@
   <title>AEOD Odontología Profesional | Clínica dental en Madrid</title>
   <meta name="description" content="Clínica dental en Madrid con más de 20 años de experiencia. Odontología general, ortodoncia, implantología y estética dental con tecnología digital. Urgencias 24 h.">
   <meta name="theme-color" content="#1B3A30">
+  <!-- URL base de la API (backend/). Vacío = sin API: la página usa sus datos estáticos. -->
+  <meta name="aeod-api" content="http://localhost:8080/api">
 
   <!-- Open Graph. Añadir og:url y og:image (URL absoluta) cuando exista el dominio definitivo. -->
   <meta property="og:type" content="website">
@@ -36,6 +38,7 @@
   <link rel="stylesheet" href="css/calculator.css">
   <link rel="stylesheet" href="css/faq.css">
   <link rel="stylesheet" href="css/contact.css">
+  <link rel="stylesheet" href="css/booking.css">
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/modal.css">
 
@@ -51,6 +54,8 @@
   <script src="js/calculator.js" defer></script>
   <script src="js/faq.js" defer></script>
   <script src="js/api.js" defer></script>
+  <script src="js/api-data.js" defer></script>
+  <script src="js/booking.js" defer></script>
   <script src="js/contact-form.js" defer></script>
   <script src="js/open-status.js" defer></script>
   <script src="js/treatment-finder.js" defer></script>
@@ -892,7 +897,7 @@
       <div class="contact__info">
         <p class="label label--brand">Contacto</p>
         <h2 id="contacto-title">Solicita tu cita</h2>
-        <p class="contact__lead">Déjanos tus datos y un asesor clínico te llamará para entender tu caso, resolver tus dudas y agendar tu primera valoración.</p>
+        <p class="contact__lead">Elige el tratamiento y el día, y te mostramos los horarios libres en ese momento. Si lo prefieres, déjanos tus datos y un asesor clínico te llamará.</p>
 
         <ul class="contact-list">
           <li>
@@ -935,67 +940,104 @@
       </div>
 
       <!--
-        El envío real se configura con data-endpoint (URL de la API). Mientras esté vacío,
-        el formulario NO simula éxito: muestra un error con los datos de contacto.
+        Reserva online. Los horarios los calcula el backend (GET /api/disponibilidad):
+        el navegador solo muestra los que recibe y, al confirmar, el backend vuelve a comprobarlos.
+        Si la API no está configurada o no responde, el formulario envía una solicitud de contacto
+        y NUNCA simula una reserva. data-tratamiento = tratamiento de la API al que lleva cada opción.
       -->
-      <form class="contact-form" id="contact-form" data-contact-form data-endpoint="" novalidate aria-labelledby="form-title">
+      <form class="contact-form" id="contact-form" data-contact-form novalidate aria-labelledby="form-title">
         <h3 id="form-title">Formulario de cita</h3>
         <p class="contact-form__hint">Los campos marcados con <span aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
 
         <div class="contact-form__summary" data-form-status role="status" tabindex="-1" hidden></div>
 
-        <div class="contact-form__grid">
-          <div class="field" data-field="name">
-            <label for="cf-name">Nombre completo <span class="req" aria-hidden="true">*</span></label>
-            <input id="cf-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="cf-name-error">
-            <p class="field__error" id="cf-name-error" data-error-for="name"></p>
+        <fieldset class="booking-step">
+          <legend class="booking-step__title"><span class="booking-step__num" aria-hidden="true">1</span> Elige tu cita</legend>
+          <div class="contact-form__grid">
+            <div class="field field--full" data-field="treatment">
+              <label for="cf-treatment">Tratamiento <span class="req" aria-hidden="true">*</span></label>
+              <select id="cf-treatment" name="treatment" required aria-describedby="cf-treatment-error">
+                <option value="">Selecciona una opción</option>
+                <option data-tratamiento="Valoración odontológica">Revisión general</option>
+                <option data-tratamiento="Limpieza dental">Limpieza dental</option>
+                <option data-tratamiento="Valoración odontológica">Implantes dentales</option>
+                <option data-tratamiento="Valoración odontológica">Ortodoncia / Invisalign</option>
+                <option data-tratamiento="Valoración odontológica">Estética dental / Carillas</option>
+                <option>Urgencia dental</option>
+                <option>Otro</option>
+              </select>
+              <p class="field__error" id="cf-treatment-error" data-error-for="treatment"></p>
+            </div>
+            <div class="field field--full" data-field="dentist" data-booking-only hidden>
+              <label for="cf-dentist">Odontólogo/a <span class="field__optional">(opcional)</span></label>
+              <select id="cf-dentist" name="dentist">
+                <option value="">Cualquiera (el primer horario libre)</option>
+              </select>
+            </div>
+            <div class="field" data-field="date">
+              <label for="cf-date">Día preferido</label>
+              <input id="cf-date" name="date" type="date" aria-describedby="cf-date-hint cf-date-error">
+              <p class="field__hint" id="cf-date-hint" data-date-hint>Te llamaremos para confirmar el día y la hora.</p>
+              <p class="field__error" id="cf-date-error" data-error-for="date"></p>
+            </div>
+            <div class="field" data-field="slot">
+              <label for="cf-slot">Franja horaria</label>
+              <select id="cf-slot" name="slot">
+                <option value="">Indiferente</option>
+                <option value="manana">Mañana (antes de las 14:00)</option>
+                <option value="tarde">Tarde (desde las 14:00)</option>
+              </select>
+            </div>
           </div>
-          <div class="field" data-field="phone">
-            <label for="cf-phone">Teléfono <span class="req" aria-hidden="true">*</span></label>
-            <input id="cf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="cf-phone-hint cf-phone-error">
-            <p class="field__hint" id="cf-phone-hint">Ej.: 600 123 456</p>
-            <p class="field__error" id="cf-phone-error" data-error-for="phone"></p>
+
+          <div class="slots" data-slots role="group" aria-labelledby="cf-slots-title" aria-describedby="cf-horario-error" tabindex="-1" hidden>
+            <p class="slots__title" id="cf-slots-title">Horarios disponibles</p>
+            <div class="slots__status" data-slots-status role="status"></div>
+            <div class="slots__list" data-slots-list></div>
+            <p class="field__error" id="cf-horario-error" data-error-for="horario"></p>
+            <div class="slots__actions">
+              <button type="button" class="btn btn--outline btn--sm" data-slots-nearest>Encontrar el horario más cercano</button>
+              <button type="button" class="text-link slots__callback" data-slots-callback>Ninguno me encaja, prefiero que me llaméis</button>
+            </div>
           </div>
-          <div class="field field--full" data-field="email">
-            <label for="cf-email">Correo electrónico <span class="req" aria-hidden="true">*</span></label>
-            <input id="cf-email" name="email" type="email" autocomplete="email" required aria-describedby="cf-email-error">
-            <p class="field__error" id="cf-email-error" data-error-for="email"></p>
+          <div class="slots-callback" data-callback-note hidden>
+            <p>Te llamaremos para buscar contigo el mejor horario.</p>
+            <button type="button" class="text-link" data-callback-undo>Volver a ver los horarios</button>
           </div>
-          <div class="field field--full" data-field="treatment">
-            <label for="cf-treatment">Tratamiento de interés <span class="req" aria-hidden="true">*</span></label>
-            <select id="cf-treatment" name="treatment" required aria-describedby="cf-treatment-error">
-              <option value="">Selecciona una opción</option>
-              <option>Revisión general</option>
-              <option>Limpieza dental</option>
-              <option>Implantes dentales</option>
-              <option>Ortodoncia / Invisalign</option>
-              <option>Estética dental / Carillas</option>
-              <option>Urgencia dental</option>
-              <option>Otro</option>
-            </select>
-            <p class="field__error" id="cf-treatment-error" data-error-for="treatment"></p>
+        </fieldset>
+
+        <fieldset class="booking-step">
+          <legend class="booking-step__title"><span class="booking-step__num" aria-hidden="true">2</span> Tus datos</legend>
+          <div class="contact-form__grid">
+            <div class="field" data-field="name">
+              <label for="cf-name">Nombre completo <span class="req" aria-hidden="true">*</span></label>
+              <input id="cf-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="cf-name-error">
+              <p class="field__error" id="cf-name-error" data-error-for="name"></p>
+            </div>
+            <div class="field" data-field="phone">
+              <label for="cf-phone">Teléfono <span class="req" aria-hidden="true">*</span></label>
+              <input id="cf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="cf-phone-hint cf-phone-error">
+              <p class="field__hint" id="cf-phone-hint">Ej.: 600 123 456</p>
+              <p class="field__error" id="cf-phone-error" data-error-for="phone"></p>
+            </div>
+            <div class="field field--full" data-field="email">
+              <label for="cf-email">Correo electrónico <span class="req" aria-hidden="true">*</span></label>
+              <input id="cf-email" name="email" type="email" autocomplete="email" required aria-describedby="cf-email-error">
+              <p class="field__error" id="cf-email-error" data-error-for="email"></p>
+            </div>
+            <div class="field field--full" data-field="message">
+              <label for="cf-message">Mensaje <span class="field__optional">(opcional)</span></label>
+              <textarea id="cf-message" name="message" rows="4" maxlength="1000" aria-describedby="cf-message-hint cf-message-error"></textarea>
+              <p class="field__hint field__hint--row" id="cf-message-hint"><span>Cuéntanos brevemente qué necesitas.</span> <span class="field__count"><span data-char-count>0</span>/1.000</span></p>
+              <p class="field__error" id="cf-message-error" data-error-for="message"></p>
+            </div>
           </div>
-          <div class="field" data-field="date">
-            <label for="cf-date">Día preferido <span class="field__optional">(opcional)</span></label>
-            <input id="cf-date" name="date" type="date" aria-describedby="cf-date-hint cf-date-error">
-            <p class="field__hint" id="cf-date-hint">De lunes a sábado.</p>
-            <p class="field__error" id="cf-date-error" data-error-for="date"></p>
-          </div>
-          <div class="field" data-field="slot">
-            <label for="cf-slot">Franja horaria <span class="field__optional">(opcional)</span></label>
-            <select id="cf-slot" name="slot" aria-describedby="cf-slot-error">
-              <option value="">Indiferente</option>
-              <option value="manana">Mañana (hasta las 14:00)</option>
-              <option value="tarde">Tarde (14:00–21:00)</option>
-            </select>
-            <p class="field__error" id="cf-slot-error" data-error-for="slot"></p>
-          </div>
-          <div class="field field--full" data-field="message">
-            <label for="cf-message">Mensaje <span class="field__optional">(opcional)</span></label>
-            <textarea id="cf-message" name="message" rows="4" maxlength="1000" aria-describedby="cf-message-hint cf-message-error"></textarea>
-            <p class="field__hint field__hint--row" id="cf-message-hint"><span>Cuéntanos brevemente qué necesitas.</span> <span class="field__count"><span data-char-count>0</span>/1.000</span></p>
-            <p class="field__error" id="cf-message-error" data-error-for="message"></p>
-          </div>
+        </fieldset>
+
+        <div class="booking-pick" data-booking-pick hidden>
+          <p class="booking-pick__label">Tu horario</p>
+          <p class="booking-pick__value" data-booking-pick-value></p>
+          <p class="booking-pick__meta" data-booking-pick-meta></p>
         </div>
 
         <button type="submit" class="btn btn--solid btn--block btn--lg" data-submit>
