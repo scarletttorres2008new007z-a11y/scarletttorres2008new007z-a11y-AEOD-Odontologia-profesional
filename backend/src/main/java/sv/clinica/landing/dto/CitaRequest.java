@@ -11,11 +11,24 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * Solicitud de cita. Es una preferencia: no confirma ninguna cita.
- * Las reglas que dependen de la base de datos o del reloj de la clínica
- * (tratamiento existente, fecha no pasada, hora en horario) se comprueban en CitaService.
+ * Reserva de un horario concreto que el paciente eligió entre los que devolvió /api/disponibilidad.
+ * El backend vuelve a comprobar que sigue libre antes de guardarla.
  */
 public record CitaRequest(
+
+        @NotNull(message = "Selecciona un tratamiento.")
+        @Positive(message = "El tratamiento no es válido.")
+        Long tratamientoId,
+
+        @NotNull(message = "Selecciona un horario.")
+        @Positive(message = "El odontólogo no es válido.")
+        Long odontologoId,
+
+        @NotNull(message = "Selecciona un horario.")
+        LocalDate fecha,
+
+        @NotNull(message = "Selecciona un horario.")
+        LocalTime horaInicio,
 
         @NotBlank(message = "El nombre es obligatorio.")
         @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres.")
@@ -31,15 +44,6 @@ public record CitaRequest(
         @Size(max = 150, message = "El correo no puede superar los 150 caracteres.")
         @Email(regexp = ValidacionPatrones.EMAIL, message = "El correo electrónico no es válido.")
         String email,
-
-        @NotNull(message = "Selecciona un tratamiento.")
-        @Positive(message = "El tratamiento no es válido.")
-        Long tratamientoId,
-
-        @NotNull(message = "La fecha preferida es obligatoria.")
-        LocalDate fechaPreferida,
-
-        LocalTime horaPreferida,
 
         @Size(max = 1000, message = "El mensaje no puede superar los 1000 caracteres.")
         String mensaje) {

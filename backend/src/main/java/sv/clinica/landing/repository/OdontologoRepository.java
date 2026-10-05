@@ -11,4 +11,6 @@ public interface OdontologoRepository extends JpaRepository<Odontologo, Long> {
     List<Odontologo> findByActivoTrueOrderByOrdenAscIdAsc();
 
     Optional<Odontologo> findByIdAndActivoTrue(Long id);
+
+    Optional<Odontologo> findByNombre(String nombre);
 }

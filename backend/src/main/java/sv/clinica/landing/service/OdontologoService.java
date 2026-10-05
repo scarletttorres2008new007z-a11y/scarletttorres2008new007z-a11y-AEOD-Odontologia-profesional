@@ -3,6 +3,7 @@ package sv.clinica.landing.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sv.clinica.landing.dto.OdontologoResponse;
+import sv.clinica.landing.entity.Odontologo;
 import sv.clinica.landing.exception.RecursoNoEncontradoException;
 import sv.clinica.landing.repository.OdontologoRepository;
 
@@ -25,8 +26,11 @@ public class OdontologoService {
     }
 
     public OdontologoResponse obtener(Long id) {
+        return OdontologoResponse.from(buscarActivo(id));
+    }
+
+    public Odontologo buscarActivo(Long id) {
         return repository.findByIdAndActivoTrue(id)
-                .map(OdontologoResponse::from)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe un odontólogo con id " + id + "."));
     }
 }

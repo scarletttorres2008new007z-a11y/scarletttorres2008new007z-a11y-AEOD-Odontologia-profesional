@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sv.clinica.landing.dto.ApiResponse;
 import sv.clinica.landing.dto.CitaRequest;
+import sv.clinica.landing.dto.CitaResponse;
+import sv.clinica.landing.entity.Cita;
+import sv.clinica.landing.entity.EstadoCita;
+import sv.clinica.landing.entity.OrigenCita;
 import sv.clinica.landing.service.CitaService;
 
 @RestController
@@ -21,11 +25,17 @@ public class CitaController {
         this.service = service;
     }
 
-    /** Registra la preferencia de cita. La cita queda PENDIENTE hasta que la clínica la confirme. */
+    /**
+     * Reserva un horario elegido entre los de /api/disponibilidad.
+     * 201 con la cita · 400 datos inválidos · 409 el horario ya no está libre.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse solicitar(@Valid @RequestBody CitaRequest request) {
-        service.registrar(request);
-        return ApiResponse.ok("Solicitud enviada correctamente. Te contactaremos para confirmar la cita.");
+    public ApiResponse reservar(@Valid @RequestBody CitaRequest request) {
+        Cita cita = service.reservar(request, OrigenCita.LANDING);
+        String mensaje = cita.getEstado() == EstadoCita.CONFIRMADA
+                ? "Tu cita está confirmada."
+                : "Tu cita está reservada. Te llamaremos para confirmarla.";
+        return ApiResponse.ok(mensaje, CitaResponse.from(cita));
     }
 }

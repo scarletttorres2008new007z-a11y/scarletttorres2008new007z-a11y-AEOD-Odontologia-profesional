@@ -54,4 +54,14 @@ public class Odontologo {
     public int getOrden() { return orden; }
 
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || (o instanceof Odontologo otro && id != null && id.equals(otro.getId()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Odontologo.class.hashCode();
+    }
 }

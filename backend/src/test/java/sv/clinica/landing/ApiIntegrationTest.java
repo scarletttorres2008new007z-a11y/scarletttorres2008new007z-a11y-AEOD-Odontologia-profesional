@@ -1,16 +1,10 @@
 package sv.clinica.landing;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -18,22 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** Prueba los endpoints con los datos iniciales, sobre H2 en memoria. */
-@SpringBootTest
-@AutoConfigureMockMvc
-class ApiIntegrationTest {
-
-    @Autowired
-    MockMvc mvc;
-
-    private static final LocalDate HOY = LocalDate.now(ZoneId.of("Europe/Madrid"));
-
-    private String cita(String fecha, String hora, long tratamientoId) {
-        return """
-                {"nombre":"Lucía Gómez","telefono":"600 123 456","email":"lucia@example.com",
-                 "tratamiento_id":%d,"fecha_preferida":"%s","hora_preferida":%s}
-                """.formatted(tratamientoId, fecha, hora == null ? "null" : "\"" + hora + "\"");
-    }
+/** Endpoints básicos con los datos iniciales. */
+class ApiIntegrationTest extends PruebaIntegracion {
 
     @Test
     void health() throws Exception {
@@ -49,7 +29,9 @@ class ApiIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(11)))
                 .andExpect(jsonPath("$[0].precio_desde").exists())
-                .andExpect(jsonPath("$[0].descripcion_corta").exists());
+                .andExpect(jsonPath("$[0].duracion_minutos").value(30))
+                .andExpect(jsonPath("$[0].odontologo_ids", hasSize(0)))
+                .andExpect(jsonPath("$[1].odontologo_ids", hasSize(2)));
         mvc.perform(get("/api/tratamientos/1")).andExpect(status().isOk());
         mvc.perform(get("/api/tratamientos/999"))
                 .andExpect(status().isNotFound())
@@ -75,20 +57,38 @@ class ApiIntegrationTest {
     }
 
     @Test
-    void citas() throws Exception {
-        mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON).content(cita(HOY.plusDays(2).toString(), "10:30", 2)))
-                .andExpect(status().isCreated());
-        mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON).content(cita(HOY.minusDays(1).toString(), null, 2)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errores.fecha_preferida").exists());
-        mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON).content(cita(HOY.plusDays(2).toString(), "21:00", 2)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errores.hora_preferida").exists());
-        mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON).content(cita(HOY.plusDays(2).toString(), null, 999)))
+    void disponibilidadValidaParametros() throws Exception {
+        mvc.perform(get("/api/disponibilidad").param("fecha", MARTES.toString()))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errores.tratamiento_id").exists());
+        mvc.perform(get("/api/disponibilidad").param("tratamiento_id", "2").param("fecha", LUNES.minusDays(1).toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errores.fecha").value("La fecha no puede ser anterior a hoy."));
+        mvc.perform(get("/api/disponibilidad").param("tratamiento_id", "2").param("fecha", LUNES.plusDays(400).toString()))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/api/disponibilidad").param("tratamiento_id", "999").param("fecha", MARTES.toString()))
+                .andExpect(status().isNotFound());
+        mvc.perform(get("/api/disponibilidad").param("tratamiento_id", "2").param("fecha", MARTES.toString())
+                        .param("franja", "NOCHE"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/api/disponibilidad/proximos").param("tratamiento_id", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.horarios", hasSize(greaterThan(0))));
+    }
+
+    @Test
+    void reservaValidaDatos() throws Exception {
+        mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON).content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errores.tratamiento_id").exists())
+                .andExpect(jsonPath("$.errores.hora_inicio").exists())
+                .andExpect(jsonPath("$.errores.nombre").exists());
         mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON).content("{roto"))
                 .andExpect(status().isBadRequest());
+        mvc.perform(post("/api/citas").contentType(MediaType.APPLICATION_JSON)
+                        .content(citaJson(tratamiento("Limpieza dental"), odontologo("Dra. Ana Villar"), MARTES, "25:00")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errores.hora_inicio").exists());
     }
 
     @Test

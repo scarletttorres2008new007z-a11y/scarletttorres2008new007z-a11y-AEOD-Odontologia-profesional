@@ -10,6 +10,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -45,6 +46,23 @@ public class GlobalExceptionHandler {
             }
         }
         return ResponseEntity.badRequest().body(ApiResponse.error(DATOS_INVALIDOS, errores));
+    }
+
+    /** El horario ya no está libre (doble reserva evitada). */
+    @ExceptionHandler(HorarioNoDisponibleException.class)
+    public ResponseEntity<ApiResponse> horarioOcupado(HorarioNoDisponibleException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(CitaNoModificableException.class)
+    public ResponseEntity<ApiResponse> citaNoModificable(CitaNoModificableException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse> parametroFaltante(MissingServletRequestParameterException ex) {
+        return ResponseEntity.badRequest().body(ApiResponse.error(DATOS_INVALIDOS,
+                Map.of(ex.getParameterName(), "Este dato es obligatorio.")));
     }
 
     @ExceptionHandler(DatosInvalidosException.class)
