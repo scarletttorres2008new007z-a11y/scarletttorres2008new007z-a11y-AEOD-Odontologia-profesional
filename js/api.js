@@ -10,8 +10,10 @@
  *   AEOD.api.getTratamiento(id)     GET  /tratamientos/{id}
  *   AEOD.api.getOdontologos()       GET  /odontologos
  *   AEOD.api.getOdontologo(id)      GET  /odontologos/{id}
+ *   AEOD.api.getDisponibilidad(q)   GET  /disponibilidad?tratamiento_id&fecha[&odontologo_id][&franja]
+ *   AEOD.api.getProximosHorarios(q) GET  /disponibilidad/proximos?tratamiento_id[&desde][&odontologo_id][&franja]
  *   AEOD.api.enviarContacto(datos)  POST /contacto
- *   AEOD.api.solicitarCita(datos)   POST /citas
+ *   AEOD.api.reservarCita(datos)    POST /citas  (409 si el horario ya no está libre)
  */
 (function () {
   'use strict';
@@ -56,6 +58,16 @@
     }
   }
 
+  /** { tratamiento_id: 2, fecha: '2026-10-15', franja: '' } → "?tratamiento_id=2&fecha=2026-10-15" (omite vacíos) */
+  function query(params) {
+    const search = new URLSearchParams();
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') search.set(key, String(value));
+    });
+    const text = search.toString();
+    return text ? `?${text}` : '';
+  }
+
   // Las lecturas usan un tiempo corto: si la API no responde, la página sigue con sus datos estáticos.
   const READ_TIMEOUT = 5000;
 
@@ -67,8 +79,10 @@
       getTratamiento: (id) => request(`/tratamientos/${encodeURIComponent(id)}`, { timeoutMs: READ_TIMEOUT }),
       getOdontologos: () => request('/odontologos', { timeoutMs: READ_TIMEOUT }),
       getOdontologo: (id) => request(`/odontologos/${encodeURIComponent(id)}`, { timeoutMs: READ_TIMEOUT }),
+      getDisponibilidad: (params) => request(`/disponibilidad${query(params)}`, { timeoutMs: READ_TIMEOUT * 2 }),
+      getProximosHorarios: (params) => request(`/disponibilidad/proximos${query(params)}`, { timeoutMs: READ_TIMEOUT * 2 }),
       enviarContacto: (datos) => request('/contacto', { method: 'POST', body: datos }),
-      solicitarCita: (datos) => request('/citas', { method: 'POST', body: datos }),
+      reservarCita: (datos) => request('/citas', { method: 'POST', body: datos }),
       ApiNotConfiguredError,
       ApiRequestError,
     },

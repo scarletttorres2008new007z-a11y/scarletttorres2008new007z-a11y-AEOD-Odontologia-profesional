@@ -7,7 +7,8 @@
  * - Si la API no está configurada, no responde o devuelve una lista vacía,
  *   la página se queda con su contenido estático. Nunca se vacía una sección.
  *
- * Expone AEOD.tratamientoId(nombre) → Promise<id | null> para el formulario de cita.
+ * Expone AEOD.catalogo → Promise<{ tratamientos, odontologos }> para la reserva online
+ * (listas vacías si la API no está configurada o no responde).
  */
 (function () {
   'use strict';
@@ -105,22 +106,14 @@
   }
 
   /* ── Carga ── */
-  const tratamientosCargados = api.enabled
-    ? api.getTratamientos().then((lista) => (Array.isArray(lista) ? lista : [])).catch(() => [])
-    : Promise.resolve([]);
+  const lista = (promesa) => promesa.then((datos) => (Array.isArray(datos) ? datos : [])).catch(() => []);
+  const tratamientosCargados = api.enabled ? lista(api.getTratamientos()) : Promise.resolve([]);
+  const odontologosCargados = api.enabled ? lista(api.getOdontologos()) : Promise.resolve([]);
 
   tratamientosCargados.then(renderPrices);
+  // Sin API se mantiene el equipo estático
+  odontologosCargados.then(renderTeam);
 
-  if (api.enabled) {
-    api.getOdontologos()
-      .then((lista) => { if (Array.isArray(lista)) renderTeam(lista); })
-      .catch(() => { /* Sin API: se mantiene el equipo estático */ });
-  }
-
-  /** Id del tratamiento en la API a partir de su nombre, o null si no existe o la API no responde. */
-  AEOD.tratamientoId = async function (nombre) {
-    const lista = await tratamientosCargados;
-    const found = lista.find((t) => normalize(t.nombre) === normalize(nombre));
-    return found ? found.id : null;
-  };
+  AEOD.catalogo = Promise.all([tratamientosCargados, odontologosCargados])
+    .then(([tratamientos, odontologos]) => ({ tratamientos, odontologos }));
 })();
