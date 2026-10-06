@@ -4,7 +4,7 @@ import type {
   OrigenAuditoria,
   RegistroAuditoria,
 } from '../../shared/api/tipos';
-import { formatearFecha, formatearFechaHora } from '../../shared/formato';
+import { formatearFecha, formatearFechaHora, formatearTelefono } from '../../shared/formato';
 
 // Textos en castellano para los códigos que guarda la auditoría.
 
@@ -38,18 +38,8 @@ export const GRUPOS_DE_ACCIONES: { titulo: string; acciones: AccionAuditoria[] }
       'CAMBIAR_PASSWORD',
     ],
   },
-  {
-    titulo: 'Usuarios y roles',
-    acciones: [
-      'CREAR',
-      'EDITAR',
-      'ACTIVAR',
-      'DESACTIVAR',
-      'CAMBIAR_ROLES',
-      'RESTABLECER_PASSWORD',
-      'CAMBIAR_PERMISOS',
-    ],
-  },
+  { titulo: 'Altas y cambios', acciones: ['CREAR', 'EDITAR', 'ACTIVAR', 'DESACTIVAR'] },
+  { titulo: 'Usuarios y roles', acciones: ['CAMBIAR_ROLES', 'RESTABLECER_PASSWORD', 'CAMBIAR_PERMISOS'] },
   { titulo: 'Citas', acciones: ['RESERVAR', 'CANCELAR', 'REPROGRAMAR'] },
 ];
 
@@ -57,12 +47,14 @@ export const ENTIDADES: Record<EntidadAuditoria, string> = {
   USUARIO: 'Usuario',
   ROL: 'Rol',
   CITA: 'Cita',
+  PACIENTE: 'Paciente',
 };
 
 export const ENTIDADES_EN_PLURAL: Record<EntidadAuditoria, string> = {
   USUARIO: 'Usuarios',
   ROL: 'Roles',
   CITA: 'Citas',
+  PACIENTE: 'Pacientes',
 };
 
 export const ORIGENES: Record<OrigenAuditoria, string> = {
@@ -89,6 +81,18 @@ const CAMPOS: Record<string, string> = {
   tratamiento_id: 'Tratamiento (n.º)',
   odontologo_id: 'Odontólogo (n.º)',
   cita_id: 'Cita nueva (n.º)',
+  codigo: 'Código',
+  nombres: 'Nombre',
+  apellidos: 'Apellidos',
+  tipo_documento: 'Tipo de documento',
+  numero_documento: 'N.º de documento',
+  fecha_nacimiento: 'Fecha de nacimiento',
+  sexo: 'Sexo',
+  telefono: 'Teléfono',
+  direccion: 'Dirección',
+  contacto_emergencia_nombre: 'Contacto de emergencia',
+  contacto_emergencia_telefono: 'Teléfono de emergencia',
+  observaciones: 'Observaciones',
 };
 
 const VALORES: Record<string, string> = {
@@ -104,7 +108,13 @@ const VALORES: Record<string, string> = {
   REPROGRAMADA: 'Reprogramada',
   COMPLETADA: 'Completada',
   NO_ASISTIO: 'No asistió',
+  PASAPORTE: 'Pasaporte',
+  OTRO: 'Otro',
+  MUJER: 'Mujer',
+  HOMBRE: 'Hombre',
 };
+
+const CLAVES_CON_CODIGO = new Set(['motivo', 'roles', 'estado', 'tipo_documento', 'sexo']);
 
 export function nombreDelCampo(clave: string): string {
   return CAMPOS[clave] ?? clave;
@@ -118,9 +128,11 @@ export function textoDelValor(clave: string, valor: unknown): string {
     return valor.length === 0 ? 'Ninguno' : valor.map((item) => textoDelValor(clave, item)).join(', ');
   }
   if (typeof valor === 'string') {
-    if (clave === 'fecha') return formatearFecha(valor);
+    if (clave === 'fecha' || clave === 'fecha_nacimiento') return formatearFecha(valor);
     if (clave === 'bloqueado_hasta') return formatearFechaHora(valor);
-    return VALORES[valor] ?? valor;
+    if (clave === 'telefono' || clave === 'contacto_emergencia_telefono') return formatearTelefono(valor);
+    // Solo se traducen los datos que guardan un código; un nombre o una observación se muestran tal cual
+    return CLAVES_CON_CODIGO.has(clave) ? (VALORES[valor] ?? valor) : valor;
   }
   if (typeof valor === 'number') return String(valor);
   return JSON.stringify(valor);
@@ -139,6 +151,15 @@ export function autor(registro: RegistroAuditoria): { nombre: string; detalle?: 
     default:
       return { nombre: 'Sin identificar' };
   }
+}
+
+/** La acción, con el nombre que tiene para los pacientes (alta, baja y reactivación). */
+export function textoDeAccion(registro: RegistroAuditoria): string {
+  if (registro.entidad === 'PACIENTE') {
+    if (registro.accion === 'ACTIVAR') return 'Reactivación';
+    if (registro.accion === 'DESACTIVAR') return 'Baja';
+  }
+  return ACCIONES[registro.accion];
 }
 
 export function afectado(registro: RegistroAuditoria): string {

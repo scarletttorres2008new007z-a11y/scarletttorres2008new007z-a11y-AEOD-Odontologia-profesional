@@ -8,7 +8,7 @@ paciente son clientes de la misma API.
 | --- | --- | --- | --- |
 | [`landing/`](landing/README.md) | Web pública: tratamientos, precios, equipo y reserva de citas | HTML, CSS y JavaScript | En uso |
 | [`backend/`](backend/README.md) | API REST central: reglas de negocio, disponibilidad, citas y acceso a la base de datos | Java 21, Spring Boot, Flyway | En uso |
-| [`gestion/`](gestion/README.md) | Software de gestión para recepción, odontólogos y administración | React, TypeScript, Vite | Fase 1: entrada, usuarios, roles y auditoría |
+| [`gestion/`](gestion/README.md) | Software de gestión para recepción, odontólogos y administración | React, TypeScript, Vite | Fase 2: entrada, usuarios, roles, auditoría y pacientes |
 
 ```text
 landing/  ──┐

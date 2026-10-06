@@ -5,6 +5,8 @@ import { PaginaEntrar } from '../features/auth/PaginaEntrar';
 import { PERMISOS } from '../features/auth/permisos';
 import { PaginaMiCuenta } from '../features/cuenta/PaginaMiCuenta';
 import { PaginaInicio } from '../features/inicio/PaginaInicio';
+import { PaginaPaciente } from '../features/pacientes/PaginaPaciente';
+import { PaginaPacientes } from '../features/pacientes/PaginaPacientes';
 import { PaginaRoles } from '../features/roles/PaginaRoles';
 import { PaginaUsuarios } from '../features/usuarios/PaginaUsuarios';
 import { Estructura } from './Estructura';
@@ -36,6 +38,22 @@ export function Rutas() {
         }
       >
         <Route index element={<PaginaInicio />} />
+        <Route
+          path="pacientes"
+          element={
+            <ConPermiso permiso={PERMISOS.PACIENTES_VER}>
+              <PaginaPacientes />
+            </ConPermiso>
+          }
+        />
+        <Route
+          path="pacientes/:id"
+          element={
+            <ConPermiso permiso={PERMISOS.PACIENTES_VER}>
+              <PaginaPaciente />
+            </ConPermiso>
+          }
+        />
         <Route
           path="usuarios"
           element={

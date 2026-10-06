@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Base de los tests de integración: la base de pruebas (MySQL o MariaDB) recién creada con las migraciones,
  * los datos de ejemplo y un reloj fijo en el lunes 12/10/2026 a las 08:00 (hora de Madrid).
- * Cada test crea los usuarios que necesita; al terminar se borran (el administrador inicial se conserva).
+ * Cada test crea los usuarios y pacientes que necesita; al terminar se borran (el administrador inicial se conserva).
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -119,14 +120,25 @@ abstract class PruebaIntegracion {
     @Autowired
     LimitadorDePeticiones limitador;
 
+    /** Permisos de cada rol tal y como los dejan las migraciones; se restauran al terminar cada test. */
+    private static List<Object[]> permisosIniciales;
+
     @BeforeEach
     void contadoresACero() {
         limitador.vaciar();
+        if (permisosIniciales == null) {
+            permisosIniciales = jdbc.query("select rol_id, permiso_id from rol_permisos",
+                    (fila, n) -> new Object[]{fila.getLong("rol_id"), fila.getLong("permiso_id")});
+        }
     }
 
-    /** Cada test empieza con la agenda vacía y sin usuarios propios (los datos de ejemplo se conservan). */
+    /**
+     * Cada test empieza con la agenda vacía, sin pacientes ni usuarios propios y con los permisos de cada rol como
+     * los dejan las migraciones (los datos de ejemplo se conservan).
+     */
     @AfterEach
     void vaciarAgenda() {
+        jdbc.update("delete from pacientes");
         jdbc.update("delete from notificaciones");
         jdbc.update("delete from lista_espera");
         jdbc.update("delete from agenda_ocupacion");
@@ -137,7 +149,8 @@ abstract class PruebaIntegracion {
         jdbc.update("delete from sesiones");
         jdbc.update("delete from usuario_roles where usuario_id in (select id from usuarios where username <> ?)", ADMIN_INICIAL);
         jdbc.update("delete from usuarios where username <> ?", ADMIN_INICIAL);
-        jdbc.update("delete from rol_permisos where rol_id <> (select id from roles where codigo = 'ADMINISTRADOR')");
+        jdbc.update("delete from rol_permisos");
+        jdbc.batchUpdate("insert into rol_permisos (rol_id, permiso_id) values (?, ?)", permisosIniciales);
         limitador.vaciar();
     }
 

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.containsString;
@@ -45,9 +46,10 @@ class UsuariosTest extends PruebaIntegracion {
                 .andReturn().getResponse().getContentAsString();
         long id = leer(creado).get("id").asLong();
 
+        // Recepción solo trae de serie los permisos de pacientes
         String recepcion = leer(mvc.perform(login("recepcion1", "Recepcion-2026"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.usuario.permisos", hasSize(0)))
+                .andExpect(jsonPath("$.usuario.permisos", contains("pacientes.crear", "pacientes.editar", "pacientes.ver")))
                 .andReturn().getResponse().getContentAsString()).get("token_acceso").asText();
 
         // Todo lo que no tiene permitido, llamando directamente a la API

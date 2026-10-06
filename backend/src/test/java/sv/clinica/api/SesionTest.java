@@ -22,8 +22,8 @@ import java.time.Instant;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -51,7 +51,7 @@ class SesionTest extends PruebaIntegracion {
                 .andExpect(jsonPath("$.token_acceso").isString())
                 .andExpect(jsonPath("$.usuario.username").value("lucia"))
                 .andExpect(jsonPath("$.usuario.roles[0].codigo").value("RECEPCION"))
-                .andExpect(jsonPath("$.usuario.permisos", hasSize(0)))
+                .andExpect(jsonPath("$.usuario.permisos", contains("pacientes.crear", "pacientes.editar", "pacientes.ver")))
                 .andExpect(jsonPath("$.usuario.password_hash").doesNotExist())
                 .andReturn();
 

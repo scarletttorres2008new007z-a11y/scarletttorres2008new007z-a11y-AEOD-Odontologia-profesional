@@ -4,8 +4,8 @@ El proyecto tiene ahora tres partes en carpetas separadas:
 
 - `landing`: la web pública, la misma de siempre.
 - `backend`: la API central. Es el antiguo backend de la landing, que ahora servirá también al software de gestión.
-- `gestion`: el software de gestión para el personal (Fase 1: entrada con usuario y contraseña, usuarios, roles y
-  auditoría). Se abre en VS Code (paso 8).
+- `gestion`: el software de gestión para el personal: entrada con usuario y contraseña, usuarios, roles, auditoría y,
+  desde la Fase 2, **pacientes**. Se abre en VS Code (paso 8).
 
 La base de datos central se llama **`clinica_aeod`**. **No tienes que crearla ni ejecutar ningún script SQL**: el backend
 la crea solo la primera vez, con sus tablas y los datos de ejemplo.
@@ -13,14 +13,16 @@ la crea solo la primera vez, con sus tablas y los datos de ejemplo.
 Necesitas **XAMPP** e **IntelliJ IDEA** (Community o Ultimate), como hasta ahora, y el JDK **ms-21**. Para el software
 de gestión, además, **VS Code** y **Node.js** (paso 8). MySQL Workbench es opcional (paso 9).
 
-## ¿Ya tenías la versión de la Fase 0 (`aeod-sistema`)?
+## ¿Ya tenías una versión anterior de `aeod-sistema` (Fase 0 o Fase 1)?
 
-1. En IntelliJ, para el backend con el cuadrado rojo **■** y cierra IntelliJ.
+1. Para el backend en IntelliJ con el cuadrado rojo **■** y, si el software está abierto, pulsa **Ctrl + C** en la
+   terminal de VS Code. Cierra IntelliJ y VS Code.
 2. Borra la carpeta `aeod-sistema` antigua y descomprime el zip nuevo en su lugar (paso 1).
-3. Haz los pasos 3 a 8. En el paso 4 la clase ha cambiado de nombre: ahora es **`ClinicaApiApplication`**, así que crea
-   la configuración otra vez desde ella.
-4. Tu base `clinica_aeod` **se conserva**: el backend solo le añade las tablas nuevas (usuarios, roles, permisos,
-   sesiones y auditoría). Tus citas de prueba siguen ahí.
+3. Haz los pasos 3 a 8, también lo de **Solo la primera vez** del paso 8 (`npm install`). En el paso 4 la clase es
+   **`ClinicaApiApplication`**.
+4. Tu base `clinica_aeod` **se conserva**: el backend solo le añade lo nuevo. Si venías de la Fase 1, en la consola verás
+   `Migrating schema clinica_aeod to version "3 - pacientes"`, y la contraseña de `admin` es la misma que ya tenías
+   (esta vez no sale el recuadro). Tus citas y usuarios de prueba siguen ahí.
 
 ## ¿Venías de la versión anterior (`aeod-landing-con-backend`)?
 
@@ -65,7 +67,7 @@ Si tu XAMPP tiene contraseña, entra en el desplegable de arriba a la derecha �
 ## 5. Comprobar que el backend funciona
 
 1. Abajo se abre la consola. La primera vez verás estas líneas:
-   - `Successfully applied … migration(s) to schema clinica_aeod, now at version v2`: se han creado las tablas.
+   - `Successfully applied … migration(s) to schema clinica_aeod, now at version v3`: se han creado las tablas.
    - `Tomcat started on port 8080`: el backend está en marcha.
    - Varias líneas que empiezan por **`Datos de prueba:`**: tratamientos, odontólogos, horarios y almuerzo de ejemplo
      (solo si la base estaba vacía).
@@ -132,14 +134,18 @@ datos), así que el backend tiene que estar encendido (paso 5).
 4. Ve a **Mi cuenta** y cambia la contraseña por una tuya (mínimo 10 caracteres).
 5. Para parar el software, en la terminal pulsa **Ctrl + C**.
 
-**Para probar que los permisos funcionan:**
+**Para probar los pacientes y los permisos:**
 
 1. En **Usuarios → Nuevo usuario** crea, por ejemplo, a alguien de recepción y marca el rol **Recepción**.
-2. Pulsa **Cerrar sesión** (arriba a la derecha) y entra con ese usuario: en el menú solo verá **Inicio**, porque en la
-   Fase 1 el rol de recepción todavía no tiene permisos.
-3. Si escribe a mano la dirección `http://localhost:5173/usuarios`, verá «No tienes permiso». Y aunque alguien llamara
+2. Pulsa **Cerrar sesión** (arriba a la derecha) y entra con ese usuario: en el menú verá **Inicio** y **Pacientes**,
+   pero no Usuarios, Roles ni Auditoría.
+3. En **Pacientes → Nuevo paciente** da de alta a alguien (un DNI válido de ejemplo es `12345678Z`). Después búscalo
+   por nombre (sin tildes también vale), DNI, teléfono o código, ábrelo y edita sus datos desde su ficha.
+4. Si escribe a mano la dirección `http://localhost:5173/usuarios`, verá «No tienes permiso». Y aunque alguien llamara
    directamente a la API, el backend responde **403**: los permisos los comprueba siempre el backend.
-4. En **Roles y permisos** (como administrador) decides qué puede hacer cada rol. Todo queda en **Auditoría**.
+5. Vuelve a entrar como `admin`. En **Auditoría** verás el alta y cada cambio del paciente, con quién lo hizo. En
+   **Roles y permisos** decides qué puede hacer cada rol: de entrada, Recepción y Coordinador dan de alta y editan
+   pacientes, y Odontólogo solo los consulta.
 
 **Si pierdes la contraseña del administrador:**
 
@@ -165,7 +171,7 @@ la da XAMPP, y dos servidores a la vez chocan en el puerto 3306.
 
 **Ver los datos.** En el panel **Schemas** de la izquierda abre `clinica_aeod → Tables`. Clic derecho en `citas` →
 **Select Rows - Limit 1000**: verás tu cita con el estado **PENDIENTE** y el origen **LANDING**. En `agenda_ocupacion`
-hay una fila por cada cuarto de hora que ocupa.
+hay una fila por cada cuarto de hora que ocupa. En `pacientes` están los pacientes que des de alta en el software.
 
 **Qué no hacer.** No cambies la estructura de las tablas desde Workbench (ni columnas, ni tablas nuevas): esos cambios
 los hacen las migraciones del backend. La tabla `flyway_schema_history` es el registro de esas migraciones; no la toques.

@@ -19,7 +19,7 @@
 }
 
 /* En la tabla de antes/después se resaltan los datos que cambiaron */
-.cambio th,
-.cambio td {
+tbody tr.cambio th,
+tbody tr.cambio td {
   background: var(--warning-bg);
 }

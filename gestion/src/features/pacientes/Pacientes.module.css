@@ -1,0 +1,100 @@
+/* ── Formulario del paciente ── */
+.formulario {
+  display: grid;
+  gap: 20px;
+}
+.bloque {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.bloque legend {
+  margin-bottom: 4px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--brand);
+}
+/* Dos columnas cuando caben; una en el móvil */
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+}
+
+/* ── Lista ── */
+/* En el móvil la tabla se desplaza dentro de su caja antes que partir nombres y teléfonos */
+.celdaNombre {
+  min-width: 12rem;
+}
+.sinCorte {
+  white-space: nowrap;
+}
+.nombre {
+  font-weight: 600;
+  color: var(--brand);
+  text-decoration: none;
+}
+.nombre:hover {
+  text-decoration: underline;
+}
+
+/* ── Ficha ── */
+.volver {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--brand);
+  text-decoration: none;
+}
+.volver:hover {
+  text-decoration: underline;
+}
+.titular {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin-top: 8px;
+  color: var(--ink-3);
+}
+.secciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.datos {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 0;
+}
+.datos > div {
+  display: grid;
+  grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+  gap: 12px;
+}
+.datos dt {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.datos dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.texto {
+  margin: 16px 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.sinDato {
+  color: var(--muted);
+}
+.pie {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}

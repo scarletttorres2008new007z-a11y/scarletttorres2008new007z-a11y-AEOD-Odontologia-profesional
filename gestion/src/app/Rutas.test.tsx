@@ -26,7 +26,7 @@ describe('rutas y menú', () => {
 
   it('el administrador ve todos los módulos en el menú', () => {
     pintar(<Rutas />, { auth: { usuario: ADMIN } });
-    expect(opcionesDelMenu()).toEqual(['Inicio', 'Usuarios', 'Roles y permisos', 'Auditoría']);
+    expect(opcionesDelMenu()).toEqual(['Inicio', 'Pacientes', 'Usuarios', 'Roles y permisos', 'Auditoría']);
     expect(screen.getByRole('heading', { name: 'Hola, Marta' })).toBeInTheDocument();
   });
 

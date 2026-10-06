@@ -10,6 +10,9 @@ export const PERMISOS = {
   ROLES_VER: 'roles.ver',
   ROLES_EDITAR: 'roles.editar',
   AUDITORIA_VER: 'auditoria.ver',
+  PACIENTES_VER: 'pacientes.ver',
+  PACIENTES_CREAR: 'pacientes.crear',
+  PACIENTES_EDITAR: 'pacientes.editar',
 } as const;
 
 export type CodigoPermiso = (typeof PERMISOS)[keyof typeof PERMISOS];

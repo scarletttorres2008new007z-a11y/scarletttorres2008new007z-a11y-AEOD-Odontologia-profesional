@@ -60,11 +60,35 @@ Variables de entorno (en `test` y `prod` son obligatorias; si falta alguna, el b
 - **Cabeceras**: `Content-Security-Policy`, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `no-store` y HSTS
   por HTTPS. Detrás de un proxy en producción, `server.forward-headers-strategy=native`.
 - **Auditoría** (`/api/auditoria`, permiso `auditoria.ver`): entradas, fallos, bloqueos, cambios de usuarios, roles y
-  permisos, y reservas, cancelaciones y cambios de citas (sin datos del paciente).
+  permisos, altas y cambios de pacientes, y reservas, cancelaciones y cambios de citas (sin datos del paciente).
 - **Primer administrador**: en `dev`, si no hay ninguno, se crea `admin` con una contraseña aleatoria que se muestra una
   vez en la consola. En `test` y `prod`, con `ADMIN_USERNAME`, `ADMIN_EMAIL` y `ADMIN_PASSWORD`.
 - **Swagger**: <http://localhost:8080/swagger-ui.html> en `dev` y `test` (desactivado en `prod`).
 - **Errores**: siempre `{ timestamp, status, error, message, path }` (+ `errores` por campo), desde un único manejador.
+
+## Pacientes (Fase 2)
+
+Solo datos personales, de contacto y administrativos (tabla `pacientes`, migración `V3__pacientes.sql`). Los datos
+clínicos irán en el expediente, en otra tabla.
+
+| Método | Ruta | Permiso | Qué hace |
+| --- | --- | --- | --- |
+| GET | `/api/pacientes?texto=&activo=&pagina=0&tamano=20` | `pacientes.ver` | Busca por palabras del nombre, los apellidos, el documento, el teléfono, el correo o el código, sin distinguir mayúsculas ni tildes. Ordenados por apellidos; máximo 100 por página |
+| GET | `/api/pacientes/{id}` | `pacientes.ver` | Ficha del paciente (404 si no existe) |
+| POST | `/api/pacientes` | `pacientes.crear` | Alta. 201; 400 con errores por campo; **409** si el documento ya existe |
+| PUT | `/api/pacientes/{id}` | `pacientes.editar` | Sustituye sus datos |
+| PUT | `/api/pacientes/{id}/estado` | `pacientes.editar` | `{ "activo": false }` da de baja (no borra nada); `true` lo reactiva |
+
+- **Validaciones en el backend:** nombre, apellidos y teléfono obligatorios; DNI y NIE con su letra de control; el tipo
+  y el número de documento van juntos; teléfono de 9 a 15 dígitos (con `+` opcional); correo válido; nacimiento no
+  futuro. Se guardan normalizados: documento en mayúsculas sin guiones, teléfono solo con `+` y dígitos, correo en
+  minúsculas. La base también impide documentos repetidos (`uk_paciente_documento`).
+- **Código del paciente:** 6 caracteres aleatorios sin vocales ni caracteres confundibles (p. ej. `K7M3QX`), generado
+  por el backend; no se puede elegir ni cambiar.
+- **Auditoría:** el alta guarda todos los datos; una edición guarda solo los campos que cambiaron (antes y después);
+  guardar sin cambios no deja registro.
+- **Permisos iniciales** (se cambian en Roles y permisos): Administrador, Recepción y Coordinador ven, dan de alta y
+  editan; Odontólogo solo ve.
 
 Las migraciones se aplican solas al arrancar, así que el usuario de `DB_USERNAME` necesita permiso para crear y modificar
 tablas en su base. Antes de desplegar una versión con migraciones nuevas en producción, haz una copia de seguridad de la base.
@@ -260,7 +284,8 @@ también comprueban que las migraciones funcionan. Por seguridad, solo borran un
   `TEST_DB_URL`, `TEST_DB_USERNAME` y `TEST_DB_PASSWORD`.
 
 Cubren el cálculo de disponibilidad (incluido el ejemplo 8–17 con almuerzo y una cita de 10 a 11), las reservas
-simultáneas, la cancelación y la reprogramación.
+simultáneas, la cancelación y la reprogramación, la entrada y los permisos, y los pacientes (validaciones, documento
+repetido, búsqueda, permisos por rol y auditoría).
 
 ## Estructura
 
@@ -268,12 +293,14 @@ simultáneas, la cancelación y la reprogramación.
 src/main/java/sv/clinica/api/
 ├── config/       DataInitializer, AdministradorInicial, OpenApiConfig, propiedades, VariablesDeEntornoObligatorias
 ├── security/     SeguridadConfig, TokenService, ConvertidorJwt, CookieDeSesion, límite de peticiones, Permisos
-├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad
+├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad, Auth, Usuario, Rol, Auditoria, Paciente
 ├── dto/          Respuestas, peticiones con validaciones y patrones compartidos
-├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion y sus enums
+├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion, Usuario,
+│                 Rol, Permiso, Sesion, RegistroAuditoria, Paciente y sus enums
 ├── event/        CitaEvento (reserva, cancelación, reprogramación)
 ├── repository/   Spring Data JPA
-├── service/      DisponibilidadService (agenda), CitaService (reservar, cancelar, reprogramar), NotificacionService
+├── service/      DisponibilidadService (agenda), CitaService (reservar, cancelar, reprogramar), NotificacionService,
+│                 AuthService, UsuarioService, RolService, AuditoriaService, PacienteService (+ BusquedaDePacientes)
 └── exception/    RecursoNoEncontrado, DatosInvalidos, HorarioNoDisponible (409), CitaNoModificable (409), GlobalExceptionHandler
 src/main/resources/
 ├── application.properties            Configuración común

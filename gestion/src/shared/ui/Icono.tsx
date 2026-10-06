@@ -24,6 +24,14 @@ const TRAZOS = {
       <path d="M9 10h6M9 14h6M9 18h3" />
     </>
   ),
+  pacientes: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <circle cx="9" cy="10.5" r="2.25" />
+      <path d="M5.75 16c.55-1.5 1.75-2.35 3.25-2.35s2.7.85 3.25 2.35" />
+      <path d="M15 10h3.5M15 13.5h3.5" />
+    </>
+  ),
   cuenta: (
     <>
       <circle cx="12" cy="8" r="4" />
@@ -40,6 +48,7 @@ const TRAZOS = {
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   cerrar: <path d="M6 6l12 12M18 6 6 18" />,
   flecha: <path d="M5 12h14m-6-6 6 6-6 6" />,
+  volver: <path d="M19 12H5m6-6-6 6 6 6" />,
 } satisfies Record<string, ReactNode>;
 
 export type NombreIcono = keyof typeof TRAZOS;

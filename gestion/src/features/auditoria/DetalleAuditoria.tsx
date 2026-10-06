@@ -4,7 +4,7 @@ import { Boton } from '../../shared/ui/Boton';
 import { Dialogo } from '../../shared/ui/Dialogo';
 import p from '../../shared/ui/pagina.module.css';
 import css from './Auditoria.module.css';
-import { ACCIONES, afectado, autor, nombreDelCampo, ORIGENES, textoDelValor } from './etiquetas';
+import { afectado, autor, nombreDelCampo, ORIGENES, textoDeAccion, textoDelValor } from './etiquetas';
 
 type Valores = Record<string, unknown>;
 
@@ -23,7 +23,7 @@ export function DetalleAuditoria({
 
   return (
     <Dialogo
-      titulo={ACCIONES[registro.accion]}
+      titulo={textoDeAccion(registro)}
       alCerrar={alCerrar}
       pie={
         <Boton variante="secundario" onClick={alCerrar}>

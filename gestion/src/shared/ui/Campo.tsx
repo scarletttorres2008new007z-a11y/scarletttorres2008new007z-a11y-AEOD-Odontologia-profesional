@@ -5,6 +5,7 @@ import {
   type ReactNode,
   type Ref,
   type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
 } from 'react';
 import css from './ui.module.css';
 import { TextoOculto } from './TextoOculto';
@@ -124,6 +125,26 @@ export function Selector({ etiqueta, error, ayuda, id, children, ...resto }: Sel
       >
         {children}
       </select>
+    </Envoltorio>
+  );
+}
+
+type TextareaProps = Comunes & TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+/** Texto largo en varias líneas. */
+export function AreaDeTexto({ etiqueta, error, ayuda, required, id, ...resto }: TextareaProps) {
+  const generado = useId();
+  const idCampo = id ?? generado;
+  return (
+    <Envoltorio etiqueta={etiqueta} error={error} ayuda={ayuda} idCampo={idCampo} obligatorio={required}>
+      <textarea
+        id={idCampo}
+        className={css.control}
+        required={required}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={descritoPor(idCampo, { etiqueta, error, ayuda })}
+        {...resto}
+      />
     </Envoltorio>
   );
 }

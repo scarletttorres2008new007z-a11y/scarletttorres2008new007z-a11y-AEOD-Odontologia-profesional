@@ -135,6 +135,10 @@
 .botonDentro:hover {
   background: var(--paper-2);
 }
+textarea.control {
+  min-height: 88px;
+  resize: vertical;
+}
 select.control {
   appearance: none;
   padding-right: 36px;
@@ -282,6 +286,19 @@ select.control {
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-lift);
 }
+.dialogo[data-ancho='amplio'] {
+  width: min(760px, calc(100vw - 32px));
+}
+/* Abierto, es una columna: el título y los botones quedan siempre a la vista y el contenido se desplaza */
+.dialogo[open] {
+  display: flex;
+  flex-direction: column;
+}
+.dialogo > form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
 .dialogo::backdrop {
   background: rgba(12, 12, 11, 0.45);
 }
@@ -296,7 +313,9 @@ select.control {
 .dialogoCuerpo {
   display: grid;
   gap: 16px;
+  min-height: 0;
   padding: 18px 20px;
+  overflow-y: auto;
 }
 .dialogoPie {
   display: flex;

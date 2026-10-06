@@ -16,3 +16,15 @@ export function formatearFechaHora(valor: string | null | undefined, conSegundos
 export function formatearFecha(valor: string | null | undefined): string {
   return formatearFechaHora(valor?.slice(0, 10));
 }
+
+/**
+ * Teléfonos como los guarda la API (solo dígitos, con + si llevan prefijo) en grupos fáciles de leer:
+ * "600123456" → "600 123 456" y "+34600123456" → "+34 600 123 456". Los demás se dejan tal cual.
+ */
+export function formatearTelefono(telefono: string | null | undefined): string {
+  if (!telefono) return '';
+  const espanol = /^(\+34)?(\d{3})(\d{3})(\d{3})$/.exec(telefono);
+  if (!espanol) return telefono;
+  const [, prefijo, a, b, c] = espanol;
+  return `${prefijo ? `${prefijo} ` : ''}${a} ${b} ${c}`;
+}

@@ -8,13 +8,15 @@ interface Props {
   /** Botones del pie. Si hay alEnviar, el diálogo es un formulario y Enter lo envía. */
   pie: ReactNode;
   alEnviar?: () => void;
+  /** 'amplio' para formularios largos, con los campos en dos columnas. */
+  ancho?: 'normal' | 'amplio';
 }
 
 /**
  * Ventana modal con el elemento <dialog> del navegador: bloquea el resto de la página, mantiene el foco
  * dentro y se cierra con Escape. Se muestra mientras está montada.
  */
-export function Dialogo({ titulo, alCerrar, children, pie, alEnviar }: Props) {
+export function Dialogo({ titulo, alCerrar, children, pie, alEnviar, ancho = 'normal' }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const idTitulo = useId();
 
@@ -57,6 +59,7 @@ export function Dialogo({ titulo, alCerrar, children, pie, alEnviar }: Props) {
     <dialog
       ref={ref}
       className={css.dialogo}
+      data-ancho={ancho}
       aria-labelledby={idTitulo}
       onCancel={(evento) => {
         evento.preventDefault();

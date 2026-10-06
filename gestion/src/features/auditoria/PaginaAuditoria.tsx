@@ -13,7 +13,15 @@ import { Paginacion } from '../../shared/ui/Paginacion';
 import { TextoOculto } from '../../shared/ui/TextoOculto';
 import { buscarEnAuditoria, type FiltroAuditoria } from './api';
 import { DetalleAuditoria } from './DetalleAuditoria';
-import { ACCIONES, afectado, autor, ENTIDADES_EN_PLURAL, GRUPOS_DE_ACCIONES, ORIGENES } from './etiquetas';
+import {
+  ACCIONES,
+  afectado,
+  autor,
+  ENTIDADES_EN_PLURAL,
+  GRUPOS_DE_ACCIONES,
+  ORIGENES,
+  textoDeAccion,
+} from './etiquetas';
 
 type Filtros = Omit<FiltroAuditoria, 'pagina'>;
 
@@ -151,7 +159,7 @@ export function PaginaAuditoria() {
                         {quien.nombre}
                         {quien.detalle && <span className={p.secundario}>{quien.detalle}</span>}
                       </td>
-                      <td>{ACCIONES[registro.accion]}</td>
+                      <td>{textoDeAccion(registro)}</td>
                       <td>{afectado(registro)}</td>
                       <td>
                         <Insignia tono={registro.origen === 'SOFTWARE' ? 'neutro' : 'marca'}>

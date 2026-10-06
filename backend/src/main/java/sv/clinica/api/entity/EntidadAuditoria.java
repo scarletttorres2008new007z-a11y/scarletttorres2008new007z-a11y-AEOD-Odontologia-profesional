@@ -4,5 +4,6 @@ package sv.clinica.api.entity;
 public enum EntidadAuditoria {
     USUARIO,
     ROL,
-    CITA
+    CITA,
+    PACIENTE
 }

@@ -108,6 +108,50 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/pacientes/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Ver un paciente
+     * @description Permiso: pacientes.ver.
+     */
+    get: operations['obtener_1'];
+    /**
+     * Editar sus datos
+     * @description Permiso: pacientes.editar. Sustituye todos sus datos.
+     */
+    put: operations['editar_1'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/pacientes/{id}/estado': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Dar de baja o reactivar
+     * @description Permiso: pacientes.editar. Dar de baja no borra nada.
+     */
+    put: operations['cambiarEstado_1'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/auth/password': {
     parameters: {
       query?: never;
@@ -146,6 +190,30 @@ export interface paths {
      * @description Permiso: usuarios.crear. Darle roles exige además usuarios.asignar_roles; el rol de administrador solo lo da un administrador.
      */
     post: operations['crear'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/pacientes': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Buscar pacientes
+     * @description Permiso: pacientes.ver. Ordenados por apellidos y nombre.
+     */
+    get: operations['buscar_1'];
+    put?: never;
+    /**
+     * Dar de alta un paciente
+     * @description Permiso: pacientes.crear. El código del paciente lo genera el backend.
+     */
+    post: operations['crear_1'];
     delete?: never;
     options?: never;
     head?: never;
@@ -267,7 +335,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['obtener_1'];
+    get: operations['obtener_2'];
     put?: never;
     post?: never;
     delete?: never;
@@ -339,7 +407,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['obtener_2'];
+    get: operations['obtener_3'];
     put?: never;
     post?: never;
     delete?: never;
@@ -427,7 +495,7 @@ export interface paths {
      * Consultar la auditoría
      * @description Permiso: auditoria.ver. De lo más reciente a lo más antiguo.
      */
-    get: operations['buscar_1'];
+    get: operations['buscar_2'];
     put?: never;
     post?: never;
     delete?: never;
@@ -496,6 +564,66 @@ export interface components {
       usuarios: number;
       /** @description Códigos de sus permisos */
       permisos: string[];
+    };
+    PacienteRequest: {
+      nombres: string;
+      apellidos: string;
+      /**
+       * @description Obligatorio si se indica el número de documento
+       * @enum {string}
+       */
+      tipo_documento?: 'DNI' | 'NIE' | 'PASAPORTE' | 'OTRO';
+      /** @description DNI y NIE se comprueban con su letra de control */
+      numero_documento?: string;
+      /** Format: date */
+      fecha_nacimiento?: string;
+      /** @enum {string} */
+      sexo?: 'MUJER' | 'HOMBRE' | 'OTRO';
+      telefono: string;
+      /** Format: email */
+      email?: string;
+      direccion?: string;
+      contacto_emergencia_nombre?: string;
+      contacto_emergencia_telefono?: string;
+      /** @description Solo datos administrativos; la información clínica va en el expediente */
+      observaciones?: string;
+    };
+    /** @description Paciente con sus datos personales, de contacto y administrativos. Las fechas están en hora de Madrid. */
+    PacienteResponse: {
+      /** Format: int64 */
+      id: number;
+      /** @description Código del paciente para la clínica, por ejemplo K7M3QX */
+      codigo: string;
+      nombres: string;
+      apellidos: string;
+      /** @enum {string} */
+      tipo_documento?: 'DNI' | 'NIE' | 'PASAPORTE' | 'OTRO';
+      numero_documento?: string;
+      /** Format: date */
+      fecha_nacimiento?: string;
+      /**
+       * Format: int32
+       * @description Años cumplidos hoy
+       */
+      edad?: number;
+      /** @enum {string} */
+      sexo?: 'MUJER' | 'HOMBRE' | 'OTRO';
+      /** @description Solo dígitos, con + delante si lleva prefijo internacional */
+      telefono: string;
+      email?: string;
+      direccion?: string;
+      contacto_emergencia_nombre?: string;
+      contacto_emergencia_telefono?: string;
+      observaciones?: string;
+      /** @description false = dado de baja */
+      activo: boolean;
+      /** Format: date-time */
+      creado_en: string;
+      /** Format: date-time */
+      actualizado_en: string;
+    };
+    EstadoPacienteRequest: {
+      activo: boolean;
     };
     CambioPasswordRequest: {
       password_actual: string;
@@ -613,6 +741,24 @@ export interface components {
       modulo: string;
       descripcion: string;
     };
+    /** @description Página de resultados */
+    PaginaResponsePacienteResponse: {
+      contenido: components['schemas']['PacienteResponse'][];
+      /**
+       * Format: int32
+       * @description Número de página, empezando en 0
+       */
+      pagina: number;
+      /**
+       * Format: int32
+       * @description Resultados por página
+       */
+      tamano: number;
+      /** Format: int64 */
+      total_elementos: number;
+      /** Format: int32 */
+      total_paginas: number;
+    };
     OdontologoResponse: {
       /** Format: int64 */
       id?: number;
@@ -675,7 +821,7 @@ export interface components {
         | 'CANCELAR'
         | 'REPROGRAMAR';
       /** @enum {string} */
-      entidad: 'USUARIO' | 'ROL' | 'CITA';
+      entidad: 'USUARIO' | 'ROL' | 'CITA' | 'PACIENTE';
       entidad_id?: string;
       valor_anterior?: components['schemas']['JsonNode'];
       valor_nuevo?: components['schemas']['JsonNode'];
@@ -962,6 +1108,107 @@ export interface operations {
       };
     };
   };
+  obtener_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PacienteResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  editar_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PacienteRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PacienteResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarEstado_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EstadoPacienteRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PacienteResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   cambiarPassword: {
     parameters: {
       query?: never;
@@ -1049,6 +1296,75 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['UsuarioResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  buscar_1: {
+    parameters: {
+      query?: {
+        /** @description Palabras del nombre, los apellidos, el documento, el teléfono, el correo o el código */
+        texto?: string;
+        /** @description true = activos, false = dados de baja, vacío = todos */
+        activo?: boolean;
+        pagina?: number;
+        tamano?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginaResponsePacienteResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  crear_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PacienteRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PacienteResponse'];
         };
       };
       /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
@@ -1258,7 +1574,7 @@ export interface operations {
       };
     };
   };
-  obtener_1: {
+  obtener_2: {
     parameters: {
       query?: never;
       header?: never;
@@ -1376,7 +1692,7 @@ export interface operations {
       };
     };
   };
-  obtener_2: {
+  obtener_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -1534,10 +1850,10 @@ export interface operations {
       };
     };
   };
-  buscar_1: {
+  buscar_2: {
     parameters: {
       query?: {
-        entidad?: 'USUARIO' | 'ROL' | 'CITA';
+        entidad?: 'USUARIO' | 'ROL' | 'CITA' | 'PACIENTE';
         /** @description Identificador del registro afectado */
         entidad_id?: string;
         /** @description Quién lo hizo */

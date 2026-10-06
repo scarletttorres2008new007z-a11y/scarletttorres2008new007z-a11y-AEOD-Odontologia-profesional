@@ -6,8 +6,10 @@ Aplicación privada para el personal de la clínica (recepción, odontólogos, c
 - **Datos:** solo a través de la API central (`../backend`). Nunca se conecta a la base de datos.
 - **Seguridad:** entrada con usuario y contraseña. El token vive solo en memoria y se renueva con una cookie `HttpOnly`.
   El menú oculta lo que no está permitido, pero quien decide es el backend: sin permiso responde 403.
-- **Fase 1:** entrada, menú lateral y cabecera, inicio, usuarios, roles y permisos, auditoría y «Mi cuenta». Los módulos
-  siguientes llegan fase a fase: pacientes, agenda y citas, área clínica, administración, comunicación y reportes.
+- **Fase 1:** entrada, menú lateral y cabecera, inicio, usuarios, roles y permisos, auditoría y «Mi cuenta».
+- **Fase 2:** pacientes: alta, búsqueda (nombre, documento, teléfono, correo o código), ficha, edición y baja. Solo datos
+  personales, de contacto y administrativos; los clínicos irán en el expediente. Los módulos siguientes llegan fase a
+  fase: agenda y citas, área clínica, administración, comunicación y reportes.
 
 ## Arrancar
 
@@ -37,7 +39,7 @@ usar otra dirección: `AEOD_API=http://otra:8080 npm run dev`.
 ```text
 src/
 ├── app/        App, rutas, guardas de sesión y permiso, estructura (cabecera y menú)
-├── features/   auth, inicio, usuarios, roles, auditoria, cuenta (cada una con su api.ts y sus pantallas)
+├── features/   auth, inicio, pacientes, usuarios, roles, auditoria, cuenta (cada una con su api.ts y sus pantallas)
 ├── shared/     cliente de la API, tipos generados, componentes (botones, campos, diálogos…), estilos
 └── test/       preparación y utilidades de las pruebas
 ```

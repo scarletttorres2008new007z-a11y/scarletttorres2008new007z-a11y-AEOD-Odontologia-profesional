@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatearFecha, formatearFechaHora } from './formato';
+import { formatearFecha, formatearFechaHora, formatearTelefono } from './formato';
 
 describe('formato de fechas', () => {
   it('muestra la hora de Madrid tal como llega, sin convertirla', () => {
@@ -18,5 +18,17 @@ describe('formato de fechas', () => {
     expect(formatearFechaHora(undefined)).toBe('—');
     expect(formatearFecha('')).toBe('—');
     expect(formatearFechaHora('no es una fecha')).toBe('—');
+  });
+});
+
+describe('formato de teléfonos', () => {
+  it('agrupa los números españoles de tres en tres', () => {
+    expect(formatearTelefono('600123456')).toBe('600 123 456');
+    expect(formatearTelefono('+34600123456')).toBe('+34 600 123 456');
+  });
+
+  it('deja tal cual los demás y vacío si no hay', () => {
+    expect(formatearTelefono('+442071234567')).toBe('+442071234567');
+    expect(formatearTelefono(undefined)).toBe('');
   });
 });
