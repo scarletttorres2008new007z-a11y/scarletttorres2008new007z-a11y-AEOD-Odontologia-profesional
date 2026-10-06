@@ -117,8 +117,38 @@ software ocupa el horario igual que una de la web, y al cancelarla el hueco vuel
 - **Auditoría:** reservar, cambiar de estado, cancelar (con el motivo), reprogramar y vincular, con antes y después.
 - **Permisos iniciales** (se cambian en Roles y permisos): Administrador, Recepción y Coordinador, todos los `citas.*`;
   Odontólogo, solo `citas.ver` (su propia agenda).
-- **Pendiente para la parte 2:** pantallas de odontólogos, tratamientos y duraciones, horarios y bloqueos, y vincular un
-  usuario a su odontólogo. Hasta entonces se cambian en la base de datos (ver **Agenda**, más abajo).
+
+## Configuración de la agenda (Fase 3, parte 2)
+
+Odontólogos, tratamientos, horarios y bloqueos se configuran desde el software, sobre las mismas tablas de la agenda
+(V1). La migración `V5__configuracion_de_la_agenda.sql` solo añade el tipo de bloqueo `CAPACITACION` y cuatro permisos.
+Un cambio se nota al momento en la disponibilidad de la web y del software: no hay copias ni cachés.
+
+| Método | Ruta | Permiso | Qué hace |
+| --- | --- | --- | --- |
+| GET | `/api/configuracion/odontologos` | `odontologos.gestionar` | Todos, también los desactivados, con su usuario y sus tratamientos |
+| POST · PUT | `/api/configuracion/odontologos[/{id}]` | `odontologos.gestionar` | Alta o cambio: nombre, especialidad, descripción (salen en la web) y `usuario_id` |
+| PUT | `/api/configuracion/odontologos/{id}/estado` | `odontologos.gestionar` | `{ "activo": false }`; **409** si tiene citas pendientes o confirmadas |
+| GET | `/api/configuracion/odontologos/usuarios` | `odontologos.gestionar` | Usuarios activos que se pueden vincular, y a quién están vinculados ya |
+| GET | `/api/configuracion/tratamientos` | `tratamientos.gestionar` | Todos, con duración, precio y quién los hace |
+| POST · PUT | `/api/configuracion/tratamientos[/{id}]` | `tratamientos.gestionar` | Alta o cambio; `duracion_minutos` de 15 en 15 (15 a 480) y `odontologo_ids` (vacío = cualquiera) |
+| PUT | `/api/configuracion/tratamientos/{id}/estado` | `tratamientos.gestionar` | Ofrecer o dejar de ofrecer; **409** si tiene citas pendientes o confirmadas |
+| GET | `/api/configuracion/horarios` | `horarios.gestionar` | Horario de la clínica y turnos de cada odontólogo activo |
+| PUT | `/api/configuracion/horarios/clinica` | `horarios.gestionar` | Sustituye la semana; un día que no llega queda cerrado |
+| PUT | `/api/configuracion/horarios/odontologos/{id}` | `horarios.gestionar` | Sustituye los turnos de la semana (varios tramos por día, sin solaparse) |
+| GET | `/api/configuracion/bloqueos` | `bloqueos.gestionar` | Bloqueos que no han terminado |
+| POST · PUT | `/api/configuracion/bloqueos[/{id}]` | `bloqueos.gestionar` | Para toda la clínica o un odontólogo; fechas o un día de cada semana; día entero o unas horas |
+| DELETE | `/api/configuracion/bloqueos/{id}` | `bloqueos.gestionar` | Lo quita (queda inactivo, no se borra) |
+
+- **Citas afectadas:** al cambiar un horario, unos turnos o un bloqueo, la respuesta trae `citas_afectadas`: las citas
+  pendientes o confirmadas de hoy en adelante que quedan fuera. **No se cancela ninguna**: la clínica decide. La lista
+  solo llega con `citas.ver_todas`; sin él, solo el total.
+- **Validaciones en el backend:** horas en punto o en cuartos, fin después del inicio, tramos del mismo día sin
+  solaparse, bloqueos de hoy en adelante, duración de 15 en 15 minutos, un usuario activo vinculado a un solo
+  odontólogo (**409**) y nombres sin repetir (**409**).
+- **Auditoría:** cada alta, cambio, activación y bloqueo quitado, con solo los campos que cambian (antes y después).
+- **Permisos iniciales** (se cambian en Roles y permisos): Administrador y Coordinador, los cuatro; Recepción, solo
+  `bloqueos.gestionar`; Odontólogo, ninguno.
 
 ## Base de datos y migraciones
 
@@ -258,26 +288,19 @@ La clínica cancela y reprograma desde el software en cualquier momento. Reprogr
 | `horarios_odontologo` | Turnos de cada odontólogo por día; puede haber varios tramos el mismo día |
 | `odontologo_tratamientos` | Quién hace cada tratamiento. Un tratamiento sin filas lo hace cualquiera |
 | `tratamientos.duracion_minutos` | Duración de la cita que se reserva online |
-| `bloqueos` | Almuerzo, reuniones, mantenimiento, vacaciones, feriados y bloqueos manuales (ver abajo) |
+| `bloqueos` | Almuerzo, reuniones, capacitaciones, mantenimiento, vacaciones, feriados y bloqueos manuales (ver abajo) |
 | `citas` | Las citas, con estado, origen (`LANDING`, `SOFTWARE`, `APP`), código público y, si ya está vinculada, `paciente_id` |
 | `agenda_ocupacion` | Tramos de 15 minutos ocupados; su clave única impide la doble reserva |
 | `lista_espera` | Preparada para la futura lista de espera (sin pantalla todavía) |
 | `notificaciones` | Avisos pendientes de cada reserva, cancelación, reprogramación y hueco liberado. **No se envía nada** |
 
-Un **bloqueo** puede ser de toda la clínica (`odontologo_id` vacío) o de un odontólogo; semanal (`dia_semana`) o entre fechas (`fecha_inicio`–`fecha_fin`); de unas horas (`hora_inicio`–`hora_fin`) o del día entero (horas vacías). Ejemplos:
+Un **bloqueo** puede ser de toda la clínica (`odontologo_id` vacío) o de un odontólogo; semanal (`dia_semana`) o entre
+fechas (`fecha_inicio`–`fecha_fin`); de unas horas (`hora_inicio`–`hora_fin`) o del día entero (horas vacías). Desde la
+Fase 3, parte 2, todo esto se cambia desde el software (**Configuración** en el menú), no en la base de datos.
 
-```sql
--- Feriado: toda la clínica cerrada el 12 de octubre
-INSERT INTO bloqueos (tipo, motivo, fecha_inicio, fecha_fin, activo) VALUES ('FERIADO', 'Fiesta Nacional', '2026-10-12', '2026-10-12', 1);
--- Vacaciones de la Dra. Ana (id 3) del 1 al 15 de agosto
-INSERT INTO bloqueos (tipo, motivo, odontologo_id, fecha_inicio, fecha_fin, activo) VALUES ('VACACIONES', 'Vacaciones', 3, '2027-08-01', '2027-08-15', 1);
--- Reunión de equipo todos los miércoles de 9:00 a 10:00
-INSERT INTO bloqueos (tipo, motivo, dia_semana, hora_inicio, hora_fin, activo) VALUES ('REUNION', 'Reunión de equipo', 3, '09:00', '10:00', 1);
-```
+### Datos de ejemplo
 
-### Datos de ejemplo (a confirmar)
-
-Horario de la clínica: L–V 9:00–21:00, S 10:00–14:00, D cerrado (el que muestra la landing). Almuerzo L–V 12:00–13:00.
+Son valores de partida: la clínica pone los reales desde **Configuración** en el software. Horario de la clínica: L–V 9:00–21:00, S 10:00–14:00, D cerrado (el que muestra la landing). Almuerzo L–V 12:00–13:00.
 
 | Odontólogo | L–V | Sábado |
 | --- | --- | --- |
@@ -326,14 +349,16 @@ repetido, búsqueda, permisos por rol y auditoría).
 src/main/java/sv/clinica/api/
 ├── config/       DataInitializer, AdministradorInicial, OpenApiConfig, propiedades, VariablesDeEntornoObligatorias
 ├── security/     SeguridadConfig, TokenService, ConvertidorJwt, CookieDeSesion, límite de peticiones, Permisos
-├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad, Auth, Usuario, Rol, Auditoria, Paciente
+├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad, Auth, Usuario, Rol, Auditoria, Paciente,
+│                 Agenda y Configuracion{Odontologos,Tratamientos,Horarios,Bloqueos}
 ├── dto/          Respuestas, peticiones con validaciones y patrones compartidos
 ├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion, Usuario,
 │                 Rol, Permiso, Sesion, RegistroAuditoria, Paciente y sus enums
 ├── event/        CitaEvento (reserva, cancelación, reprogramación)
 ├── repository/   Spring Data JPA
 ├── service/      DisponibilidadService (agenda), CitaService (reservar, cancelar, reprogramar), NotificacionService,
-│                 AuthService, UsuarioService, RolService, AuditoriaService, PacienteService (+ BusquedaDePacientes)
+│                 AuthService, UsuarioService, RolService, AuditoriaService, PacienteService (+ BusquedaDePacientes),
+│                 Configuracion*Service (+ CitasAfectadas, HorasDeAgenda)
 └── exception/    RecursoNoEncontrado, DatosInvalidos, HorarioNoDisponible (409), CitaNoModificable (409), GlobalExceptionHandler
 src/main/resources/
 ├── application.properties            Configuración común

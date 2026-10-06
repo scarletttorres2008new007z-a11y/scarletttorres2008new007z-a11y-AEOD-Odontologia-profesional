@@ -30,6 +30,10 @@ describe('rutas y menú', () => {
       'Inicio',
       'Agenda',
       'Pacientes',
+      'Odontólogos',
+      'Tratamientos',
+      'Horarios',
+      'Bloqueos',
       'Usuarios',
       'Roles y permisos',
       'Auditoría',
@@ -38,8 +42,15 @@ describe('rutas y menú', () => {
   });
 
   it('el menú solo ofrece lo que el usuario tiene permitido', () => {
-    pintar(<Rutas />, { auth: { usuario: usuarioDePrueba([PERMISOS.AUDITORIA_VER]) } });
+    const { unmount } = pintar(<Rutas />, { auth: { usuario: usuarioDePrueba([PERMISOS.AUDITORIA_VER]) } });
     expect(opcionesDelMenu()).toEqual(['Inicio', 'Auditoría']);
+    unmount();
+
+    // Recepción puede bloquear tiempo, pero no cambia horarios, tratamientos ni odontólogos
+    pintar(<Rutas />, {
+      auth: { usuario: usuarioDePrueba([PERMISOS.PACIENTES_VER, PERMISOS.BLOQUEOS_GESTIONAR]) },
+    });
+    expect(opcionesDelMenu()).toEqual(['Inicio', 'Pacientes', 'Bloqueos']);
   });
 
   it('sin permisos, el inicio lo explica y una página prohibida no se abre aunque se escriba su dirección', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatearFecha, formatearFechaHora, formatearTelefono } from './formato';
+import { formatearEuros, formatearFecha, formatearFechaHora, formatearTelefono } from './formato';
 
 describe('formato de fechas', () => {
   it('muestra la hora de Madrid tal como llega, sin convertirla', () => {
@@ -30,5 +30,13 @@ describe('formato de teléfonos', () => {
   it('deja tal cual los demás y vacío si no hay', () => {
     expect(formatearTelefono('+442071234567')).toBe('+442071234567');
     expect(formatearTelefono(undefined)).toBe('');
+  });
+});
+
+describe('formato de precios', () => {
+  it('euros sin céntimos si no los tiene, con dos si los tiene', () => {
+    expect(formatearEuros(60)).toBe('60\u00a0€');
+    expect(formatearEuros(49.5)).toBe('49,50\u00a0€');
+    expect(formatearEuros(0)).toBe('0\u00a0€');
   });
 });

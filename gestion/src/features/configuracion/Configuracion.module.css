@@ -1,0 +1,160 @@
+/* ── Citas que conviene revisar después de un cambio ── */
+.revisar {
+  display: grid;
+  gap: 10px;
+  border-left: 4px solid var(--warning);
+}
+.revisar h2 {
+  font-size: 1.0625rem;
+}
+
+/* ── Formularios ── */
+/* Dos o tres columnas cuando caben; una en el móvil */
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+/* Opciones de un grupo, una al lado de otra si caben */
+.enLinea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+/* Casillas de los odontólogos que hacen un tratamiento */
+.opciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 10px 16px;
+  padding: 12px;
+  background: var(--paper);
+  border-radius: var(--r-sm);
+}
+
+/* ── Tratamientos ── */
+.precio {
+  white-space: nowrap;
+}
+
+/* ── Horarios ── */
+.seccion {
+  display: grid;
+  gap: 12px;
+}
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+.horario {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+/* Título a la izquierda y botón a la derecha; un nombre largo pasa a dos líneas */
+.cabeceraTarjeta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.cabeceraTarjeta > :first-child {
+  min-width: 0;
+}
+.cabeceraTarjeta > button {
+  flex-shrink: 0;
+}
+
+/* Los siete días de la semana, uno por línea */
+.semana {
+  display: grid;
+  margin: 0;
+}
+.dia {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--paper-2);
+}
+.dia:last-child {
+  border-bottom: none;
+}
+.dia dt {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.dia dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.dia[data-libre='true'] dd {
+  color: var(--muted);
+}
+.nota {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--warning);
+}
+
+/* Diálogos de horario y turnos: un día por fila */
+.dias {
+  display: grid;
+  gap: 4px;
+}
+.filaDia {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--paper-2);
+}
+.filaDia:last-child {
+  border-bottom: none;
+}
+.filaDia > label {
+  min-width: 7rem;
+}
+.horas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--ink-3);
+}
+/* Cabe también «09:00 AM» si el navegador usa el formato de 12 horas */
+.horas input {
+  width: 8.75rem;
+}
+.diaDeTurnos {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  min-width: 0;
+  margin: 0;
+  padding: 10px 0 12px;
+  border: none;
+  border-bottom: 1px solid var(--paper-2);
+}
+.diaDeTurnos:last-child {
+  border-bottom: none;
+}
+.diaDeTurnos legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 2px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.diaDeTurnos legend .nota {
+  color: var(--muted);
+}

@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -92,6 +93,22 @@ public class Tratamiento {
 
     public void setActivo(boolean activo) { this.activo = activo; }
     public void setDuracionMinutos(Integer duracionMinutos) { this.duracionMinutos = duracionMinutos; }
+
+    /** Los datos que se cambian desde el software (la descripción larga, la imagen y el orden se conservan). */
+    public void editar(String nombre, String descripcionCorta, BigDecimal precioDesde, String duracionAproximada,
+                       int duracionMinutos) {
+        this.nombre = nombre;
+        this.descripcionCorta = descripcionCorta;
+        this.precioDesde = precioDesde;
+        this.duracionAproximada = duracionAproximada;
+        this.duracionMinutos = duracionMinutos;
+    }
+
+    /** Quién lo hace. Vacío = cualquier odontólogo activo. */
+    public void cambiarOdontologos(Collection<Odontologo> nuevos) {
+        odontologos.clear();
+        odontologos.addAll(nuevos);
+    }
 
     /** true si el odontólogo puede hacer este tratamiento (sin asignaciones, cualquiera puede). */
     public boolean loRealiza(Odontologo odontologo) {

@@ -11,8 +11,11 @@ Aplicación privada para el personal de la clínica (recepción, odontólogos, c
   personales, de contacto y administrativos; los clínicos irán en el expediente.
 - **Fase 3, parte 1:** agenda por día (una columna por odontólogo) y por semana; dar cita eligiendo paciente y uno de los
   huecos libres que calcula la API; confirmar, cambiar de estado, cancelar, mover y vincular las reservas de la web a un
-  paciente; citas en la ficha del paciente y en el inicio. Los módulos siguientes llegan fase a fase: configuración de
-  la agenda, área clínica, administración, comunicación y reportes.
+  paciente; citas en la ficha del paciente y en el inicio.
+- **Fase 3, parte 2:** configuración de la agenda: odontólogos (con su usuario del software), tratamientos (duración,
+  precio y quién los hace), horario de la clínica, turnos de cada odontólogo y bloqueos. Todo lo guarda y lo valida la
+  API; si un cambio deja citas fuera, se listan para revisarlas y ninguna se cancela sola. Los módulos siguientes llegan
+  fase a fase: área clínica, administración, comunicación y reportes.
 
 ## Arrancar
 
@@ -42,7 +45,8 @@ usar otra dirección: `AEOD_API=http://otra:8080 npm run dev`.
 ```text
 src/
 ├── app/        App, rutas, guardas de sesión y permiso, estructura (cabecera y menú)
-├── features/   auth, inicio, agenda, pacientes, usuarios, roles, auditoria, cuenta (cada una con su api.ts y sus pantallas)
+├── features/   auth, inicio, agenda, pacientes, configuracion, usuarios, roles, auditoria, cuenta (cada una con su
+│               api.ts y sus pantallas)
 ├── shared/     cliente de la API, tipos generados, componentes (botones, campos, diálogos…), estilos
 └── test/       preparación y utilidades de las pruebas
 ```

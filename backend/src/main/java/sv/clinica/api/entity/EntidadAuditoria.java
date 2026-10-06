@@ -5,5 +5,10 @@ public enum EntidadAuditoria {
     USUARIO,
     ROL,
     CITA,
-    PACIENTE
+    PACIENTE,
+    ODONTOLOGO,
+    TRATAMIENTO,
+    HORARIO_CLINICA,
+    HORARIO_ODONTOLOGO,
+    BLOQUEO
 }

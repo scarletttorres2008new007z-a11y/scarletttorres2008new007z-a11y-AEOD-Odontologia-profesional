@@ -152,6 +152,150 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/configuracion/tratamientos/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar duración, precio, quién lo hace…
+     * @description Permiso: tratamientos.gestionar. Las citas ya dadas no cambian; las nuevas usan la duración nueva.
+     */
+    put: operations['editar_2'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/tratamientos/{id}/estado': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Ofrecerlo o dejar de ofrecerlo
+     * @description Permiso: tratamientos.gestionar. No se borra nada. 409 si aún tiene citas pendientes o confirmadas.
+     */
+    put: operations['cambiarEstado_2'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/odontologos/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar sus datos y su usuario del software
+     * @description Permiso: odontologos.gestionar. 409 si el usuario ya está vinculado a otro odontólogo.
+     */
+    put: operations['editar_3'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/odontologos/{id}/estado': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Activar o desactivar
+     * @description Permiso: odontologos.gestionar. No se borra nada. 409 si aún tiene citas pendientes o confirmadas.
+     */
+    put: operations['cambiarEstado_3'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/horarios/odontologos/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar los turnos de un odontólogo
+     * @description Permiso: horarios.gestionar. Sustituye toda su semana. Devuelve las citas que quedan fuera de sus turnos nuevos (no se cancelan).
+     */
+    put: operations['cambiarTurnos'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/horarios/clinica': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar el horario de la clínica
+     * @description Permiso: horarios.gestionar. Sustituye toda la semana: el día que no se envía queda cerrado. Devuelve las citas que quedan fuera del horario nuevo (no se cancelan).
+     */
+    put: operations['cambiarClinica'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/bloqueos/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar un bloqueo
+     * @description Permiso: bloqueos.gestionar.
+     */
+    put: operations['editar_4'];
+    post?: never;
+    /**
+     * Quitar un bloqueo
+     * @description Permiso: bloqueos.gestionar. No se borra: queda desactivado y en la auditoría, y ese tiempo vuelve a estar libre al momento.
+     */
+    delete: operations['quitar'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/citas/{id}/paciente': {
     parameters: {
       query?: never;
@@ -204,7 +348,7 @@ export interface paths {
      * Cambiar el estado
      * @description Permiso: citas.cambiar_estado. Confirmar, en consulta, completada o no asistió; los estados posibles en cada momento vienen en estados_siguientes.
      */
-    put: operations['cambiarEstado_2'];
+    put: operations['cambiarEstado_4'];
     post?: never;
     delete?: never;
     options?: never;
@@ -310,6 +454,78 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['enviar'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/tratamientos': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Todos los tratamientos
+     * @description Permiso: tratamientos.gestionar. También los desactivados.
+     */
+    get: operations['listar'];
+    put?: never;
+    /**
+     * Dar de alta un tratamiento
+     * @description Permiso: tratamientos.gestionar. La duración va de 15 en 15 minutos.
+     */
+    post: operations['crear_2'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/odontologos': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Todos los odontólogos
+     * @description Permiso: odontologos.gestionar. También los desactivados.
+     */
+    get: operations['listar_1'];
+    put?: never;
+    /**
+     * Dar de alta un odontólogo
+     * @description Permiso: odontologos.gestionar. Sale en la web al momento; para tener huecos libres necesita turnos.
+     */
+    post: operations['crear_3'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/bloqueos': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Bloqueos en vigor
+     * @description Permiso: bloqueos.gestionar. Los que no han terminado.
+     */
+    get: operations['listar_2'];
+    put?: never;
+    /**
+     * Bloquear tiempo
+     * @description Permiso: bloqueos.gestionar. Se aplica al momento en la web y en el software. Devuelve las citas que ya había en ese tiempo (no se cancelan).
+     */
+    post: operations['crear_4'];
     delete?: never;
     options?: never;
     head?: never;
@@ -467,7 +683,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['listar'];
+    get: operations['listar_3'];
     put?: never;
     post?: never;
     delete?: never;
@@ -503,7 +719,7 @@ export interface paths {
      * Roles con sus permisos
      * @description Permiso: roles.ver o usuarios.asignar_roles (para elegir los roles de un usuario).
      */
-    get: operations['listar_1'];
+    get: operations['listar_4'];
     put?: never;
     post?: never;
     delete?: never;
@@ -539,7 +755,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations['listar_2'];
+    get: operations['listar_5'];
     put?: never;
     post?: never;
     delete?: never;
@@ -612,6 +828,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/configuracion/odontologos/usuarios': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Usuarios que se pueden vincular
+     * @description Permiso: odontologos.gestionar. Usuarios activos, con el odontólogo al que ya está unido cada uno.
+     */
+    get: operations['usuarios'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/configuracion/horarios': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Horario de la clínica y turnos de cada odontólogo activo
+     * @description Permiso: horarios.gestionar.
+     */
+    get: operations['obtener_4'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/citas/{id}': {
     parameters: {
       query?: never;
@@ -623,7 +879,7 @@ export interface paths {
      * Ver una cita
      * @description Permiso: citas.ver. 404 si no existe o es de otra agenda.
      */
-    get: operations['obtener_4'];
+    get: operations['obtener_5'];
     put?: never;
     post?: never;
     delete?: never;
@@ -833,6 +1089,218 @@ export interface components {
     };
     EstadoPacienteRequest: {
       activo: boolean;
+    };
+    TratamientoConfigRequest: {
+      nombre: string;
+      descripcion_corta?: string;
+      /** @description Precio orientativo «desde», en euros. 0 o vacío = la web lo muestra como gratuito */
+      precio_desde?: number;
+      /**
+       * @description Duración orientativa en texto, por ejemplo «2 o 3 sesiones». Las citas usan duracion_minutos
+       * @example 30–45 min
+       */
+      duracion_aproximada?: string;
+      /**
+       * Format: int32
+       * @example 60
+       */
+      duracion_minutos: number;
+      /** @description Quién lo hace; vacío = cualquier odontólogo */
+      odontologo_ids?: number[];
+    };
+    OdontologoAsignado: {
+      /** Format: int64 */
+      id: number;
+      nombre: string;
+      activo: boolean;
+    };
+    TratamientoConfigResponse: {
+      /** Format: int64 */
+      id: number;
+      nombre: string;
+      descripcion_corta?: string;
+      precio_desde?: number;
+      duracion_aproximada?: string;
+      /** Format: int32 */
+      duracion_minutos?: number;
+      activo: boolean;
+      odontologos: components['schemas']['OdontologoAsignado'][];
+    };
+    ActivacionRequest: {
+      activo: boolean;
+    };
+    OdontologoConfigRequest: {
+      /** @example Dra. Ana Villar */
+      nombre: string;
+      especialidad?: string;
+      descripcion?: string;
+      /**
+       * Format: int64
+       * @description Su usuario del software, para que vea su propia agenda; vacío = sin usuario
+       */
+      usuario_id?: number;
+    };
+    OdontologoConfigResponse: {
+      /** Format: int64 */
+      id: number;
+      nombre: string;
+      especialidad?: string;
+      descripcion?: string;
+      activo: boolean;
+      usuario?: components['schemas']['UsuarioResumen'];
+      tratamientos: string[];
+    };
+    UsuarioResumen: {
+      /** Format: int64 */
+      id: number;
+      username: string;
+      nombre: string;
+    };
+    /** @description Puede haber varios tramos el mismo día; un día sin tramos no trabaja */
+    TurnoSemanal: {
+      /**
+       * Format: int32
+       * @example 1
+       */
+      dia_semana: number;
+      /** @example 09:00 */
+      hora_inicio: string;
+      /** @example 13:00 */
+      hora_fin: string;
+    };
+    TurnosRequest: {
+      /** @description Puede haber varios tramos el mismo día; un día sin tramos no trabaja */
+      turnos: components['schemas']['TurnoSemanal'][];
+    };
+    /** @description Cita en la agenda o en un listado */
+    CitaResumenResponse: {
+      /** Format: int64 */
+      id: number;
+      /** Format: date */
+      fecha: string;
+      /** @example 10:30 */
+      hora_inicio: string;
+      /** @example 11:30 */
+      hora_fin: string;
+      /** @enum {string} */
+      estado:
+        | 'PENDIENTE'
+        | 'CONFIRMADA'
+        | 'EN_ATENCION'
+        | 'COMPLETADA'
+        | 'NO_ASISTIO'
+        | 'CANCELADA'
+        | 'REPROGRAMADA';
+      /** @enum {string} */
+      origen: 'LANDING' | 'SOFTWARE' | 'APP';
+      /** Format: int64 */
+      tratamiento_id: number;
+      tratamiento: string;
+      /** Format: int64 */
+      odontologo_id: number;
+      odontologo: string;
+      /**
+       * Format: int64
+       * @description Ficha del paciente; vacío si la cita (de la web) aún no está vinculada
+       */
+      paciente_id?: number;
+      /** @description Nombre del paciente: el de su ficha o, sin ficha, el que escribió en la web */
+      nombre: string;
+      /** @description Teléfono de su ficha o, sin ficha, el que dejó en la web */
+      telefono: string;
+    };
+    CitasAfectadasResponse: {
+      /** Format: int32 */
+      total: number;
+      citas?: components['schemas']['CitaResumenResponse'][];
+    };
+    DiaDeApertura: {
+      /**
+       * Format: int32
+       * @example 1
+       */
+      dia_semana: number;
+      /** @example 09:00 */
+      hora_apertura: string;
+      /** @example 21:00 */
+      hora_cierre: string;
+    };
+    HorariosGuardadosResponse: {
+      horarios: components['schemas']['HorariosResponse'];
+      citas_afectadas: components['schemas']['CitasAfectadasResponse'];
+    };
+    HorariosResponse: {
+      clinica: components['schemas']['DiaDeApertura'][];
+      odontologos: components['schemas']['TurnosDeOdontologo'][];
+    };
+    TurnosDeOdontologo: {
+      /** Format: int64 */
+      id: number;
+      nombre: string;
+      turnos: components['schemas']['TurnoSemanal'][];
+    };
+    HorarioClinicaRequest: {
+      /** @description Días en que abre; el que no aparece queda cerrado */
+      dias: components['schemas']['DiaDeApertura'][];
+    };
+    BloqueoRequest: {
+      /** @enum {string} */
+      tipo: 'ALMUERZO' | 'REUNION' | 'CAPACITACION' | 'MANTENIMIENTO' | 'VACACIONES' | 'FERIADO' | 'MANUAL';
+      motivo?: string;
+      /**
+       * Format: int64
+       * @description Vacío = toda la clínica
+       */
+      odontologo_id?: number;
+      /**
+       * Format: date
+       * @description Primer día. Vacío = desde siempre (solo con día de la semana)
+       */
+      fecha_inicio?: string;
+      /**
+       * Format: date
+       * @description Último día, incluido. Vacío = solo el primer día; con día de la semana, sin fin
+       */
+      fecha_fin?: string;
+      /**
+       * Format: int32
+       * @description Cada semana ese día: 1 = lunes … 7 = domingo
+       */
+      dia_semana?: number;
+      /**
+       * @description Vacías las dos horas = el día entero
+       * @example 09:00
+       */
+      hora_inicio?: string;
+      /** @example 10:00 */
+      hora_fin?: string;
+    };
+    BloqueoGuardadoResponse: {
+      bloqueo: components['schemas']['BloqueoResponse'];
+      citas_afectadas: components['schemas']['CitasAfectadasResponse'];
+    };
+    BloqueoResponse: {
+      /** Format: int64 */
+      id: number;
+      /** @enum {string} */
+      tipo: 'ALMUERZO' | 'REUNION' | 'CAPACITACION' | 'MANTENIMIENTO' | 'VACACIONES' | 'FERIADO' | 'MANUAL';
+      motivo?: string;
+      /** Format: int64 */
+      odontologo_id?: number;
+      odontologo?: string;
+      /** Format: date */
+      fecha_inicio?: string;
+      /** Format: date */
+      fecha_fin?: string;
+      /**
+       * Format: int32
+       * @description 1 = lunes … 7 = domingo
+       */
+      dia_semana?: number;
+      /** @example 12:00 */
+      hora_inicio?: string;
+      /** @example 13:00 */
+      hora_fin?: string;
     };
     PacienteCitaRequest: {
       /** Format: int64 */
@@ -1131,42 +1599,15 @@ export interface components {
       /** Format: int32 */
       duracion_minutos?: number;
     };
-    /** @description Cita en la agenda o en un listado */
-    CitaResumenResponse: {
+    UsuarioParaOdontologoResponse: {
       /** Format: int64 */
       id: number;
-      /** Format: date */
-      fecha: string;
-      /** @example 10:30 */
-      hora_inicio: string;
-      /** @example 11:30 */
-      hora_fin: string;
-      /** @enum {string} */
-      estado:
-        | 'PENDIENTE'
-        | 'CONFIRMADA'
-        | 'EN_ATENCION'
-        | 'COMPLETADA'
-        | 'NO_ASISTIO'
-        | 'CANCELADA'
-        | 'REPROGRAMADA';
-      /** @enum {string} */
-      origen: 'LANDING' | 'SOFTWARE' | 'APP';
-      /** Format: int64 */
-      tratamiento_id: number;
-      tratamiento: string;
-      /** Format: int64 */
-      odontologo_id: number;
-      odontologo: string;
-      /**
-       * Format: int64
-       * @description Ficha del paciente; vacío si la cita (de la web) aún no está vinculada
-       */
-      paciente_id?: number;
-      /** @description Nombre del paciente: el de su ficha o, sin ficha, el que escribió en la web */
+      username: string;
       nombre: string;
-      /** @description Teléfono de su ficha o, sin ficha, el que dejó en la web */
-      telefono: string;
+      roles: string[];
+      /** Format: int64 */
+      odontologo_id?: number;
+      odontologo?: string;
     };
     /** @description Página de resultados */
     PaginaResponseCitaResumenResponse: {
@@ -1215,7 +1656,16 @@ export interface components {
         | 'CAMBIAR_ESTADO'
         | 'VINCULAR_PACIENTE';
       /** @enum {string} */
-      entidad: 'USUARIO' | 'ROL' | 'CITA' | 'PACIENTE';
+      entidad:
+        | 'USUARIO'
+        | 'ROL'
+        | 'CITA'
+        | 'PACIENTE'
+        | 'ODONTOLOGO'
+        | 'TRATAMIENTO'
+        | 'HORARIO_CLINICA'
+        | 'HORARIO_ODONTOLOGO'
+        | 'BLOQUEO';
       entidad_id?: string;
       valor_anterior?: components['schemas']['JsonNode'];
       valor_nuevo?: components['schemas']['JsonNode'];
@@ -1242,13 +1692,6 @@ export interface components {
       total_elementos: number;
       /** Format: int32 */
       total_paginas: number;
-    };
-    /** @description Quién lo hizo; vacío si fue un paciente desde la web o el propio sistema */
-    UsuarioResumen: {
-      /** Format: int64 */
-      id: number;
-      username: string;
-      nombre: string;
     };
     AgendaResponse: {
       /** Format: date */
@@ -1277,7 +1720,7 @@ export interface components {
       hora_inicio?: string;
       hora_fin?: string;
       /** @enum {string} */
-      tipo: 'ALMUERZO' | 'REUNION' | 'MANTENIMIENTO' | 'VACACIONES' | 'FERIADO' | 'MANUAL';
+      tipo: 'ALMUERZO' | 'REUNION' | 'CAPACITACION' | 'MANTENIMIENTO' | 'VACACIONES' | 'FERIADO' | 'MANUAL';
       motivo?: string;
     };
     Dia: {
@@ -1664,6 +2107,278 @@ export interface operations {
       };
     };
   };
+  editar_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TratamientoConfigRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TratamientoConfigResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarEstado_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ActivacionRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TratamientoConfigResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  editar_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OdontologoConfigRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OdontologoConfigResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarEstado_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ActivacionRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OdontologoConfigResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarTurnos: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TurnosRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HorariosGuardadosResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarClinica: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['HorarioClinicaRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HorariosGuardadosResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  editar_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BloqueoRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BloqueoGuardadoResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  quitar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   vincularPaciente: {
     parameters: {
       query?: never;
@@ -1734,7 +2449,7 @@ export interface operations {
       };
     };
   };
-  cambiarEstado_2: {
+  cambiarEstado_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -1993,6 +2708,192 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ApiResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  listar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TratamientoConfigResponse'][];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  crear_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TratamientoConfigRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TratamientoConfigResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  listar_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OdontologoConfigResponse'][];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  crear_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OdontologoConfigRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OdontologoConfigResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  listar_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BloqueoResponse'][];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  crear_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BloqueoRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BloqueoGuardadoResponse'];
         };
       };
       /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
@@ -2294,7 +3195,7 @@ export interface operations {
       };
     };
   };
-  listar: {
+  listar_3: {
     parameters: {
       query?: never;
       header?: never;
@@ -2354,7 +3255,7 @@ export interface operations {
       };
     };
   };
-  listar_1: {
+  listar_4: {
     parameters: {
       query?: never;
       header?: never;
@@ -2412,7 +3313,7 @@ export interface operations {
       };
     };
   };
-  listar_2: {
+  listar_5: {
     parameters: {
       query?: never;
       header?: never;
@@ -2570,7 +3471,65 @@ export interface operations {
       };
     };
   };
+  usuarios: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['UsuarioParaOdontologoResponse'][];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   obtener_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HorariosResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  obtener_5: {
     parameters: {
       query?: never;
       header?: never;
@@ -2633,7 +3592,16 @@ export interface operations {
   buscar_3: {
     parameters: {
       query?: {
-        entidad?: 'USUARIO' | 'ROL' | 'CITA' | 'PACIENTE';
+        entidad?:
+          | 'USUARIO'
+          | 'ROL'
+          | 'CITA'
+          | 'PACIENTE'
+          | 'ODONTOLOGO'
+          | 'TRATAMIENTO'
+          | 'HORARIO_CLINICA'
+          | 'HORARIO_ODONTOLOGO'
+          | 'BLOQUEO';
         /** @description Identificador del registro afectado */
         entidad_id?: string;
         /** @description Quién lo hizo */

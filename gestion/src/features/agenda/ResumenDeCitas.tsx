@@ -2,14 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useId } from 'react';
 import { Link } from 'react-router';
 import { mensajeDeError } from '../../shared/api/errores';
-import type { CitaResumen } from '../../shared/api/tipos';
-import { conMayuscula, formatearDia, formatearDiaCorto, hoyEnMadrid } from '../../shared/fechas';
+import { hoyEnMadrid } from '../../shared/fechas';
 import { Aviso, Cargando } from '../../shared/ui/Aviso';
-import { Insignia } from '../../shared/ui/Insignia';
 import p from '../../shared/ui/pagina.module.css';
 import { buscarCitas, obtenerAgenda } from './api';
-import { enlaceDeCita, ESTADOS } from './comun';
 import css from './Agenda.module.css';
+import { FilaDeCita } from './FilaDeCita';
 
 const POR_CONFIRMAR = 5;
 
@@ -48,7 +46,7 @@ export function ResumenDeCitas() {
           <ul className={css.filas}>
             {deHoy.data.citas.map((cita) => (
               <li key={cita.id}>
-                <Fila cita={cita} detalle={`${cita.tratamiento} · ${cita.odontologo}`} />
+                <FilaDeCita cita={cita} detalle={`${cita.tratamiento} · ${cita.odontologo}`} />
               </li>
             ))}
           </ul>
@@ -81,7 +79,7 @@ export function ResumenDeCitas() {
             <ul className={css.filas}>
               {pendientes.data.contenido.map((cita) => (
                 <li key={cita.id}>
-                  <Fila
+                  <FilaDeCita
                     cita={cita}
                     conDia
                     detalle={`${cita.tratamiento}${cita.paciente_id ? '' : ' · Sin ficha'}`}
@@ -99,29 +97,5 @@ export function ResumenDeCitas() {
         )}
       </section>
     </div>
-  );
-}
-
-/** Una cita en una línea; conDia pone el día encima de la hora (abreviado a la vista, entero al leerlo). */
-function Fila({ cita, conDia = false, detalle }: { cita: CitaResumen; conDia?: boolean; detalle: string }) {
-  return (
-    <Link to={enlaceDeCita(cita)} className={css.fila}>
-      <span className={css.filaHora}>
-        {conDia && (
-          <>
-            <span aria-hidden="true" className={css.filaDia}>
-              {formatearDiaCorto(cita.fecha)}
-            </span>
-            <span className="visually-hidden">{conMayuscula(formatearDia(cita.fecha))},</span>{' '}
-          </>
-        )}
-        <span>{cita.hora_inicio}</span>
-      </span>
-      <span className={css.filaTexto}>
-        <span className={css.citaNombre}>{cita.nombre}</span>
-        <span className={css.citaDetalle}>{detalle}</span>
-      </span>
-      <Insignia tono={ESTADOS[cita.estado].tono}>{ESTADOS[cita.estado].texto}</Insignia>
-    </Link>
   );
 }

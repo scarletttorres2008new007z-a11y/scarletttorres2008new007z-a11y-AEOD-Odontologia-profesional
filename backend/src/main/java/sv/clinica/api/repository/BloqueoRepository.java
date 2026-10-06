@@ -18,4 +18,11 @@ public interface BloqueoRepository extends JpaRepository<Bloqueo, Long> {
               and (b.fechaFin is null or b.fechaFin >= :desde)
             """)
     List<Bloqueo> findActivosEntre(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta);
+
+    /** Bloqueos activos que aún no han terminado: los que no tienen fin y los que acaban hoy o después. */
+    @Query("""
+            select b from Bloqueo b left join fetch b.odontologo
+            where b.activo = true and (b.fechaFin is null or b.fechaFin >= :hoy)
+            """)
+    List<Bloqueo> findVigentes(@Param("hoy") LocalDate hoy);
 }

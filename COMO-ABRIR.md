@@ -5,7 +5,8 @@ El proyecto tiene ahora tres partes en carpetas separadas:
 - `landing`: la web pública, la misma de siempre.
 - `backend`: la API central. Es el antiguo backend de la landing, que ahora servirá también al software de gestión.
 - `gestion`: el software de gestión para el personal: entrada con usuario y contraseña, usuarios, roles, auditoría,
-  **pacientes** (Fase 2) y, desde la Fase 3, **agenda y citas**. Se abre en VS Code (paso 8).
+  **pacientes** (Fase 2), **agenda y citas** y la **configuración de la agenda**: odontólogos, tratamientos, horarios y
+  bloqueos (Fase 3). Se abre en VS Code (paso 8).
 
 La base de datos central se llama **`clinica_aeod`**. **No tienes que crearla ni ejecutar ningún script SQL**: el backend
 la crea solo la primera vez, con sus tablas y los datos de ejemplo.
@@ -13,17 +14,19 @@ la crea solo la primera vez, con sus tablas y los datos de ejemplo.
 Necesitas **XAMPP** e **IntelliJ IDEA** (Community o Ultimate), como hasta ahora, y el JDK **ms-21**. Para el software
 de gestión, además, **VS Code** y **Node.js** (paso 8). MySQL Workbench es opcional (paso 9).
 
-## ¿Ya tenías una versión anterior de `aeod-sistema` (Fase 0, 1 o 2)?
+## ¿Ya tenías una versión anterior de `aeod-sistema` (Fase 0, 1, 2 o 3)?
 
 1. Para el backend en IntelliJ con el cuadrado rojo **■** y, si el software está abierto, pulsa **Ctrl + C** en la
    terminal de VS Code. Cierra IntelliJ y VS Code.
 2. Borra la carpeta `aeod-sistema` antigua y descomprime el zip nuevo en su lugar (paso 1).
 3. Haz los pasos 3 a 8, también lo de **Solo la primera vez** del paso 8 (`npm install`). En el paso 4 la clase es
    **`ClinicaApiApplication`**.
-4. Tu base `clinica_aeod` **se conserva**: el backend solo le añade lo nuevo. Si venías de la Fase 2, en la consola verás
-   `Migrating schema clinica_aeod to version "4 - agenda y citas"`, y la contraseña de `admin` es la misma que ya tenías
-   (esta vez no sale el recuadro). Tus citas, pacientes y usuarios de prueba siguen ahí.
-5. En **VS Code** no hace falta repetir `npm install` si ya lo hiciste con la Fase 2; si lo repites, no pasa nada.
+4. Tu base `clinica_aeod` **se conserva**: el backend solo le añade lo nuevo. En la consola verás
+   `Migrating schema clinica_aeod to version "5 - configuracion de la agenda"` (si venías de la Fase 2, antes sale
+   también la 4), y la contraseña de `admin` es la misma que ya tenías (esta vez no sale el recuadro). Tus citas,
+   pacientes y usuarios de prueba siguen ahí.
+5. En **VS Code** no hace falta repetir `npm install` si ya lo hiciste con la Fase 2 o la 3; si lo repites, no pasa
+   nada.
 
 ## ¿Venías de la versión anterior (`aeod-landing-con-backend`)?
 
@@ -140,8 +143,8 @@ datos), así que el backend tiene que estar encendido (paso 5).
 **Para probar los pacientes y los permisos:**
 
 1. En **Usuarios → Nuevo usuario** crea, por ejemplo, a alguien de recepción y marca el rol **Recepción**.
-2. Pulsa **Cerrar sesión** (arriba a la derecha) y entra con ese usuario: en el menú verá **Inicio** y **Pacientes**,
-   pero no Usuarios, Roles ni Auditoría.
+2. Pulsa **Cerrar sesión** (arriba a la derecha) y entra con ese usuario: en el menú verá **Inicio**, **Agenda**,
+   **Pacientes** y **Bloqueos**, pero no Usuarios, Roles ni Auditoría.
 3. En **Pacientes → Nuevo paciente** da de alta a alguien (un DNI válido de ejemplo es `12345678Z`). Después búscalo
    por nombre (sin tildes también vale), DNI, teléfono o código, ábrelo y edita sus datos desde su ficha.
 4. Si escribe a mano la dirección `http://localhost:5173/usuarios`, verá «No tienes permiso». Y aunque alguien llamara
@@ -164,7 +167,7 @@ datos), así que el backend tiene que estar encendido (paso 5).
 5. **Semana** enseña los 7 días; pulsa el nombre de un día para verlo entero. Cada cita sale también en la ficha del
    paciente, en el apartado **Citas**, y cada cambio queda en **Auditoría**.
 6. Un usuario con el rol **Odontólogo** solo ve la agenda del odontólogo vinculado a su usuario, y no puede dar ni mover
-   citas. La pantalla para vincular un usuario a su odontólogo llega en la siguiente entrega.
+   citas. Su usuario se vincula en **Odontólogos** (paso 10).
 
 **Si pierdes la contraseña del administrador:**
 
@@ -195,33 +198,41 @@ por cada cuarto de hora que ocupa cada cita. En `pacientes` están los pacientes
 
 **Qué no hacer.** No cambies la estructura de las tablas desde Workbench (ni columnas, ni tablas nuevas): esos cambios
 los hacen las migraciones del backend. La tabla `flyway_schema_history` es el registro de esas migraciones; no la toques.
-Editar datos, como horarios o bloqueos, sí está bien en tu equipo.
+Los horarios, turnos, tratamientos y bloqueos cámbialos desde el software (paso 10): el backend comprueba que los datos
+son correctos y cada cambio queda en **Auditoría**.
 
 **Borrar la base antigua (opcional).** Cuando todo funcione, en el panel **Schemas** haz clic derecho en
 `clinica_landing` → **Drop Schema…** → **Drop Now**. Comprueba bien el nombre: la que hay que conservar es `clinica_aeod`.
 
-## 10. Cambiar horarios, turnos y bloqueos
+## 10. Configurar la agenda desde el software
 
-Los horarios cargados son **de ejemplo**. Se cambian en la base de datos y el cambio se ve al momento en la landing:
+Los horarios, turnos y duraciones que trae el sistema son **de ejemplo**. Cámbialos por los reales desde el software de
+gestión, con `admin`, en el apartado **Configuración** del menú. Cada cambio se nota **al momento** en la landing y en la
+agenda, y queda en **Auditoría** con quién lo hizo.
 
-| Tabla | Qué cambiar |
-| --- | --- |
-| `horarios_clinica` | Apertura y cierre de cada día. `dia_semana`: 1 = lunes … 7 = domingo. Si borras la fila de un día, ese día queda cerrado |
-| `horarios_odontologo` | Turno de cada odontólogo cada día |
-| `tratamientos` → `duracion_minutos` | Cuánto dura la cita de cada tratamiento |
-| `odontologo_tratamientos` | Qué odontólogo hace cada tratamiento |
-| `bloqueos` | Almuerzo, feriados, vacaciones, reuniones… |
+1. **Horarios.** En «Horario de la clínica», **Cambiar**: marca los días que abre y pon a qué hora abre y cierra.
+   Después, **Cambiar turnos** en cada odontólogo: un día puede tener varios tramos (mañana y tarde) y un día sin tramos
+   no trabaja. Una cita solo se puede dar dentro del horario de la clínica **y** del turno de su odontólogo.
+2. **Bloqueos.** El tiempo en que no se dan citas: festivos, vacaciones, reuniones, capacitaciones, mantenimiento o el
+   almuerzo. Puede ser para toda la clínica o para un odontólogo; unos días concretos o un día de cada semana; todo el
+   día o solo unas horas. Para quitarlo, **Quitar**.
+3. **Tratamientos.** La **duración en la agenda** (de 15 en 15 minutos) es lo que ocupa cada cita. También cambias el
+   precio «desde», quién lo hace y si se ofrece. Uno nuevo sale en la landing al momento; el que dejas de ofrecer
+   desaparece de la web, pero no se borra.
+4. **Odontólogos.** El alta, los datos que salen en la web (nombre, especialidad y presentación) y su **usuario del
+   software**: con él vinculado, al entrar ve **solo su agenda**. Uno nuevo sale en la web sin foto, y tendrá huecos en
+   cuanto le pongas sus turnos en **Horarios**.
 
-Para añadir un **feriado**, en Workbench abre una pestaña SQL (icono **SQL+**), escribe esto cambiando la fecha y pulsa
-el rayo **⚡**:
+**Si un cambio deja citas fuera.** Si cambias un horario o pones un bloqueo donde ya había citas pendientes o
+confirmadas, el software te enseña **«N citas por revisar»** con la lista. **No se cancela ninguna sola**: ábrelas y
+muévelas o cancélalas desde la agenda.
 
-```sql
-INSERT INTO clinica_aeod.bloqueos (tipo, motivo, fecha_inicio, fecha_fin, activo)
-VALUES ('FERIADO', 'Fiesta Nacional', '2026-10-12', '2026-10-12', 1);
-```
+**Quién puede.** De entrada, Administrador y Coordinador cambian todo esto, y Recepción solo los **Bloqueos** (por
+ejemplo, si un odontólogo no puede venir). Se cambia en **Roles y permisos**. Aunque alguien sin permiso llamara a la
+API directamente, el backend responde **403**.
 
-Más ejemplos en `backend/README.md`, apartado **Agenda**. En la siguiente entrega (Fase 3, parte 2) todo esto se hará
-desde el software de gestión.
+**Para probarlo:** pon un bloqueo **Festivo** para toda la clínica un día de la semana que viene. En la landing, elige
+ese día en el formulario de cita: ya no ofrece horas y te propone las siguientes. Quita el bloqueo y vuelven a salir.
 
 ## Si algo falla
 
@@ -243,5 +254,8 @@ desde el software de gestión.
 | `Port 5173 is already in use` | El software ya está abierto en otra terminal. Usa esa, o ciérrala con **Ctrl + C**. |
 | «Usuario o contraseña incorrectos» con `admin` | La contraseña es la del recuadro del paso 5 (distinta cada base). Si la perdiste, mira el final del paso 8. |
 | Al dar o mover una cita: «Este horario acaba de ser reservado» | Alguien (otra persona o la web) cogió esa hora mientras elegías. La lista de huecos se actualiza sola: elige otro. |
-| Un odontólogo ve «Tu usuario todavía no está vinculado a ningún odontólogo» | Su usuario aún no está unido a su ficha de odontólogo. Esa pantalla llega en la siguiente entrega. |
+| Un odontólogo ve «Tu usuario todavía no está vinculado a ningún odontólogo» | Su usuario aún no está unido a su ficha. Con `admin`, ve a **Odontólogos → Editar** y elígelo en **Usuario del software**. |
+| Al guardar un horario o un bloqueo sale «N citas por revisar» | Son citas ya dadas que quedan fuera del horario nuevo o dentro del bloqueo. No se cancelan solas: ábrelas desde la lista y muévelas o cancélalas. |
+| «Tiene N citas pendientes o confirmadas de hoy en adelante» al desactivar o dejar de ofrecer | Primero mueve o cancela esas citas en la **Agenda**, y vuelve a intentarlo. |
+| Un odontólogo o un tratamiento nuevo no tiene huecos en la web | Un odontólogo nuevo necesita sus turnos en **Horarios**, y un tratamiento, alguien que lo haga en sus turnos. |
 | «Demasiados intentos fallidos» | Tras 5 contraseñas mal seguidas, el usuario se bloquea 15 minutos. Espera, o que un administrador lo desbloquee en **Usuarios**. |

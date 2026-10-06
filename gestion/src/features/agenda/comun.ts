@@ -44,6 +44,7 @@ export const ORIGENES: Record<OrigenCita, string> = {
 export const BLOQUEOS: Record<TipoDeBloqueo, string> = {
   ALMUERZO: 'Almuerzo',
   REUNION: 'Reunión',
+  CAPACITACION: 'Capacitación',
   MANTENIMIENTO: 'Mantenimiento',
   VACACIONES: 'Vacaciones',
   FERIADO: 'Festivo',

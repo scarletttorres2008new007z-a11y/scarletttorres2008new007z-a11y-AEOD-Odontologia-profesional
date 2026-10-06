@@ -51,7 +51,7 @@ class SesionTest extends PruebaIntegracion {
                 .andExpect(jsonPath("$.token_acceso").isString())
                 .andExpect(jsonPath("$.usuario.username").value("lucia"))
                 .andExpect(jsonPath("$.usuario.roles[0].codigo").value("RECEPCION"))
-                .andExpect(jsonPath("$.usuario.permisos", contains("citas.cambiar_estado", "citas.cancelar",
+                .andExpect(jsonPath("$.usuario.permisos", contains("bloqueos.gestionar", "citas.cambiar_estado", "citas.cancelar",
                         "citas.crear", "citas.editar", "citas.reprogramar", "citas.ver", "citas.ver_todas",
                         "pacientes.crear", "pacientes.editar", "pacientes.ver")))
                 .andExpect(jsonPath("$.usuario.password_hash").doesNotExist())

@@ -18,8 +18,8 @@ export function VistaSemana({ agenda, hoy, enlace, enlaceDelDia }: Props) {
   if (agenda.odontologos.length === 0 && agenda.solo_su_agenda) {
     return (
       <Vacio>
-        Tu usuario todavía no está vinculado a ningún odontólogo, así que no tiene agenda propia. Un
-        administrador puede vincularlo.
+        Tu usuario todavía no está vinculado a ningún odontólogo, así que no tiene agenda propia. Se vincula
+        en «Odontólogos».
       </Vacio>
     );
   }

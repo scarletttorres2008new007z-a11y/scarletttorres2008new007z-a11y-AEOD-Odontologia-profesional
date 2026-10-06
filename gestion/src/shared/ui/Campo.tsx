@@ -152,12 +152,14 @@ export function AreaDeTexto({ etiqueta, error, ayuda, required, id, ...resto }: 
 interface CasillaProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   etiqueta: ReactNode;
   detalle?: ReactNode;
+  /** 'radio' para elegir una sola opción de un grupo (las del grupo comparten `name`). */
+  type?: 'checkbox' | 'radio';
 }
 
-export function Casilla({ etiqueta, detalle, disabled, ...resto }: CasillaProps) {
+export function Casilla({ etiqueta, detalle, disabled, type = 'checkbox', ...resto }: CasillaProps) {
   return (
     <label className={css.casilla} data-desactivada={disabled ? 'true' : undefined}>
-      <input type="checkbox" disabled={disabled} {...resto} />
+      <input type={type} disabled={disabled} {...resto} />
       <span>
         {etiqueta}
         {detalle && <span className={css.casillaDetalle}>{detalle}</span>}

@@ -35,9 +35,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -123,12 +126,25 @@ abstract class PruebaIntegracion {
     /** Permisos de cada rol tal y como los dejan las migraciones; se restauran al terminar cada test. */
     private static List<Object[]> permisosIniciales;
 
+    /**
+     * Configuración de la agenda de los datos de ejemplo (odontólogos, tratamientos, horarios y bloqueos). Los tests
+     * de configuración la cambian; al terminar cada test se deja como estaba.
+     */
+    private static final List<String> CONFIGURACION = List.of("odontologos", "tratamientos", "odontologo_tratamientos",
+            "horarios_clinica", "horarios_odontologo", "bloqueos");
+    private static Map<String, List<Map<String, Object>>> configuracionInicial;
+
     @BeforeEach
     void contadoresACero() {
         limitador.vaciar();
         if (permisosIniciales == null) {
             permisosIniciales = jdbc.query("select rol_id, permiso_id from rol_permisos",
                     (fila, n) -> new Object[]{fila.getLong("rol_id"), fila.getLong("permiso_id")});
+        }
+        if (configuracionInicial == null) {
+            Map<String, List<Map<String, Object>>> copia = new LinkedHashMap<>();
+            for (String tabla : CONFIGURACION) copia.put(tabla, jdbc.queryForList("select * from " + tabla));
+            configuracionInicial = copia;
         }
     }
 
@@ -152,7 +168,35 @@ abstract class PruebaIntegracion {
         jdbc.update("delete from usuarios where username <> ?", ADMIN_INICIAL);
         jdbc.update("delete from rol_permisos");
         jdbc.batchUpdate("insert into rol_permisos (rol_id, permiso_id) values (?, ?)", permisosIniciales);
+        restaurarConfiguracion();
         limitador.vaciar();
+    }
+
+    /** Deja odontólogos, tratamientos, horarios y bloqueos como en los datos de ejemplo (las citas ya están borradas). */
+    private void restaurarConfiguracion() {
+        for (String tabla : List.of("bloqueos", "horarios_odontologo", "horarios_clinica", "odontologo_tratamientos")) {
+            jdbc.update("delete from " + tabla);
+        }
+        for (String tabla : List.of("odontologos", "tratamientos")) {
+            List<Map<String, Object>> filas = configuracionInicial.get(tabla);
+            String ids = filas.stream().map(fila -> fila.get("id").toString()).collect(Collectors.joining(","));
+            jdbc.update("delete from " + tabla + " where id not in (" + ids + ")");
+            for (Map<String, Object> fila : filas) {
+                List<String> columnas = fila.keySet().stream().filter(c -> !c.equals("id")).toList();
+                List<Object> valores = new ArrayList<>(columnas.stream().map(fila::get).toList());
+                valores.add(fila.get("id"));
+                jdbc.update("update " + tabla + " set " + String.join(" = ?, ", columnas) + " = ? where id = ?",
+                        valores.toArray());
+            }
+        }
+        for (String tabla : List.of("odontologo_tratamientos", "horarios_clinica", "horarios_odontologo", "bloqueos")) {
+            List<Map<String, Object>> filas = configuracionInicial.get(tabla);
+            if (filas.isEmpty()) continue;
+            List<String> columnas = List.copyOf(filas.get(0).keySet());
+            jdbc.batchUpdate("insert into " + tabla + " (" + String.join(", ", columnas) + ") values ("
+                            + String.join(", ", columnas.stream().map(c -> "?").toList()) + ")",
+                    filas.stream().map(fila -> columnas.stream().map(fila::get).toArray()).toList());
+        }
     }
 
     Tratamiento tratamiento(String nombre) {

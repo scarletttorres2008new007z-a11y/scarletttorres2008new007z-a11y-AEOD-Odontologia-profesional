@@ -53,6 +53,11 @@ export const ENTIDADES: Record<EntidadAuditoria, string> = {
   ROL: 'Rol',
   CITA: 'Cita',
   PACIENTE: 'Paciente',
+  ODONTOLOGO: 'Odontólogo',
+  TRATAMIENTO: 'Tratamiento',
+  HORARIO_CLINICA: 'Horario de la clínica',
+  HORARIO_ODONTOLOGO: 'Turnos del odontólogo',
+  BLOQUEO: 'Bloqueo',
 };
 
 export const ENTIDADES_EN_PLURAL: Record<EntidadAuditoria, string> = {
@@ -60,6 +65,11 @@ export const ENTIDADES_EN_PLURAL: Record<EntidadAuditoria, string> = {
   ROL: 'Roles',
   CITA: 'Citas',
   PACIENTE: 'Pacientes',
+  ODONTOLOGO: 'Odontólogos',
+  TRATAMIENTO: 'Tratamientos',
+  HORARIO_CLINICA: 'Horario de la clínica',
+  HORARIO_ODONTOLOGO: 'Turnos de los odontólogos',
+  BLOQUEO: 'Bloqueos',
 };
 
 export const ORIGENES: Record<OrigenAuditoria, string> = {
@@ -102,6 +112,27 @@ const CAMPOS: Record<string, string> = {
   contacto_emergencia_nombre: 'Contacto de emergencia',
   contacto_emergencia_telefono: 'Teléfono de emergencia',
   observaciones: 'Observaciones',
+  // Configuración de la agenda
+  especialidad: 'Especialidad',
+  descripcion: 'Presentación',
+  usuario: 'Usuario del software',
+  descripcion_corta: 'Descripción corta',
+  precio_desde: 'Precio desde (€)',
+  duracion_aproximada: 'Duración orientativa',
+  duracion_minutos: 'Duración en la agenda (min)',
+  odontologos: 'Quién lo hace',
+  tipo: 'Tipo',
+  fecha_inicio: 'Primer día',
+  fecha_fin: 'Último día',
+  dia_semana: 'Cada semana, el',
+  horas: 'Horas',
+  lunes: 'Lunes',
+  martes: 'Martes',
+  miércoles: 'Miércoles',
+  jueves: 'Jueves',
+  viernes: 'Viernes',
+  sábado: 'Sábado',
+  domingo: 'Domingo',
 };
 
 const VALORES: Record<string, string> = {
@@ -122,9 +153,16 @@ const VALORES: Record<string, string> = {
   OTRO: 'Otro',
   MUJER: 'Mujer',
   HOMBRE: 'Hombre',
+  ALMUERZO: 'Almuerzo',
+  REUNION: 'Reunión',
+  CAPACITACION: 'Capacitación',
+  MANTENIMIENTO: 'Mantenimiento',
+  VACACIONES: 'Vacaciones',
+  FERIADO: 'Festivo',
+  MANUAL: 'No disponible',
 };
 
-const CLAVES_CON_CODIGO = new Set(['motivo', 'roles', 'estado', 'tipo_documento', 'sexo']);
+const CLAVES_CON_CODIGO = new Set(['motivo', 'roles', 'estado', 'tipo_documento', 'sexo', 'tipo']);
 
 export function nombreDelCampo(clave: string): string {
   return CAMPOS[clave] ?? clave;
@@ -138,7 +176,8 @@ export function textoDelValor(clave: string, valor: unknown): string {
     return valor.length === 0 ? 'Ninguno' : valor.map((item) => textoDelValor(clave, item)).join(', ');
   }
   if (typeof valor === 'string') {
-    if (clave === 'fecha' || clave === 'fecha_nacimiento') return formatearFecha(valor);
+    if (['fecha', 'fecha_nacimiento', 'fecha_inicio', 'fecha_fin'].includes(clave))
+      return formatearFecha(valor);
     if (clave === 'bloqueado_hasta') return formatearFechaHora(valor);
     if (clave === 'telefono' || clave === 'contacto_emergencia_telefono') return formatearTelefono(valor);
     // Solo se traducen los datos que guardan un código; un nombre o una observación se muestran tal cual

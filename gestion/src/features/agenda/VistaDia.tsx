@@ -28,7 +28,7 @@ export function VistaDia({ agenda, enlace }: Props) {
     return (
       <Vacio>
         {agenda.solo_su_agenda
-          ? 'Tu usuario todavía no está vinculado a ningún odontólogo, así que no tiene agenda propia. Un administrador puede vincularlo.'
+          ? 'Tu usuario todavía no está vinculado a ningún odontólogo, así que no tiene agenda propia. Se vincula en «Odontólogos».'
           : 'No hay odontólogos con agenda este día.'}
       </Vacio>
     );

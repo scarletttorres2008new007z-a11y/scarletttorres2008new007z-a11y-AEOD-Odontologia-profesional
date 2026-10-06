@@ -104,9 +104,33 @@ public class Bloqueo {
         return horaInicio == null || horaFin == null;
     }
 
+    /** ¿Coincide con ese tramo de ese odontólogo ese día? (para avisar de las citas que quedan dentro) */
+    public boolean coincideCon(Odontologo o, LocalDate fecha, LocalTime inicio, LocalTime fin) {
+        return aplicaA(o, fecha) && (esDiaCompleto() || (horaInicio.isBefore(fin) && inicio.isBefore(horaFin)));
+    }
+
+    public void editar(TipoBloqueo tipo, String motivo, Odontologo odontologo, LocalDate fechaInicio, LocalDate fechaFin,
+                       Integer diaSemana, LocalTime horaInicio, LocalTime horaFin) {
+        this.tipo = tipo;
+        this.motivo = motivo;
+        this.odontologo = odontologo;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.diaSemana = diaSemana;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+    }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
+
+    public Long getId() { return id; }
     public TipoBloqueo getTipo() { return tipo; }
     public String getMotivo() { return motivo; }
     public Odontologo getOdontologo() { return odontologo; }
     public LocalTime getHoraInicio() { return horaInicio; }
     public LocalTime getHoraFin() { return horaFin; }
+    public LocalDate getFechaInicio() { return fechaInicio; }
+    public LocalDate getFechaFin() { return fechaFin; }
+    public Integer getDiaSemana() { return diaSemana; }
+    public boolean isActivo() { return activo; }
 }

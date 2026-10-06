@@ -4,6 +4,10 @@ import { PaginaAuditoria } from '../features/auditoria/PaginaAuditoria';
 import { useAuth } from '../features/auth/contexto';
 import { PaginaEntrar } from '../features/auth/PaginaEntrar';
 import { PERMISOS } from '../features/auth/permisos';
+import { PaginaBloqueos } from '../features/configuracion/PaginaBloqueos';
+import { PaginaHorarios } from '../features/configuracion/PaginaHorarios';
+import { PaginaOdontologos } from '../features/configuracion/PaginaOdontologos';
+import { PaginaTratamientos } from '../features/configuracion/PaginaTratamientos';
 import { PaginaMiCuenta } from '../features/cuenta/PaginaMiCuenta';
 import { PaginaInicio } from '../features/inicio/PaginaInicio';
 import { PaginaPaciente } from '../features/pacientes/PaginaPaciente';
@@ -60,6 +64,38 @@ export function Rutas() {
           element={
             <ConPermiso permiso={PERMISOS.PACIENTES_VER}>
               <PaginaPaciente />
+            </ConPermiso>
+          }
+        />
+        <Route
+          path="odontologos"
+          element={
+            <ConPermiso permiso={PERMISOS.ODONTOLOGOS_GESTIONAR}>
+              <PaginaOdontologos />
+            </ConPermiso>
+          }
+        />
+        <Route
+          path="tratamientos"
+          element={
+            <ConPermiso permiso={PERMISOS.TRATAMIENTOS_GESTIONAR}>
+              <PaginaTratamientos />
+            </ConPermiso>
+          }
+        />
+        <Route
+          path="horarios"
+          element={
+            <ConPermiso permiso={PERMISOS.HORARIOS_GESTIONAR}>
+              <PaginaHorarios />
+            </ConPermiso>
+          }
+        />
+        <Route
+          path="bloqueos"
+          element={
+            <ConPermiso permiso={PERMISOS.BLOQUEOS_GESTIONAR}>
+              <PaginaBloqueos />
             </ConPermiso>
           }
         />

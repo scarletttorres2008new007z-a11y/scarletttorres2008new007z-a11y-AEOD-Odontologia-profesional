@@ -28,3 +28,13 @@ export function formatearTelefono(telefono: string | null | undefined): string {
   const [, prefijo, a, b, c] = espanol;
   return `${prefijo ? `${prefijo} ` : ''}${a} ${b} ${c}`;
 }
+
+/** Euros como los guarda la API: «60 €» o, si lleva céntimos, «49,50 €». */
+export function formatearEuros(valor: number): string {
+  return new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: Number.isInteger(valor) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(valor);
+}

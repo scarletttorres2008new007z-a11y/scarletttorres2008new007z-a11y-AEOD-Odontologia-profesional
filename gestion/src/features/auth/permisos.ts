@@ -20,6 +20,10 @@ export const PERMISOS = {
   CITAS_CANCELAR: 'citas.cancelar',
   CITAS_REPROGRAMAR: 'citas.reprogramar',
   CITAS_EDITAR: 'citas.editar',
+  ODONTOLOGOS_GESTIONAR: 'odontologos.gestionar',
+  TRATAMIENTOS_GESTIONAR: 'tratamientos.gestionar',
+  HORARIOS_GESTIONAR: 'horarios.gestionar',
+  BLOQUEOS_GESTIONAR: 'bloqueos.gestionar',
 } as const;
 
 export type CodigoPermiso = (typeof PERMISOS)[keyof typeof PERMISOS];

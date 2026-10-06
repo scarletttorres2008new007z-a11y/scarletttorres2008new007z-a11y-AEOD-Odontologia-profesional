@@ -47,6 +47,40 @@ export const SECCIONES: SeccionMenu[] = [
     ],
   },
   {
+    titulo: 'Configuración',
+    opciones: [
+      {
+        ruta: '/odontologos',
+        texto: 'Odontólogos',
+        descripcion:
+          'Dar de alta odontólogos, cambiar lo que la web cuenta de ellos y vincular cada uno a su usuario.',
+        icono: 'odontologos',
+        permiso: PERMISOS.ODONTOLOGOS_GESTIONAR,
+      },
+      {
+        ruta: '/tratamientos',
+        texto: 'Tratamientos',
+        descripcion: 'Cuánto dura cada tratamiento en la agenda, su precio orientativo y quién lo hace.',
+        icono: 'tratamientos',
+        permiso: PERMISOS.TRATAMIENTOS_GESTIONAR,
+      },
+      {
+        ruta: '/horarios',
+        texto: 'Horarios',
+        descripcion: 'Cuándo abre la clínica y qué días y horas trabaja cada odontólogo.',
+        icono: 'horarios',
+        permiso: PERMISOS.HORARIOS_GESTIONAR,
+      },
+      {
+        ruta: '/bloqueos',
+        texto: 'Bloqueos',
+        descripcion: 'Festivos, vacaciones, reuniones o capacitaciones: el tiempo en que no se dan citas.',
+        icono: 'bloqueos',
+        permiso: PERMISOS.BLOQUEOS_GESTIONAR,
+      },
+    ],
+  },
+  {
     titulo: 'Administración',
     opciones: [
       {

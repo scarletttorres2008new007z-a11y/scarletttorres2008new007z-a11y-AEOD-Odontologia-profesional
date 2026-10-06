@@ -63,6 +63,13 @@ public class Odontologo {
     public Usuario getUsuario() { return usuario; }
 
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    /** Los datos que se cambian desde el software (la foto y el orden se conservan). */
+    public void editar(String nombre, String especialidad, String descripcion) {
+        this.nombre = nombre;
+        this.especialidad = especialidad;
+        this.descripcion = descripcion;
+    }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
     @Override

@@ -23,6 +23,10 @@ public final class Permisos {
     public static final String CITAS_CANCELAR = "citas.cancelar";
     public static final String CITAS_REPROGRAMAR = "citas.reprogramar";
     public static final String CITAS_EDITAR = "citas.editar";
+    public static final String ODONTOLOGOS_GESTIONAR = "odontologos.gestionar";
+    public static final String TRATAMIENTOS_GESTIONAR = "tratamientos.gestionar";
+    public static final String HORARIOS_GESTIONAR = "horarios.gestionar";
+    public static final String BLOQUEOS_GESTIONAR = "bloqueos.gestionar";
 
     private Permisos() {
     }
