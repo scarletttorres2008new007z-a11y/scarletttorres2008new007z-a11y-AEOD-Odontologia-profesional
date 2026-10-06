@@ -16,5 +16,7 @@ public enum AccionAuditoria {
     CAMBIAR_PERMISOS,
     RESERVAR,
     CANCELAR,
-    REPROGRAMAR
+    REPROGRAMAR,
+    CAMBIAR_ESTADO,
+    VINCULAR_PACIENTE
 }

@@ -4,10 +4,12 @@ import { useTitulo } from '../../shared/hooks';
 import { Vacio } from '../../shared/ui/Aviso';
 import { Icono } from '../../shared/ui/Icono';
 import p from '../../shared/ui/pagina.module.css';
+import { ResumenDeCitas } from '../agenda/ResumenDeCitas';
 import { useAuth } from '../auth/contexto';
+import { PERMISOS } from '../auth/permisos';
 import css from './Inicio.module.css';
 
-/** Panel de inicio. Por ahora, accesos a los módulos que la persona puede usar. */
+/** Panel de inicio: las citas del día (si puede verlas) y accesos a los módulos que la persona puede usar. */
 export function PaginaInicio() {
   useTitulo('Inicio');
   const { usuario, tienePermiso } = useAuth();
@@ -20,6 +22,8 @@ export function PaginaInicio() {
         <h1>Hola, {nombre}</h1>
         <p className={p.entradilla}>Te damos la bienvenida al software de gestión de AEOD.</p>
       </div>
+
+      {tienePermiso(PERMISOS.CITAS_VER) && <ResumenDeCitas />}
 
       {modulos.length > 0 ? (
         <section aria-labelledby="titulo-modulos" className={css.modulos}>

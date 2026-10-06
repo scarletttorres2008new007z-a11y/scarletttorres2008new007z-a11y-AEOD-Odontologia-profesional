@@ -10,9 +10,13 @@ export interface FiltroPacientes {
   pagina: number;
 }
 
-export function buscarPacientes(filtro: FiltroPacientes, signal?: AbortSignal): Promise<PaginaPacientes> {
+export function buscarPacientes(
+  filtro: FiltroPacientes,
+  signal?: AbortSignal,
+  tamano = TAMANO_PAGINA,
+): Promise<PaginaPacientes> {
   return api<PaginaPacientes>('/api/pacientes', {
-    parametros: { texto: filtro.texto, activo: filtro.activo, pagina: filtro.pagina, tamano: TAMANO_PAGINA },
+    parametros: { texto: filtro.texto, activo: filtro.activo, pagina: filtro.pagina, tamano },
     signal,
   });
 }

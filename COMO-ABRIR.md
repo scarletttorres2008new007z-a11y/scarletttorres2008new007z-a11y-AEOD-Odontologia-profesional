@@ -4,8 +4,8 @@ El proyecto tiene ahora tres partes en carpetas separadas:
 
 - `landing`: la web pública, la misma de siempre.
 - `backend`: la API central. Es el antiguo backend de la landing, que ahora servirá también al software de gestión.
-- `gestion`: el software de gestión para el personal: entrada con usuario y contraseña, usuarios, roles, auditoría y,
-  desde la Fase 2, **pacientes**. Se abre en VS Code (paso 8).
+- `gestion`: el software de gestión para el personal: entrada con usuario y contraseña, usuarios, roles, auditoría,
+  **pacientes** (Fase 2) y, desde la Fase 3, **agenda y citas**. Se abre en VS Code (paso 8).
 
 La base de datos central se llama **`clinica_aeod`**. **No tienes que crearla ni ejecutar ningún script SQL**: el backend
 la crea solo la primera vez, con sus tablas y los datos de ejemplo.
@@ -13,16 +13,17 @@ la crea solo la primera vez, con sus tablas y los datos de ejemplo.
 Necesitas **XAMPP** e **IntelliJ IDEA** (Community o Ultimate), como hasta ahora, y el JDK **ms-21**. Para el software
 de gestión, además, **VS Code** y **Node.js** (paso 8). MySQL Workbench es opcional (paso 9).
 
-## ¿Ya tenías una versión anterior de `aeod-sistema` (Fase 0 o Fase 1)?
+## ¿Ya tenías una versión anterior de `aeod-sistema` (Fase 0, 1 o 2)?
 
 1. Para el backend en IntelliJ con el cuadrado rojo **■** y, si el software está abierto, pulsa **Ctrl + C** en la
    terminal de VS Code. Cierra IntelliJ y VS Code.
 2. Borra la carpeta `aeod-sistema` antigua y descomprime el zip nuevo en su lugar (paso 1).
 3. Haz los pasos 3 a 8, también lo de **Solo la primera vez** del paso 8 (`npm install`). En el paso 4 la clase es
    **`ClinicaApiApplication`**.
-4. Tu base `clinica_aeod` **se conserva**: el backend solo le añade lo nuevo. Si venías de la Fase 1, en la consola verás
-   `Migrating schema clinica_aeod to version "3 - pacientes"`, y la contraseña de `admin` es la misma que ya tenías
-   (esta vez no sale el recuadro). Tus citas y usuarios de prueba siguen ahí.
+4. Tu base `clinica_aeod` **se conserva**: el backend solo le añade lo nuevo. Si venías de la Fase 2, en la consola verás
+   `Migrating schema clinica_aeod to version "4 - agenda y citas"`, y la contraseña de `admin` es la misma que ya tenías
+   (esta vez no sale el recuadro). Tus citas, pacientes y usuarios de prueba siguen ahí.
+5. En **VS Code** no hace falta repetir `npm install` si ya lo hiciste con la Fase 2; si lo repites, no pasa nada.
 
 ## ¿Venías de la versión anterior (`aeod-landing-con-backend`)?
 
@@ -67,7 +68,7 @@ Si tu XAMPP tiene contraseña, entra en el desplegable de arriba a la derecha �
 ## 5. Comprobar que el backend funciona
 
 1. Abajo se abre la consola. La primera vez verás estas líneas:
-   - `Successfully applied … migration(s) to schema clinica_aeod, now at version v3`: se han creado las tablas.
+   - `Successfully applied … migration(s) to schema clinica_aeod, now at version v4`: se han creado las tablas.
    - `Tomcat started on port 8080`: el backend está en marcha.
    - Varias líneas que empiezan por **`Datos de prueba:`**: tratamientos, odontólogos, horarios y almuerzo de ejemplo
      (solo si la base estaba vacía).
@@ -103,6 +104,8 @@ Deja IntelliJ abierto con el backend en marcha. Para pararlo, pulsa el cuadrado 
 6. Debe salir *"Tu cita está reservada. Te llamaremos para confirmarla."* con el estado **Pendiente de confirmación**.
    Las citas de la web quedan pendientes hasta que la clínica las verifica.
 7. Vuelve a elegir el mismo día: esa hora ya no aparece.
+8. Debajo del mensaje de reserva está **Cancelar esta cita**. Si lo pulsas, te pregunta si estás segura; al confirmar,
+   sale *"Tu cita se ha cancelado."* y esa hora vuelve a aparecer libre. La cita no se borra: queda como **Cancelada**.
 
 **Doble reserva:** abre la landing en dos pestañas, elige la misma hora en las dos y confirma primero en una y luego en
 la otra. La segunda dice *"Este horario acaba de ser reservado. Selecciona otra opción."*.
@@ -147,6 +150,22 @@ datos), así que el backend tiene que estar encendido (paso 5).
    **Roles y permisos** decides qué puede hacer cada rol: de entrada, Recepción y Coordinador dan de alta y editan
    pacientes, y Odontólogo solo los consulta.
 
+**Para probar la agenda y las citas** (con `admin`, después de reservar en la landing como en el paso 7):
+
+1. En **Inicio** verás **Por confirmar** con tu reserva de la web. Ábrela, o ve a **Agenda**: el día sale con una
+   columna por odontólogo y la cita aparece en el color de «Por confirmar» y con **Sin ficha** (aún no está en la
+   ficha de ningún paciente).
+2. Pulsa la cita. Desde ahí puedes **Confirmar**, **Vincular a un paciente** (lo busca por el teléfono que dejó en la
+   web, o lo das de alta con esos datos), **Mover a otro día u hora**, **Cancelar la cita** y escribir **notas
+   internas**, que el paciente no ve. Una cita cancelada no se borra: queda en la agenda como Cancelada.
+3. Pulsa **Nueva cita**: eliges paciente, tratamiento y día, y el backend te enseña los **huecos libres** de cada
+   odontólogo. Al darla, esa hora **deja de salir en la landing**. Si la cancelas, **vuelve a salir**.
+4. Si cancelas una cita desde la landing (paso 7, punto 8), en la agenda aparece como **Cancelada**.
+5. **Semana** enseña los 7 días; pulsa el nombre de un día para verlo entero. Cada cita sale también en la ficha del
+   paciente, en el apartado **Citas**, y cada cambio queda en **Auditoría**.
+6. Un usuario con el rol **Odontólogo** solo ve la agenda del odontólogo vinculado a su usuario, y no puede dar ni mover
+   citas. La pantalla para vincular un usuario a su odontólogo llega en la siguiente entrega.
+
 **Si pierdes la contraseña del administrador:**
 
 1. En IntelliJ, desplegable de arriba a la derecha → **Edit Configurations…** → **Environment variables** y escribe
@@ -170,8 +189,9 @@ la da XAMPP, y dos servidores a la vez chocan en el puerto 3306.
 5. Haz doble clic en la conexión **AEOD XAMPP**.
 
 **Ver los datos.** En el panel **Schemas** de la izquierda abre `clinica_aeod → Tables`. Clic derecho en `citas` →
-**Select Rows - Limit 1000**: verás tu cita con el estado **PENDIENTE** y el origen **LANDING**. En `agenda_ocupacion`
-hay una fila por cada cuarto de hora que ocupa. En `pacientes` están los pacientes que des de alta en el software.
+**Select Rows - Limit 1000**: verás tu cita con el estado **PENDIENTE** y el origen **LANDING**, y las que des desde el
+software con el origen **SOFTWARE** y su `paciente_id`. Es la misma tabla para las dos. En `agenda_ocupacion` hay una fila
+por cada cuarto de hora que ocupa cada cita. En `pacientes` están los pacientes que des de alta en el software.
 
 **Qué no hacer.** No cambies la estructura de las tablas desde Workbench (ni columnas, ni tablas nuevas): esos cambios
 los hacen las migraciones del backend. La tabla `flyway_schema_history` es el registro de esas migraciones; no la toques.
@@ -200,7 +220,8 @@ INSERT INTO clinica_aeod.bloqueos (tipo, motivo, fecha_inicio, fecha_fin, activo
 VALUES ('FERIADO', 'Fiesta Nacional', '2026-10-12', '2026-10-12', 1);
 ```
 
-Más ejemplos en `backend/README.md`, apartado **Agenda**. Más adelante todo esto se hará desde el software de gestión.
+Más ejemplos en `backend/README.md`, apartado **Agenda**. En la siguiente entrega (Fase 3, parte 2) todo esto se hará
+desde el software de gestión.
 
 ## Si algo falla
 
@@ -221,4 +242,6 @@ Más ejemplos en `backend/README.md`, apartado **Agenda**. Más adelante todo es
 | `npm` no se reconoce como comando | Node.js no está instalado o VS Code se abrió antes de instalarlo. Instálalo (paso 8) y vuelve a abrir VS Code. |
 | `Port 5173 is already in use` | El software ya está abierto en otra terminal. Usa esa, o ciérrala con **Ctrl + C**. |
 | «Usuario o contraseña incorrectos» con `admin` | La contraseña es la del recuadro del paso 5 (distinta cada base). Si la perdiste, mira el final del paso 8. |
+| Al dar o mover una cita: «Este horario acaba de ser reservado» | Alguien (otra persona o la web) cogió esa hora mientras elegías. La lista de huecos se actualiza sola: elige otro. |
+| Un odontólogo ve «Tu usuario todavía no está vinculado a ningún odontólogo» | Su usuario aún no está unido a su ficha de odontólogo. Esa pantalla llega en la siguiente entrega. |
 | «Demasiados intentos fallidos» | Tras 5 contraseñas mal seguidas, el usuario se bloquea 15 minutos. Espera, o que un administrador lo desbloquee en **Usuarios**. |

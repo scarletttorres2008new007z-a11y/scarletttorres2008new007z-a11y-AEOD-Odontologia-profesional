@@ -32,6 +32,13 @@ const TRAZOS = {
       <path d="M15 10h3.5M15 13.5h3.5" />
     </>
   ),
+  agenda: (
+    <>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+      <path d="M3.5 10h17M8 3v4M16 3v4" />
+      <path d="M7.5 14h2.5M13.5 14h3M7.5 17.5h2.5" />
+    </>
+  ),
   cuenta: (
     <>
       <circle cx="12" cy="8" r="4" />
@@ -49,6 +56,8 @@ const TRAZOS = {
   cerrar: <path d="M6 6l12 12M18 6 6 18" />,
   flecha: <path d="M5 12h14m-6-6 6 6-6 6" />,
   volver: <path d="M19 12H5m6-6-6 6 6 6" />,
+  anterior: <path d="m15 6-6 6 6 6" />,
+  siguiente: <path d="m9 6 6 6-6 6" />,
 } satisfies Record<string, ReactNode>;
 
 export type NombreIcono = keyof typeof TRAZOS;

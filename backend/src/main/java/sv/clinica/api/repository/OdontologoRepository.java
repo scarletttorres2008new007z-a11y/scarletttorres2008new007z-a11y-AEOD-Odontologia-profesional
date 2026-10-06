@@ -13,4 +13,7 @@ public interface OdontologoRepository extends JpaRepository<Odontologo, Long> {
     Optional<Odontologo> findByIdAndActivoTrue(Long id);
 
     Optional<Odontologo> findByNombre(String nombre);
+
+    /** El odontólogo vinculado a un usuario del software, si lo hay. */
+    Optional<Odontologo> findByUsuarioId(Long usuarioId);
 }

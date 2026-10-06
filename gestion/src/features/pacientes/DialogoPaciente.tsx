@@ -82,11 +82,19 @@ function hoy(): string {
   return `${ahora.getFullYear()}-${mes}-${dia}`;
 }
 
+/** Datos con los que empieza un alta (por ejemplo, los que dejó en la web al reservar). */
+export type DatosIniciales = Partial<Pick<Formulario, 'nombres' | 'apellidos' | 'telefono' | 'email'>>;
+
 /** Alta de un paciente (sin `paciente`) o edición de sus datos. */
-export function DialogoPaciente({ paciente, alCerrar, alTerminar }: PropsDialogo & { paciente?: Paciente }) {
+export function DialogoPaciente({
+  paciente,
+  inicial,
+  alCerrar,
+  alTerminar,
+}: PropsDialogo & { paciente?: Paciente; inicial?: DatosIniciales }) {
   const refrescar = useRefrescarPacientes();
   const crear = paciente === undefined;
-  const [formulario, setFormulario] = useState<Formulario>(() => formularioDe(paciente));
+  const [formulario, setFormulario] = useState<Formulario>(() => ({ ...formularioDe(paciente), ...inicial }));
   const campos = useRef<HTMLDivElement>(null);
 
   const guardar = useMutation({

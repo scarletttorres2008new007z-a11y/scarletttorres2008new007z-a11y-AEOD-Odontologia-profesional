@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router';
+import { PaginaAgenda } from '../features/agenda/PaginaAgenda';
 import { PaginaAuditoria } from '../features/auditoria/PaginaAuditoria';
 import { useAuth } from '../features/auth/contexto';
 import { PaginaEntrar } from '../features/auth/PaginaEntrar';
@@ -38,6 +39,14 @@ export function Rutas() {
         }
       >
         <Route index element={<PaginaInicio />} />
+        <Route
+          path="agenda"
+          element={
+            <ConPermiso permiso={PERMISOS.CITAS_VER}>
+              <PaginaAgenda />
+            </ConPermiso>
+          }
+        />
         <Route
           path="pacientes"
           element={

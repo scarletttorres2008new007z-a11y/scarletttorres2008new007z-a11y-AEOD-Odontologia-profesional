@@ -16,6 +16,13 @@ public final class Permisos {
     public static final String PACIENTES_VER = "pacientes.ver";
     public static final String PACIENTES_CREAR = "pacientes.crear";
     public static final String PACIENTES_EDITAR = "pacientes.editar";
+    public static final String CITAS_VER = "citas.ver";
+    public static final String CITAS_VER_TODAS = "citas.ver_todas";
+    public static final String CITAS_CREAR = "citas.crear";
+    public static final String CITAS_CAMBIAR_ESTADO = "citas.cambiar_estado";
+    public static final String CITAS_CANCELAR = "citas.cancelar";
+    public static final String CITAS_REPROGRAMAR = "citas.reprogramar";
+    public static final String CITAS_EDITAR = "citas.editar";
 
     private Permisos() {
     }

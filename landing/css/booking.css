@@ -193,6 +193,12 @@
 .booking-confirmation dt { min-width: 104px; font-size: .8125rem; color: var(--ink-3); }
 .booking-confirmation dd { margin: 0; font-weight: 500; color: var(--ink); }
 
+/* Cancelar la cita recién reservada, con confirmación en el mismo aviso */
+.booking-cancel { display: grid; gap: 10px; }
+.booking-cancel p { margin: 0; }
+.booking-cancel__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.booking-cancel__error { color: var(--error); }
+
 @media (min-width: 600px) {
   .slots { padding: 20px; }
 }

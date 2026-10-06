@@ -152,6 +152,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/citas/{id}/paciente': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Vincular a la ficha de un paciente
+     * @description Permiso: citas.editar.
+     */
+    put: operations['vincularPaciente'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/citas/{id}/notas': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar las notas internas
+     * @description Permiso: citas.editar.
+     */
+    put: operations['cambiarNotas'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/citas/{id}/estado': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Cambiar el estado
+     * @description Permiso: citas.cambiar_estado. Confirmar, en consulta, completada o no asistió; los estados posibles en cada momento vienen en estados_siguientes.
+     */
+    put: operations['cambiarEstado_2'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/auth/password': {
     parameters: {
       query?: never;
@@ -220,6 +280,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/pacientes/{id}/citas': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Dar cita al paciente
+     * @description Permiso: citas.crear. El horario se elige entre los de /api/agenda/disponibilidad y el backend comprueba otra vez que sigue libre (409 si alguien se adelantó). Queda CONFIRMADA. Es la misma tabla de citas que usa la landing: el hueco deja de ofrecerse en la web al momento.
+     */
+    post: operations['darCita'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/contacto': {
     parameters: {
       query?: never;
@@ -243,9 +323,77 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /**
+     * Buscar citas
+     * @description Permiso: citas.ver. Sin citas.ver_todas, solo las del odontólogo vinculado al usuario.
+     */
+    get: operations['buscar_2'];
+    put?: never;
+    /**
+     * Reservar una cita desde la web
+     * @description Público. Entra PENDIENTE hasta que la clínica la confirma.
+     */
+    post: operations['reservar'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/citas/{id}/reprogramacion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
     get?: never;
     put?: never;
-    post: operations['reservar'];
+    /**
+     * Reprogramar
+     * @description Permiso: citas.reprogramar. Devuelve la cita nueva; la anterior queda REPROGRAMADA. 409 si el nuevo horario ya no está libre (entonces no cambia nada).
+     */
+    post: operations['reprogramar'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/citas/{id}/cancelacion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Cancelar
+     * @description Permiso: citas.cancelar. No se borra: queda CANCELADA y su hueco libre.
+     */
+    post: operations['cancelar'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/citas/cancelacion': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Cancelar una cita desde la web
+     * @description Público. El paciente se identifica con el código que recibió al reservar y debe hacerlo con la antelación mínima (409 si no). El hueco queda libre al momento.
+     */
+    post: operations['cancelarComoPaciente'];
     delete?: never;
     options?: never;
     head?: never;
@@ -464,6 +612,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/citas/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Ver una cita
+     * @description Permiso: citas.ver. 404 si no existe o es de otra agenda.
+     */
+    get: operations['obtener_4'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/auth/me': {
     parameters: {
       query?: never;
@@ -495,7 +663,47 @@ export interface paths {
      * Consultar la auditoría
      * @description Permiso: auditoria.ver. De lo más reciente a lo más antiguo.
      */
-    get: operations['buscar_2'];
+    get: operations['buscar_3'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/agenda': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Agenda de uno o varios días
+     * @description Permiso: citas.ver. Sin citas.ver_todas, solo la del odontólogo vinculado al usuario.
+     */
+    get: operations['agenda'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/agenda/disponibilidad': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Huecos libres de un día
+     * @description Permiso: citas.crear o citas.reprogramar. Cada odontólogo por separado y sin la antelación mínima de la web. Al reprogramar, excluir_cita_id hace que la propia cita no cuente como ocupada.
+     */
+    get: operations['disponibilidad'];
     put?: never;
     post?: never;
     delete?: never;
@@ -583,6 +791,7 @@ export interface components {
       /** Format: email */
       email?: string;
       direccion?: string;
+      /** @description Nombre y, si se quiere, la relación entre paréntesis: Ana Pérez (madre) */
       contacto_emergencia_nombre?: string;
       contacto_emergencia_telefono?: string;
       /** @description Solo datos administrativos; la información clínica va en el expediente */
@@ -625,6 +834,107 @@ export interface components {
     EstadoPacienteRequest: {
       activo: boolean;
     };
+    PacienteCitaRequest: {
+      /** Format: int64 */
+      paciente_id: number;
+    };
+    /** @description Cita completa para el personal. Las fechas están en hora de Madrid. */
+    CitaDetalleResponse: {
+      /** Format: int64 */
+      id: number;
+      /** Format: date */
+      fecha: string;
+      /** @example 10:30 */
+      hora_inicio: string;
+      /** @example 11:30 */
+      hora_fin: string;
+      /** Format: int32 */
+      duracion_minutos: number;
+      /** @enum {string} */
+      estado:
+        | 'PENDIENTE'
+        | 'CONFIRMADA'
+        | 'EN_ATENCION'
+        | 'COMPLETADA'
+        | 'NO_ASISTIO'
+        | 'CANCELADA'
+        | 'REPROGRAMADA';
+      /** @enum {string} */
+      origen: 'LANDING' | 'SOFTWARE' | 'APP';
+      /** Format: int64 */
+      tratamiento_id: number;
+      tratamiento: string;
+      /** Format: int64 */
+      odontologo_id: number;
+      odontologo: string;
+      paciente?: components['schemas']['PacienteDeCita'];
+      contacto: components['schemas']['ContactoDeCita'];
+      notas_internas?: string;
+      /** @description Quién la dio desde el software; vacío si llegó por la web */
+      creada_por?: string;
+      /** Format: date-time */
+      creada_en: string;
+      /** Format: date-time */
+      actualizada_en: string;
+      /** Format: date-time */
+      cancelada_en?: string;
+      /** @enum {string} */
+      cancelada_por?: 'LANDING' | 'SOFTWARE' | 'APP';
+      motivo_cancelacion?: string;
+      /**
+       * Format: int64
+       * @description Si es una reprogramación, la cita a la que sustituye
+       */
+      cita_anterior_id?: number;
+      /**
+       * Format: int64
+       * @description Si se reprogramó, la cita nueva
+       */
+      cita_nueva_id?: number;
+      /** @description Estados a los que se puede pasar ahora con PUT /api/citas/{id}/estado */
+      estados_siguientes: (
+        | 'PENDIENTE'
+        | 'CONFIRMADA'
+        | 'EN_ATENCION'
+        | 'COMPLETADA'
+        | 'NO_ASISTIO'
+        | 'CANCELADA'
+        | 'REPROGRAMADA'
+      )[];
+      /** @description true = todavía se puede cancelar o reprogramar */
+      modificable: boolean;
+    };
+    /** @description Datos de contacto con los que llegó la cita */
+    ContactoDeCita: {
+      nombre: string;
+      telefono: string;
+      email?: string;
+      /** @description Lo que escribió el paciente al reservar en la web */
+      mensaje?: string;
+    };
+    /** @description Ficha del paciente; vacío si la cita (de la web) aún no está vinculada */
+    PacienteDeCita: {
+      /** Format: int64 */
+      id: number;
+      codigo: string;
+      nombre: string;
+      telefono: string;
+      email?: string;
+    };
+    NotasCitaRequest: {
+      notas_internas?: string;
+    };
+    EstadoCitaRequest: {
+      /** @enum {string} */
+      estado:
+        | 'PENDIENTE'
+        | 'CONFIRMADA'
+        | 'EN_ATENCION'
+        | 'COMPLETADA'
+        | 'NO_ASISTIO'
+        | 'CANCELADA'
+        | 'REPROGRAMADA';
+    };
     CambioPasswordRequest: {
       password_actual: string;
       password_nueva: string;
@@ -636,6 +946,18 @@ export interface components {
       nombre: string;
       password: string;
       roles?: string[];
+    };
+    NuevaCitaRequest: {
+      /** Format: int64 */
+      tratamiento_id: number;
+      /** Format: int64 */
+      odontologo_id: number;
+      /** Format: date */
+      fecha: string;
+      /** @example 10:30 */
+      hora_inicio: string;
+      /** @description Notas para el personal; el paciente no las ve */
+      notas_internas?: string;
     };
     ContactoRequest: {
       nombre: string;
@@ -667,6 +989,21 @@ export interface components {
       /** Format: email */
       email: string;
       mensaje?: string;
+    };
+    ReprogramacionRequest: {
+      /** Format: int64 */
+      odontologo_id: number;
+      /** Format: date */
+      fecha: string;
+      /** @example 10:30 */
+      hora_inicio: string;
+    };
+    CancelacionRequest: {
+      motivo?: string;
+    };
+    CancelacionPacienteRequest: {
+      /** @description El código que devolvió la reserva */
+      codigo: string;
     };
     /** @description Sesión iniciada */
     SesionResponse: {
@@ -723,8 +1060,8 @@ export interface components {
     };
     TratamientoResponse: {
       /** Format: int64 */
-      id?: number;
-      nombre?: string;
+      id: number;
+      nombre: string;
       descripcion?: string;
       descripcion_corta?: string;
       precio_desde?: number;
@@ -732,7 +1069,7 @@ export interface components {
       /** Format: int32 */
       duracion_minutos?: number;
       imagen?: string;
-      odontologo_ids?: number[];
+      odontologo_ids: number[];
     };
     PermisoResponse: {
       /** Format: int64 */
@@ -761,8 +1098,8 @@ export interface components {
     };
     OdontologoResponse: {
       /** Format: int64 */
-      id?: number;
-      nombre?: string;
+      id: number;
+      nombre: string;
       especialidad?: string;
       descripcion?: string;
       imagen?: string;
@@ -794,6 +1131,61 @@ export interface components {
       /** Format: int32 */
       duracion_minutos?: number;
     };
+    /** @description Cita en la agenda o en un listado */
+    CitaResumenResponse: {
+      /** Format: int64 */
+      id: number;
+      /** Format: date */
+      fecha: string;
+      /** @example 10:30 */
+      hora_inicio: string;
+      /** @example 11:30 */
+      hora_fin: string;
+      /** @enum {string} */
+      estado:
+        | 'PENDIENTE'
+        | 'CONFIRMADA'
+        | 'EN_ATENCION'
+        | 'COMPLETADA'
+        | 'NO_ASISTIO'
+        | 'CANCELADA'
+        | 'REPROGRAMADA';
+      /** @enum {string} */
+      origen: 'LANDING' | 'SOFTWARE' | 'APP';
+      /** Format: int64 */
+      tratamiento_id: number;
+      tratamiento: string;
+      /** Format: int64 */
+      odontologo_id: number;
+      odontologo: string;
+      /**
+       * Format: int64
+       * @description Ficha del paciente; vacío si la cita (de la web) aún no está vinculada
+       */
+      paciente_id?: number;
+      /** @description Nombre del paciente: el de su ficha o, sin ficha, el que escribió en la web */
+      nombre: string;
+      /** @description Teléfono de su ficha o, sin ficha, el que dejó en la web */
+      telefono: string;
+    };
+    /** @description Página de resultados */
+    PaginaResponseCitaResumenResponse: {
+      contenido: components['schemas']['CitaResumenResponse'][];
+      /**
+       * Format: int32
+       * @description Número de página, empezando en 0
+       */
+      pagina: number;
+      /**
+       * Format: int32
+       * @description Resultados por página
+       */
+      tamano: number;
+      /** Format: int64 */
+      total_elementos: number;
+      /** Format: int32 */
+      total_paginas: number;
+    };
     /** @description Operación registrada en la auditoría. La fecha está en hora de Madrid. */
     AuditoriaResponse: {
       /** Format: int64 */
@@ -819,7 +1211,9 @@ export interface components {
         | 'CAMBIAR_PERMISOS'
         | 'RESERVAR'
         | 'CANCELAR'
-        | 'REPROGRAMAR';
+        | 'REPROGRAMAR'
+        | 'CAMBIAR_ESTADO'
+        | 'VINCULAR_PACIENTE';
       /** @enum {string} */
       entidad: 'USUARIO' | 'ROL' | 'CITA' | 'PACIENTE';
       entidad_id?: string;
@@ -855,6 +1249,67 @@ export interface components {
       id: number;
       username: string;
       nombre: string;
+    };
+    AgendaResponse: {
+      /** Format: date */
+      desde: string;
+      /** Format: date */
+      hasta: string;
+      dias: components['schemas']['Dia'][];
+      /** @description Odontólogos que se muestran, en orden */
+      odontologos: components['schemas']['OdontologoDeAgenda'][];
+      turnos: components['schemas']['Turno'][];
+      bloqueos: components['schemas']['BloqueoDelDia'][];
+      /** @description Citas que ocupan su hueco (las canceladas y reprogramadas no salen) */
+      citas: components['schemas']['CitaResumenResponse'][];
+      /** @description true = el usuario solo puede ver la agenda del odontólogo vinculado a él */
+      solo_su_agenda: boolean;
+    };
+    BloqueoDelDia: {
+      /**
+       * Format: int64
+       * @description Vacío = toda la clínica
+       */
+      odontologo_id?: number;
+      /** Format: date */
+      fecha: string;
+      /** @description Vacías = el día entero */
+      hora_inicio?: string;
+      hora_fin?: string;
+      /** @enum {string} */
+      tipo: 'ALMUERZO' | 'REUNION' | 'MANTENIMIENTO' | 'VACACIONES' | 'FERIADO' | 'MANUAL';
+      motivo?: string;
+    };
+    Dia: {
+      /** Format: date */
+      fecha: string;
+      /** @description Vacío = la clínica cierra ese día */
+      apertura?: string;
+      cierre?: string;
+    };
+    /** @description Odontólogos que se muestran, en orden */
+    OdontologoDeAgenda: {
+      /** Format: int64 */
+      id: number;
+      nombre: string;
+    };
+    Turno: {
+      /** Format: int64 */
+      odontologo_id: number;
+      /** Format: date */
+      fecha: string;
+      hora_inicio: string;
+      hora_fin: string;
+    };
+    /** @description Hueco libre para dar o mover una cita */
+    HuecoResponse: {
+      /** Format: int64 */
+      odontologo_id: number;
+      odontologo: string;
+      /** @example 10:30 */
+      hora_inicio: string;
+      /** @example 11:30 */
+      hora_fin: string;
     };
     /** @description Error de la API */
     ErrorResponse: {
@@ -1209,6 +1664,111 @@ export interface operations {
       };
     };
   };
+  vincularPaciente: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PacienteCitaRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarNotas: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NotasCitaRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cambiarEstado_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EstadoCitaRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   cambiarPassword: {
     parameters: {
       query?: never;
@@ -1378,6 +1938,41 @@ export interface operations {
       };
     };
   };
+  darCita: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NuevaCitaRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   enviar: {
     parameters: {
       query?: never;
@@ -1411,6 +2006,57 @@ export interface operations {
       };
     };
   };
+  buscar_2: {
+    parameters: {
+      query?: {
+        /** @description Desde este día (incluido) */
+        desde?: string;
+        /** @description Hasta este día (incluido) */
+        hasta?: string;
+        odontologo_id?: number;
+        estado?:
+          | 'PENDIENTE'
+          | 'CONFIRMADA'
+          | 'EN_ATENCION'
+          | 'COMPLETADA'
+          | 'NO_ASISTIO'
+          | 'CANCELADA'
+          | 'REPROGRAMADA';
+        origen?: 'LANDING' | 'SOFTWARE' | 'APP';
+        paciente_id?: number;
+        /** @description true = solo las que aún no están vinculadas a la ficha de un paciente */
+        sin_ficha?: boolean;
+        /** @description true = de la más reciente a la más antigua */
+        recientes?: boolean;
+        pagina?: number;
+        tamano?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginaResponseCitaResumenResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   reservar: {
     parameters: {
       query?: never;
@@ -1426,6 +2072,109 @@ export interface operations {
     responses: {
       /** @description Created */
       201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  reprogramar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReprogramacionRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cancelar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CancelacionRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  cancelarComoPaciente: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CancelacionPacienteRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
         headers: {
           [name: string]: unknown;
         };
@@ -1821,6 +2570,37 @@ export interface operations {
       };
     };
   };
+  obtener_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CitaDetalleResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
   yo: {
     parameters: {
       query?: never;
@@ -1850,7 +2630,7 @@ export interface operations {
       };
     };
   };
-  buscar_2: {
+  buscar_3: {
     parameters: {
       query?: {
         entidad?: 'USUARIO' | 'ROL' | 'CITA' | 'PACIENTE';
@@ -1873,7 +2653,9 @@ export interface operations {
           | 'CAMBIAR_PERMISOS'
           | 'RESERVAR'
           | 'CANCELAR'
-          | 'REPROGRAMAR';
+          | 'REPROGRAMAR'
+          | 'CAMBIAR_ESTADO'
+          | 'VINCULAR_PACIENTE';
         /** @description Desde este día (incluido), hora de Madrid */
         desde?: string;
         /** @description Hasta este día (incluido), hora de Madrid */
@@ -1894,6 +2676,76 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['PaginaResponseAuditoriaResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  agenda: {
+    parameters: {
+      query: {
+        /** @description Primer día */
+        desde: string;
+        /** @description Cuántos días, de 1 a 7 */
+        dias?: number;
+        /** @description Solo este odontólogo */
+        odontologo_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AgendaResponse'];
+        };
+      };
+      /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  disponibilidad: {
+    parameters: {
+      query: {
+        tratamiento_id: number;
+        fecha: string;
+        odontologo_id?: number;
+        excluir_cita_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HuecoResponse'][];
         };
       };
       /** @description Error (400 datos no válidos, 401 sin sesión, 403 sin permiso, 404 no existe, 409 conflicto, 429 demasiadas peticiones…) */

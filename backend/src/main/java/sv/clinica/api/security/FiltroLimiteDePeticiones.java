@@ -56,6 +56,8 @@ public class FiltroLimiteDePeticiones extends OncePerRequestFilter {
             case "/api/auth/login" -> LimitadorDePeticiones.Tipo.LOGIN;
             // Las reservas del personal (con sesión) no cuentan: el límite es para la web pública
             case "/api/citas" -> request.getHeader(HttpHeaders.AUTHORIZATION) == null ? LimitadorDePeticiones.Tipo.RESERVA : null;
+            // Cancelar desde la web cuenta como una reserva más: así nadie puede probar códigos sin límite
+            case "/api/citas/cancelacion" -> LimitadorDePeticiones.Tipo.RESERVA;
             case "/api/contacto" -> LimitadorDePeticiones.Tipo.CONTACTO;
             default -> null;
         };

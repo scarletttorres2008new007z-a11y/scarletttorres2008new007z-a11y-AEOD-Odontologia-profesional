@@ -138,12 +138,13 @@ abstract class PruebaIntegracion {
      */
     @AfterEach
     void vaciarAgenda() {
-        jdbc.update("delete from pacientes");
         jdbc.update("delete from notificaciones");
         jdbc.update("delete from lista_espera");
         jdbc.update("delete from agenda_ocupacion");
         jdbc.update("update citas set cita_anterior_id = null");
         jdbc.update("delete from citas");
+        jdbc.update("delete from pacientes");
+        jdbc.update("update odontologos set usuario_id = null");
         jdbc.update("delete from solicitudes_contacto");
         jdbc.update("delete from auditoria");
         jdbc.update("delete from sesiones");

@@ -185,7 +185,7 @@ class ReservaTest extends PruebaIntegracion {
                 where n.tipo = 'HUECO_LIBERADO'""", String.class)).containsExactly("Mañanas");
 
         // Ya no está activa
-        assertThatThrownBy(() -> citaService.cancelar(cita.getCodigo(), OrigenCita.CLINICA, null))
+        assertThatThrownBy(() -> citaService.cancelar(cita.getCodigo(), OrigenCita.SOFTWARE, null))
                 .isInstanceOf(CitaNoModificableException.class)
                 .hasMessage("Esta cita ya no está activa y no se puede cancelar.");
         // El hueco se puede volver a reservar
@@ -198,12 +198,12 @@ class ReservaTest extends PruebaIntegracion {
         Cita cita = reservar(tratamiento("Limpieza dental"), odontologo("Dra. Ana Villar"), LUNES, 11, 0);
 
         assertThat(citaService.puedeModificar(cita, OrigenCita.LANDING)).isFalse();
-        assertThatThrownBy(() -> citaService.cancelar(cita.getCodigo(), OrigenCita.APP_PACIENTE, null))
+        assertThatThrownBy(() -> citaService.cancelar(cita.getCodigo(), OrigenCita.APP, null))
                 .isInstanceOf(CitaNoModificableException.class)
                 .hasMessage("Solo se puede cancelar con al menos 4 horas de antelación. Llama a la clínica.");
 
         // La clínica sí puede
-        assertThat(citaService.cancelar(cita.getCodigo(), OrigenCita.CLINICA, "Avisó por teléfono").getEstado())
+        assertThat(citaService.cancelar(cita.getCodigo(), OrigenCita.SOFTWARE, "Avisó por teléfono").getEstado())
                 .isEqualTo(EstadoCita.CANCELADA);
     }
 

@@ -89,8 +89,12 @@ public class Bloqueo {
 
     /** ¿Se aplica este bloqueo a ese odontólogo ese día? */
     public boolean aplicaA(Odontologo o, LocalDate fecha) {
+        return (odontologo == null || odontologo.equals(o)) && aplicaEl(fecha);
+    }
+
+    /** ¿Está en vigor ese día (para toda la clínica o para su odontólogo)? */
+    public boolean aplicaEl(LocalDate fecha) {
         return activo
-                && (odontologo == null || odontologo.equals(o))
                 && (fechaInicio == null || !fecha.isBefore(fechaInicio))
                 && (fechaFin == null || !fecha.isAfter(fechaFin))
                 && (diaSemana == null || diaSemana == fecha.getDayOfWeek().getValue());

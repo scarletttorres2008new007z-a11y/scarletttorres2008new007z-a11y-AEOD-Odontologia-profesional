@@ -14,6 +14,7 @@
  *   AEOD.api.getProximosHorarios(q) GET  /disponibilidad/proximos?tratamiento_id[&desde][&odontologo_id][&franja]
  *   AEOD.api.enviarContacto(datos)  POST /contacto
  *   AEOD.api.reservarCita(datos)    POST /citas  (409 si el horario ya no está libre)
+ *   AEOD.api.cancelarCita(codigo)   POST /citas/cancelacion  (409 si ya no se puede cancelar online)
  */
 (function () {
   'use strict';
@@ -83,6 +84,7 @@
       getProximosHorarios: (params) => request(`/disponibilidad/proximos${query(params)}`, { timeoutMs: READ_TIMEOUT * 2 }),
       enviarContacto: (datos) => request('/contacto', { method: 'POST', body: datos }),
       reservarCita: (datos) => request('/citas', { method: 'POST', body: datos }),
+      cancelarCita: (codigo) => request('/citas/cancelacion', { method: 'POST', body: { codigo } }),
       ApiNotConfiguredError,
       ApiRequestError,
     },

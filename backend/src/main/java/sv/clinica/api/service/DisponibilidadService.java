@@ -12,6 +12,7 @@ import sv.clinica.api.entity.Franja;
 import sv.clinica.api.entity.HorarioClinica;
 import sv.clinica.api.entity.HorarioOdontologo;
 import sv.clinica.api.entity.Odontologo;
+import sv.clinica.api.entity.OrigenCita;
 import sv.clinica.api.entity.Tratamiento;
 import sv.clinica.api.exception.DatosInvalidosException;
 import sv.clinica.api.repository.BloqueoRepository;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 
 /**
  * Calcula los horarios realmente disponibles. Es la única fuente de verdad de la agenda:
- * la landing (y en el futuro el software de clínica y la app) solo muestran lo que devuelve.
+ * la landing, el software de gestión (y en el futuro la app) solo muestran lo que devuelve.
  *
  * Para cada día y cada odontólogo que realiza el tratamiento:
  *   turno del odontólogo ∩ horario de la clínica − bloqueos (almuerzo, feriados…) − citas activas
@@ -109,14 +110,26 @@ public class DisponibilidadService {
 
     /** Huecos de un día. Sin odontólogo concreto, se ofrece cada hora una sola vez con el odontólogo más libre. */
     public List<Horario> buscar(Tratamiento tratamiento, LocalDate fecha, Odontologo odontologo, Franja franja) {
-        Agenda agenda = cargar(fecha, fecha);
-        return delDia(agenda, tratamiento, fecha, odontologo, franja, odontologo == null);
+        Agenda agenda = cargar(fecha, fecha, null);
+        return delDia(agenda, tratamiento, fecha, odontologo, franja, odontologo == null, reglas.antelacionMinimaMinutos());
+    }
+
+    /**
+     * Huecos de un día para el personal de la clínica: cada odontólogo por separado y sin la antelación mínima de la
+     * web (se puede dar cita para dentro de un rato). Al reprogramar, la propia cita no cuenta como ocupada.
+     */
+    public List<Horario> buscarParaLaClinica(Tratamiento tratamiento, LocalDate fecha, Odontologo odontologo,
+                                             Long excluirCitaId) {
+        Agenda agenda = cargar(fecha, fecha, excluirCitaId);
+        return delDia(agenda, tratamiento, fecha, odontologo, null, false, 0);
     }
 
     /** ¿Sigue libre ese hueco exacto? Se comprueba otra vez justo antes de guardar una cita. */
-    public boolean estaDisponible(Tratamiento tratamiento, Odontologo odontologo, LocalDate fecha, LocalTime horaInicio) {
+    public boolean estaDisponible(Tratamiento tratamiento, Odontologo odontologo, LocalDate fecha, LocalTime horaInicio,
+                                  OrigenCita origen) {
         if (fecha.isBefore(hoy()) || fecha.isAfter(fechaMaxima())) return false;
-        return buscar(tratamiento, fecha, odontologo, null).stream()
+        int antelacion = origen.esPaciente() ? reglas.antelacionMinimaMinutos() : 0;
+        return delDia(cargar(fecha, fecha, null), tratamiento, fecha, odontologo, null, false, antelacion).stream()
                 .anyMatch(h -> h.horaInicio().equals(horaInicio));
     }
 
@@ -126,12 +139,12 @@ public class DisponibilidadService {
         if (hasta.isAfter(fechaMaxima())) hasta = fechaMaxima();
         if (desde.isAfter(hasta)) return List.of();
 
-        Agenda agenda = cargar(desde, hasta);
+        Agenda agenda = cargar(desde, hasta, null);
         List<Horario> resultado = new ArrayList<>();
         for (LocalDate dia = desde; !dia.isAfter(hasta) && resultado.size() < limite; dia = dia.plusDays(1)) {
             int delDia = 0;
             LocalTime ultima = null;
-            for (Horario h : delDia(agenda, tratamiento, dia, odontologo, franja, true)) {
+            for (Horario h : delDia(agenda, tratamiento, dia, odontologo, franja, true, reglas.antelacionMinimaMinutos())) {
                 if (delDia == MAX_OPCIONES_POR_DIA || resultado.size() == limite) break;
                 if (ultima != null && h.horaInicio().isBefore(ultima.plusMinutes(SEPARACION_OPCIONES_MINUTOS))) continue;
                 resultado.add(h);
@@ -164,16 +177,14 @@ public class DisponibilidadService {
     /* ─────────────── Cálculo ─────────────── */
 
     private List<Horario> delDia(Agenda agenda, Tratamiento tratamiento, LocalDate fecha, Odontologo filtro,
-                                 Franja franja, boolean unaVezPorHora) {
+                                 Franja franja, boolean unaVezPorHora, int antelacionMinutos) {
         HorarioClinica clinica = agenda.clinica.get(fecha.getDayOfWeek().getValue());
         if (clinica == null || fecha.isBefore(hoy())) return List.of();
 
         Tramo abierto = Tramo.de(clinica.getHoraApertura(), clinica.getHoraCierre());
         int duracion = duracionDe(tratamiento);
         int paso = Math.max(5, reglas.intervaloMinutos());
-        int primerInicio = fecha.equals(hoy())
-                ? Tramo.minutos(LocalTime.now(clock)) + reglas.antelacionMinimaMinutos()
-                : 0;
+        int primerInicio = fecha.equals(hoy()) ? Tramo.minutos(LocalTime.now(clock)) + antelacionMinutos : 0;
         int inicioTarde = Tramo.minutos(reglas.inicioTarde());
 
         // hora de inicio → odontólogos libres a esa hora
@@ -261,7 +272,7 @@ public class DisponibilidadService {
         }
     }
 
-    private Agenda cargar(LocalDate desde, LocalDate hasta) {
+    private Agenda cargar(LocalDate desde, LocalDate hasta, Long excluirCitaId) {
         Agenda agenda = new Agenda();
         agenda.clinica = horariosClinica.findAll().stream()
                 .collect(Collectors.toMap(HorarioClinica::getDiaSemana, Function.identity(), (a, b) -> a));
@@ -273,6 +284,7 @@ public class DisponibilidadService {
         }
         agenda.bloqueos = bloqueos.findActivosEntre(desde, hasta);
         for (Cita c : citas.findEntreFechas(desde, hasta, EstadoCita.OCUPAN_AGENDA)) {
+            if (c.getId().equals(excluirCitaId)) continue;
             agenda.citas.computeIfAbsent(new Clave(c.getOdontologo().getId(), c.getFecha()), k -> new ArrayList<>())
                     .add(Tramo.de(c.getHoraInicio(), c.getHoraFin()));
         }

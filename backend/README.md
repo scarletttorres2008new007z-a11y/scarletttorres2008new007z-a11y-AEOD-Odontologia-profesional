@@ -90,10 +90,40 @@ clínicos irán en el expediente, en otra tabla.
 - **Permisos iniciales** (se cambian en Roles y permisos): Administrador, Recepción y Coordinador ven, dan de alta y
   editan; Odontólogo solo ve.
 
-Las migraciones se aplican solas al arrancar, así que el usuario de `DB_USERNAME` necesita permiso para crear y modificar
-tablas en su base. Antes de desplegar una versión con migraciones nuevas en producción, haz una copia de seguridad de la base.
+## Agenda y citas en el software (Fase 3, parte 1)
+
+Una sola tabla `citas` para la web, el software y la futura app (migración `V4__agenda_y_citas.sql`). Una cita del
+software ocupa el horario igual que una de la web, y al cancelarla el hueco vuelve a salir en la landing.
+
+| Método | Ruta | Permiso | Qué hace |
+| --- | --- | --- | --- |
+| GET | `/api/agenda?desde=2026-10-12&dias=1..7[&odontologo_id=]` | `citas.ver` | Días con horario de la clínica, turnos, bloqueos y citas |
+| GET | `/api/agenda/disponibilidad?tratamiento_id=&fecha=[&odontologo_id=][&excluir_cita_id=]` | `citas.crear` o `citas.reprogramar` | Huecos libres de cada odontólogo, calculados como los de la web |
+| GET | `/api/citas?desde=&hasta=&estado=&origen=&odontologo_id=&paciente_id=&sin_ficha=&recientes=&pagina=&tamano=` | `citas.ver` | Busca citas |
+| GET | `/api/citas/{id}` | `citas.ver` | Ficha de la cita con su historia; **404** si es de otra agenda |
+| POST | `/api/pacientes/{id}/citas` | `citas.crear` | Da una cita a un paciente activo (origen `SOFTWARE`, entra `CONFIRMADA`); **409** si el hueco ya no está libre |
+| PUT | `/api/citas/{id}/estado` | `citas.cambiar_estado` | Confirmar, en consulta, completada, no asistió (solo los pasos permitidos) |
+| POST | `/api/citas/{id}/cancelacion` | `citas.cancelar` | `{ "motivo": "…" }` opcional. No se borra: queda `CANCELADA` y el hueco se libera |
+| POST | `/api/citas/{id}/reprogramacion` | `citas.reprogramar` | Crea la cita nueva y deja la anterior `REPROGRAMADA`, enlazadas |
+| PUT | `/api/citas/{id}/paciente` | `citas.editar` | Vincula una cita de la web a la ficha de un paciente |
+| PUT | `/api/citas/{id}/notas` | `citas.editar` | Notas internas (el paciente no las ve) |
+| POST | `/api/citas/cancelacion` | Público | El paciente cancela desde la web con el `codigo` de su reserva, hasta 4 horas antes |
+
+- **Quién ve qué:** con `citas.ver_todas` se ve la agenda de todos; sin él, solo la del odontólogo vinculado al usuario
+  (`odontologos.usuario_id`). Pedir una cita de otra agenda responde 404, no 403, para no revelar que existe.
+- **Validaciones en el backend:** paciente activo, tratamiento activo, odontólogo activo que hace ese tratamiento, fecha
+  no pasada y como mucho a 180 días, hora dentro de su turno y del horario de la clínica, fuera de almuerzo y bloqueos,
+  sin choque con otra cita, y el paso de estado permitido. La duración sale siempre de `tratamientos.duracion_minutos`.
+- **Auditoría:** reservar, cambiar de estado, cancelar (con el motivo), reprogramar y vincular, con antes y después.
+- **Permisos iniciales** (se cambian en Roles y permisos): Administrador, Recepción y Coordinador, todos los `citas.*`;
+  Odontólogo, solo `citas.ver` (su propia agenda).
+- **Pendiente para la parte 2:** pantallas de odontólogos, tratamientos y duraciones, horarios y bloqueos, y vincular un
+  usuario a su odontólogo. Hasta entonces se cambian en la base de datos (ver **Agenda**, más abajo).
 
 ## Base de datos y migraciones
+
+Las migraciones se aplican solas al arrancar, así que el usuario de `DB_USERNAME` necesita permiso para crear y modificar
+tablas en su base. Antes de desplegar una versión con migraciones nuevas en producción, haz una copia de seguridad de la base.
 
 - **Motores:** MySQL 8.4 en producción y la MariaDB 10.4 de XAMPP en desarrollo. Las migraciones se escriben en SQL que
   funciona en los dos, y GitHub Actions pasa las pruebas en ambos en cada cambio (`.github/workflows/backend.yml`).
@@ -211,11 +241,14 @@ En la consola verás entonces un `ERROR … Duplicate entry … for key 'uk_agen
 | --- | --- | --- |
 | `PENDIENTE` | Sí | Reservada desde la web; la clínica la confirma |
 | `CONFIRMADA` | Sí | Confirmada (o reservada con `app.citas.confirmacion-automatica=true`) |
+| `EN_ATENCION` | Sí | El paciente está en consulta |
+| `COMPLETADA` | No | Consulta terminada |
+| `NO_ASISTIO` | No | No vino (se puede deshacer y volver a `CONFIRMADA`) |
 | `CANCELADA` | No | Cancelada. **No se borra** y el horario vuelve a estar libre |
 | `REPROGRAMADA` | No | Se movió a otra cita, enlazada por `cita_anterior_id` |
-| `COMPLETADA`, `NO_ASISTIO` | No | Para el futuro software de clínica |
 
-Cancelar y reprogramar existen en `CitaService` con su regla (el paciente, hasta 4 horas antes; la clínica, siempre), pero **no tienen endpoint público**: sin identificar al paciente no es seguro. Los usará la app del paciente.
+El paciente puede cancelar desde la web con el código de su reserva, hasta 4 horas antes (`POST /api/citas/cancelacion`).
+La clínica cancela y reprograma desde el software en cualquier momento. Reprogramar como paciente queda para la app.
 
 ### Tablas de agenda
 
@@ -226,7 +259,7 @@ Cancelar y reprogramar existen en `CitaService` con su regla (el paciente, hasta
 | `odontologo_tratamientos` | Quién hace cada tratamiento. Un tratamiento sin filas lo hace cualquiera |
 | `tratamientos.duracion_minutos` | Duración de la cita que se reserva online |
 | `bloqueos` | Almuerzo, reuniones, mantenimiento, vacaciones, feriados y bloqueos manuales (ver abajo) |
-| `citas` | Las citas, con estado, origen (`LANDING`, `CLINICA`, `APP_PACIENTE`) y código público |
+| `citas` | Las citas, con estado, origen (`LANDING`, `SOFTWARE`, `APP`), código público y, si ya está vinculada, `paciente_id` |
 | `agenda_ocupacion` | Tramos de 15 minutos ocupados; su clave única impide la doble reserva |
 | `lista_espera` | Preparada para la futura lista de espera (sin pantalla todavía) |
 | `notificaciones` | Avisos pendientes de cada reserva, cancelación, reprogramación y hueco liberado. **No se envía nada** |

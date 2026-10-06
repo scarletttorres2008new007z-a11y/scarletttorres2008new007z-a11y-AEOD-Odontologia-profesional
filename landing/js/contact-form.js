@@ -240,14 +240,18 @@
     return { kind: 'contacto' };
   }
 
+  const escape = (text) => {
+    const div = document.createElement('div');
+    div.textContent = text == null ? '' : String(text);
+    return div.innerHTML;
+  };
+
+  /** Código de la última cita reservada en esta página: con él, el paciente puede cancelarla aquí mismo. */
+  let lastBookingCode = null;
+
   /** Confirmación de la cita con los datos que devuelve el backend. */
   function bookingConfirmation(respuesta) {
     const cita = respuesta.datos || {};
-    const escape = (text) => {
-      const div = document.createElement('div');
-      div.textContent = text == null ? '' : String(text);
-      return div.innerHTML;
-    };
     const [y, m, d] = String(cita.fecha || '').split('-').map(Number);
     const fecha = y ? new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })
       .format(new Date(Date.UTC(y, m - 1, d))) : '';
@@ -258,11 +262,59 @@
       ['Odontólogo/a', cita.odontologo],
       ['Estado', ESTADOS[cita.estado] || cita.estado],
     ].filter(([, value]) => value);
+    lastBookingCode = cita.codigo || null;
     return `<strong>${escape(respuesta.message || 'Tu cita está reservada.')}</strong>`
       + `<dl class="booking-confirmation">${rows.map(([label, value]) =>
         `<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl>`
-      + '<p>Si no puedes venir, avísanos llamando al <a href="tel:+34900000000">900 00 00 00</a>.</p>';
+      + (lastBookingCode
+        ? `<div class="booking-cancel" data-booking-cancel>${CANCEL_OFFER}</div>`
+        : '<p>Si no puedes venir, avísanos llamando al <a href="tel:+34900000000">900 00 00 00</a>.</p>');
   }
+
+  /* ── 2b. Cancelar la cita recién reservada (POST /citas/cancelacion) ── */
+  const CANCEL_OFFER =
+    '<p>¿No puedes venir? Cancélala aquí o llámanos al <a href="tel:+34900000000">900 00 00 00</a>.</p>'
+    + '<div class="booking-cancel__actions">'
+    + '<button type="button" class="btn btn--outline btn--sm" data-cancel-start>Cancelar esta cita</button></div>';
+  const CANCEL_QUESTION =
+    '<p><strong>¿Seguro que quieres cancelar esta cita?</strong> El horario quedará libre para otra persona.</p>'
+    + '<div class="booking-cancel__actions">'
+    + '<button type="button" class="btn btn--solid btn--sm" data-cancel-confirm>Sí, cancelar la cita</button>'
+    + '<button type="button" class="btn btn--outline btn--sm" data-cancel-keep>No, mantenerla</button></div>';
+
+  summary.addEventListener('click', async (event) => {
+    const button = event.target.closest('button');
+    const box = summary.querySelector('[data-booking-cancel]');
+    if (!button || !box) return;
+
+    if (button.hasAttribute('data-cancel-start')) {
+      box.innerHTML = CANCEL_QUESTION;
+      box.querySelector('[data-cancel-confirm]').focus();
+    } else if (button.hasAttribute('data-cancel-keep')) {
+      box.innerHTML = CANCEL_OFFER;
+      box.querySelector('[data-cancel-start]').focus();
+    } else if (button.hasAttribute('data-cancel-confirm')) {
+      box.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+      button.textContent = 'Cancelando…';
+      const { api } = AEOD;
+      try {
+        await api.cancelarCita(lastBookingCode);
+        lastBookingCode = null;
+        showSummary('success', '<strong>Tu cita se ha cancelado.</strong> Ese horario vuelve a estar libre. '
+          + 'Si quieres otro día u otra hora, puedes reservar de nuevo cuando quieras.');
+      } catch (error) {
+        // 409: ya no se puede cancelar online (muy poca antelación o ya no está activa); el mensaje lo da la API
+        const known = api && error instanceof api.ApiRequestError && (error.status === 409 || error.status === 404);
+        box.innerHTML = `<p class="booking-cancel__error" role="alert">${known
+          ? escape(error.message)
+          : 'No hemos podido cancelar la cita. Inténtalo de nuevo en unos minutos.'} `
+          + 'También puedes llamarnos al <a href="tel:+34900000000">900 00 00 00</a>.</p>'
+          + (known ? '' : CANCEL_OFFER.replace(/^<p>.*?<\/p>/, ''));
+        const retry = box.querySelector('[data-cancel-start]');
+        if (retry) retry.focus();
+      }
+    }
+  });
 
   function showApiFieldErrors(errores) {
     const invalid = [];

@@ -46,10 +46,12 @@ class UsuariosTest extends PruebaIntegracion {
                 .andReturn().getResponse().getContentAsString();
         long id = leer(creado).get("id").asLong();
 
-        // Recepción solo trae de serie los permisos de pacientes
+        // Recepción solo trae de serie los permisos de pacientes y de la agenda
         String recepcion = leer(mvc.perform(login("recepcion1", "Recepcion-2026"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.usuario.permisos", contains("pacientes.crear", "pacientes.editar", "pacientes.ver")))
+                .andExpect(jsonPath("$.usuario.permisos", contains("citas.cambiar_estado", "citas.cancelar",
+                        "citas.crear", "citas.editar", "citas.reprogramar", "citas.ver", "citas.ver_todas",
+                        "pacientes.crear", "pacientes.editar", "pacientes.ver")))
                 .andReturn().getResponse().getContentAsString()).get("token_acceso").asText();
 
         // Todo lo que no tiene permitido, llamando directamente a la API

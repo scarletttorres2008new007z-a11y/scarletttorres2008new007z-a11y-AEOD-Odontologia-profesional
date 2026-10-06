@@ -15,8 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Deja en la auditoría cada reserva, cancelación y reprogramación, vengan de la landing o (más adelante)
- * del software o de la app. Guarda los datos de la cita, no los del paciente: esos ya están en la propia cita.
+ * Deja en la auditoría cada reserva, cancelación y reprogramación, vengan de la landing, del software o (más adelante)
+ * de la app. Guarda los datos de la cita y, si tiene ficha, el código del paciente; no sus datos personales, que ya
+ * están en la propia cita y en la ficha.
  */
 @Component
 public class AuditoriaDeCitas {
@@ -35,8 +36,14 @@ public class AuditoriaDeCitas {
         switch (evento.tipo()) {
             case RESERVADA -> auditoria.registrar(origen(cita.getOrigen()), AccionAuditoria.RESERVAR,
                     EntidadAuditoria.CITA, cita.getId(), null, datos(cita));
-            case CANCELADA -> auditoria.registrar(origen(cita.getCanceladaPor()), AccionAuditoria.CANCELAR,
-                    EntidadAuditoria.CITA, cita.getId(), null, Map.of("estado", EstadoCita.CANCELADA));
+            case CANCELADA -> {
+                Map<String, Object> despues = new LinkedHashMap<>();
+                despues.put("estado", EstadoCita.CANCELADA);
+                if (cita.getMotivoCancelacion() != null) despues.put("motivo", cita.getMotivoCancelacion());
+                auditoria.registrar(origen(cita.getCanceladaPor()), AccionAuditoria.CANCELAR, EntidadAuditoria.CITA,
+                        cita.getId(), evento.estadoAnterior() == null ? null : Map.of("estado", evento.estadoAnterior()),
+                        despues);
+            }
             case REPROGRAMADA -> {
                 Cita anterior = citas.findById(evento.citaAnteriorId()).orElseThrow();
                 Map<String, Object> nueva = datos(cita);
@@ -50,19 +57,20 @@ public class AuditoriaDeCitas {
     private static Map<String, Object> datos(Cita c) {
         Map<String, Object> datos = new LinkedHashMap<>();
         datos.put("estado", c.getEstado());
-        datos.put("tratamiento_id", c.getTratamiento().getId());
-        datos.put("odontologo_id", c.getOdontologo().getId());
+        datos.put("tratamiento", c.getTratamiento().getNombre());
+        datos.put("odontologo", c.getOdontologo().getNombre());
         datos.put("fecha", c.getFecha().toString());
         datos.put("hora_inicio", c.getHoraInicio().toString());
         datos.put("hora_fin", c.getHoraFin().toString());
+        if (c.getPaciente() != null) datos.put("paciente", c.getPaciente().getCodigo());
         return datos;
     }
 
     private static OrigenAuditoria origen(OrigenCita origen) {
         return switch (origen) {
             case LANDING -> OrigenAuditoria.LANDING;
-            case CLINICA -> OrigenAuditoria.SOFTWARE;
-            case APP_PACIENTE -> OrigenAuditoria.APP;
+            case SOFTWARE -> OrigenAuditoria.SOFTWARE;
+            case APP -> OrigenAuditoria.APP;
         };
     }
 }

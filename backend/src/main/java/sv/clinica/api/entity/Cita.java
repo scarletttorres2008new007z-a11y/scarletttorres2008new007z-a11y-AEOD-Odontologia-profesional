@@ -17,16 +17,19 @@ import jakarta.persistence.Version;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Cita en la agenda: un odontólogo, un día y un tramo horario.
  * Nunca se borra; cambia de estado (ver {@link EstadoCita}).
- * Los datos del paciente se guardan tal y como los escribió; cuando exista la ficha de paciente
- * (software de clínica) se podrá enlazar sin cambiar esta lógica.
+ * Los datos de contacto se guardan tal y como llegaron (en la web, los que escribió el paciente). La ficha del
+ * paciente se enlaza aparte: las citas del software la llevan desde el principio y las de la web, cuando recepción
+ * las vincula.
  */
 @Entity
 @Table(name = "citas",
@@ -50,6 +53,10 @@ public class Cita {
     @JoinColumn(name = "odontologo_id", nullable = false)
     private Odontologo odontologo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
+
     @Column(nullable = false)
     private LocalDate fecha;
 
@@ -65,11 +72,15 @@ public class Cita {
     @Column(nullable = false, length = 20)
     private String telefono;
 
-    @Column(nullable = false, length = 150)
+    @Column(length = 150)
     private String email;
 
+    /** Lo que escribió el paciente al reservar en la web. */
     @Column(length = 1000)
     private String mensaje;
+
+    @Column(name = "notas_internas", length = 1000)
+    private String notasInternas;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -80,6 +91,11 @@ public class Cita {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(nullable = false, length = 20)
     private OrigenCita origen;
+
+    /** Quién la dio desde el software (vacío en las de la web). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creada_por_usuario_id")
+    private Usuario creadaPor;
 
     /** Si esta cita sustituye a otra (reprogramación), la anterior. */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -129,8 +145,32 @@ public class Cita {
         this.actualizadaEn = ahora;
     }
 
+    /** Cita dada desde el software a un paciente con ficha: los datos de contacto salen de ella. */
+    public static Cita paraPaciente(Paciente paciente, Tratamiento tratamiento, Odontologo odontologo, LocalDate fecha,
+                                    LocalTime horaInicio, int duracionMinutos, String notasInternas, EstadoCita estado,
+                                    Usuario creadaPor, LocalDateTime ahora) {
+        Cita cita = new Cita(tratamiento, odontologo, fecha, horaInicio, duracionMinutos,
+                paciente.getNombres() + " " + paciente.getApellidos(), paciente.getTelefono(), paciente.getEmail(),
+                null, estado, OrigenCita.SOFTWARE, ahora);
+        cita.paciente = paciente;
+        cita.notasInternas = notasInternas;
+        cita.creadaPor = creadaPor;
+        return cita;
+    }
+
     public LocalDateTime getInicio() {
         return fecha.atTime(horaInicio);
+    }
+
+    /** Estados a los que puede pasar ahora: en consulta, completada y no asistió, solo desde el día de la cita. */
+    public List<EstadoCita> estadosSiguientes(LocalDate hoy) {
+        return estado.siguientes().stream()
+                .filter(siguiente -> !EstadoCita.DEL_DIA.contains(siguiente) || !fecha.isAfter(hoy))
+                .toList();
+    }
+
+    public int getDuracionMinutos() {
+        return (int) Duration.between(horaInicio, horaFin).toMinutes();
     }
 
     public void cancelar(OrigenCita por, String motivo, LocalDateTime ahora) {
@@ -146,12 +186,35 @@ public class Cita {
         this.actualizadaEn = ahora;
     }
 
-    public void setCitaAnterior(Cita citaAnterior) { this.citaAnterior = citaAnterior; }
+    /** Confirmar, en consulta, completada o no asistió. Las reglas de qué cambio vale están en CitaService. */
+    public void cambiarEstado(EstadoCita nuevo, LocalDateTime ahora) {
+        this.estado = nuevo;
+        this.actualizadaEn = ahora;
+    }
+
+    public void vincularPaciente(Paciente paciente, LocalDateTime ahora) {
+        this.paciente = paciente;
+        this.actualizadaEn = ahora;
+    }
+
+    public void cambiarNotasInternas(String notas, LocalDateTime ahora) {
+        this.notasInternas = notas;
+        this.actualizadaEn = ahora;
+    }
+
+    /** Al reprogramar, la nueva cita conserva la ficha del paciente y las notas de la anterior. */
+    public void heredarDe(Cita anterior, Usuario creadaPor) {
+        this.citaAnterior = anterior;
+        this.paciente = anterior.paciente;
+        this.notasInternas = anterior.notasInternas;
+        this.creadaPor = creadaPor;
+    }
 
     public Long getId() { return id; }
     public String getCodigo() { return codigo; }
     public Tratamiento getTratamiento() { return tratamiento; }
     public Odontologo getOdontologo() { return odontologo; }
+    public Paciente getPaciente() { return paciente; }
     public LocalDate getFecha() { return fecha; }
     public LocalTime getHoraInicio() { return horaInicio; }
     public LocalTime getHoraFin() { return horaFin; }
@@ -159,9 +222,14 @@ public class Cita {
     public String getTelefono() { return telefono; }
     public String getEmail() { return email; }
     public String getMensaje() { return mensaje; }
+    public String getNotasInternas() { return notasInternas; }
     public EstadoCita getEstado() { return estado; }
     public OrigenCita getOrigen() { return origen; }
+    public Usuario getCreadaPor() { return creadaPor; }
     public Cita getCitaAnterior() { return citaAnterior; }
+    public LocalDateTime getCreadaEn() { return creadaEn; }
+    public LocalDateTime getActualizadaEn() { return actualizadaEn; }
     public LocalDateTime getCanceladaEn() { return canceladaEn; }
     public OrigenCita getCanceladaPor() { return canceladaPor; }
+    public String getMotivoCancelacion() { return motivoCancelacion; }
 }

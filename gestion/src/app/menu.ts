@@ -25,11 +25,18 @@ export const INICIO: OpcionMenu = {
   icono: 'inicio',
 };
 
-// Cada fase añade aquí sus opciones (agenda, expedientes…).
+// Cada fase añade aquí sus opciones (expedientes, facturación…).
 export const SECCIONES: SeccionMenu[] = [
   {
     titulo: 'Clínica',
     opciones: [
+      {
+        ruta: '/agenda',
+        texto: 'Agenda',
+        descripcion: 'Ver las citas del día o de la semana y darlas, confirmarlas, moverlas o cancelarlas.',
+        icono: 'agenda',
+        permiso: PERMISOS.CITAS_VER,
+      },
       {
         ruta: '/pacientes',
         texto: 'Pacientes',

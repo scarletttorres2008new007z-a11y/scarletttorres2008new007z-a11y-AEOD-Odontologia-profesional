@@ -16,10 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import sv.clinica.api.dto.CitaDetalleResponse;
 import sv.clinica.api.dto.EstadoPacienteRequest;
+import sv.clinica.api.dto.NuevaCitaRequest;
 import sv.clinica.api.dto.PacienteRequest;
 import sv.clinica.api.dto.PacienteResponse;
 import sv.clinica.api.dto.PaginaResponse;
+import sv.clinica.api.service.CitaService;
 import sv.clinica.api.service.PacienteService;
 
 /** Pacientes. Cada operación exige su permiso; sin él, la API responde 403 aunque se llame directamente. */
@@ -30,9 +33,11 @@ import sv.clinica.api.service.PacienteService;
 public class PacienteController {
 
     private final PacienteService service;
+    private final CitaService citas;
 
-    public PacienteController(PacienteService service) {
+    public PacienteController(PacienteService service, CitaService citas) {
         this.service = service;
+        this.citas = citas;
     }
 
     @Operation(summary = "Buscar pacientes", description = "Permiso: pacientes.ver. Ordenados por apellidos y nombre.")
@@ -74,5 +79,16 @@ public class PacienteController {
     @PutMapping("/{id}/estado")
     public PacienteResponse cambiarEstado(@PathVariable Long id, @Valid @RequestBody EstadoPacienteRequest request) {
         return service.cambiarEstado(id, request.activo());
+    }
+
+    @Operation(summary = "Dar cita al paciente",
+            description = "Permiso: citas.crear. El horario se elige entre los de /api/agenda/disponibilidad y el backend "
+                    + "comprueba otra vez que sigue libre (409 si alguien se adelantó). Queda CONFIRMADA. Es la misma "
+                    + "tabla de citas que usa la landing: el hueco deja de ofrecerse en la web al momento.")
+    @PreAuthorize("hasAuthority('citas.crear')")
+    @PostMapping("/{id}/citas")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CitaDetalleResponse darCita(@PathVariable Long id, @Valid @RequestBody NuevaCitaRequest request) {
+        return citas.darCita(id, request);
     }
 }

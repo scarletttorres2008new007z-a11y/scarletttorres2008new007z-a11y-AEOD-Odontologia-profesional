@@ -1,5 +1,6 @@
 package sv.clinica.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import sv.clinica.api.entity.Odontologo;
 import sv.clinica.api.entity.Tratamiento;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @param duracionMinutos minutos de la cita que se reserva online
  * @param odontologoIds   odontólogos que lo realizan; vacío = cualquiera
  */
+@Schema(requiredProperties = {"id", "nombre", "odontologo_ids"})
 public record TratamientoResponse(
         Long id,
         String nombre,

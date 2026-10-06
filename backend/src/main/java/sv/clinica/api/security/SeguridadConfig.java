@@ -61,8 +61,8 @@ public class SeguridadConfig {
     /** Lo que la landing lee sin sesión. */
     private static final String[] LECTURA_PUBLICA = {
             "/api/health", "/api/tratamientos/**", "/api/odontologos/**", "/api/disponibilidad/**"};
-    /** Lo que la landing envía sin sesión. */
-    private static final String[] ENVIO_PUBLICO = {"/api/citas", "/api/contacto"};
+    /** Lo que la landing envía sin sesión: reservar, cancelar con el código de la cita y contactar. */
+    private static final String[] ENVIO_PUBLICO = {"/api/citas", "/api/citas/cancelacion", "/api/contacto"};
     /** Iniciar, renovar y cerrar sesión: se identifican con la contraseña o con la cookie de sesión, no con el token. */
     private static final Set<String> RUTAS_DE_SESION = Set.of("/api/auth/login", "/api/auth/refresh", "/api/auth/logout");
     /** Documentación de la API (Swagger). En producción está desactivada y estas rutas no existen. */

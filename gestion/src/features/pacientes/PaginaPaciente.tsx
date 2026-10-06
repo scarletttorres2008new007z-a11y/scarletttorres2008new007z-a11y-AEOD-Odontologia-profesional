@@ -10,6 +10,7 @@ import { Boton } from '../../shared/ui/Boton';
 import { Icono } from '../../shared/ui/Icono';
 import { Insignia } from '../../shared/ui/Insignia';
 import p from '../../shared/ui/pagina.module.css';
+import { CitasDelPaciente } from '../agenda/CitasDelPaciente';
 import { useAuth } from '../auth/contexto';
 import { PERMISOS } from '../auth/permisos';
 import { obtenerPaciente } from './api';
@@ -135,6 +136,8 @@ function Ficha({ paciente }: { paciente: Paciente }) {
           )}
         </section>
       </div>
+
+      {tienePermiso(PERMISOS.CITAS_VER) && <CitasDelPaciente paciente={paciente} />}
 
       <p className={css.pie}>
         Alta: {formatearFechaHora(paciente.creado_en)} · Última modificación:{' '}

@@ -21,9 +21,11 @@ export const ACCIONES: Record<AccionAuditoria, string> = {
   DESACTIVAR: 'Desactivación',
   CAMBIAR_ROLES: 'Cambio de roles',
   CAMBIAR_PERMISOS: 'Cambio de permisos',
-  RESERVAR: 'Reserva de cita',
+  RESERVAR: 'Cita reservada o dada',
+  CAMBIAR_ESTADO: 'Cambio de estado de cita',
+  VINCULAR_PACIENTE: 'Cita vinculada a un paciente',
   CANCELAR: 'Cancelación de cita',
-  REPROGRAMAR: 'Cambio de fecha de cita',
+  REPROGRAMAR: 'Cita movida de día u hora',
 };
 
 /** Para el filtro de acciones, agrupadas. */
@@ -40,7 +42,10 @@ export const GRUPOS_DE_ACCIONES: { titulo: string; acciones: AccionAuditoria[] }
   },
   { titulo: 'Altas y cambios', acciones: ['CREAR', 'EDITAR', 'ACTIVAR', 'DESACTIVAR'] },
   { titulo: 'Usuarios y roles', acciones: ['CAMBIAR_ROLES', 'RESTABLECER_PASSWORD', 'CAMBIAR_PERMISOS'] },
-  { titulo: 'Citas', acciones: ['RESERVAR', 'CANCELAR', 'REPROGRAMAR'] },
+  {
+    titulo: 'Citas',
+    acciones: ['RESERVAR', 'CAMBIAR_ESTADO', 'VINCULAR_PACIENTE', 'CANCELAR', 'REPROGRAMAR'],
+  },
 ];
 
 export const ENTIDADES: Record<EntidadAuditoria, string> = {
@@ -78,6 +83,10 @@ const CAMPOS: Record<string, string> = {
   fecha: 'Fecha',
   hora_inicio: 'Hora de inicio',
   hora_fin: 'Hora de fin',
+  tratamiento: 'Tratamiento',
+  odontologo: 'Odontólogo',
+  paciente: 'Paciente (código)',
+  notas_internas: 'Notas internas',
   tratamiento_id: 'Tratamiento (n.º)',
   odontologo_id: 'Odontólogo (n.º)',
   cita_id: 'Cita nueva (n.º)',
@@ -102,8 +111,9 @@ const VALORES: Record<string, string> = {
   RECEPCION: 'Recepción',
   ODONTOLOGO: 'Odontólogo',
   COORDINADOR: 'Coordinador',
-  PENDIENTE: 'Pendiente',
+  PENDIENTE: 'Por confirmar',
   CONFIRMADA: 'Confirmada',
+  EN_ATENCION: 'En consulta',
   CANCELADA: 'Cancelada',
   REPROGRAMADA: 'Reprogramada',
   COMPLETADA: 'Completada',

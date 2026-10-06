@@ -13,6 +13,13 @@ export const PERMISOS = {
   PACIENTES_VER: 'pacientes.ver',
   PACIENTES_CREAR: 'pacientes.crear',
   PACIENTES_EDITAR: 'pacientes.editar',
+  CITAS_VER: 'citas.ver',
+  CITAS_VER_TODAS: 'citas.ver_todas',
+  CITAS_CREAR: 'citas.crear',
+  CITAS_CAMBIAR_ESTADO: 'citas.cambiar_estado',
+  CITAS_CANCELAR: 'citas.cancelar',
+  CITAS_REPROGRAMAR: 'citas.reprogramar',
+  CITAS_EDITAR: 'citas.editar',
 } as const;
 
 export type CodigoPermiso = (typeof PERMISOS)[keyof typeof PERMISOS];
