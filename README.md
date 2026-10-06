@@ -1,103 +1,38 @@
-# AEOD · Odontología Profesional — Frontend
+# AEOD · Odontología Profesional
 
-Landing page de una sola página (HTML, CSS y JavaScript sin dependencias ni paso de compilación).
-Fuentes y scripts van en local y la página funciona abriendo el archivo directamente. Las fotos se cargan desde Unsplash, así que necesitan conexión a internet (sin conexión se ve un fondo neutro en su lugar).
+Sistema de la clínica en un solo repositorio, con proyectos separados que comparten **una API central y una base de
+datos central**. La información pertenece al sistema central: la landing, el software de gestión y la futura app del
+paciente son clientes de la misma API.
 
-## Abrir en local
-
-Basta con abrir `index.html` en el navegador. También funciona con cualquier servidor estático:
-
-```bash
-python3 -m http.server 8000
-```
-
-## Estructura
+| Carpeta | Qué es | Tecnología | Estado |
+| --- | --- | --- | --- |
+| [`landing/`](landing/README.md) | Web pública: tratamientos, precios, equipo y reserva de citas | HTML, CSS y JavaScript | En uso |
+| [`backend/`](backend/README.md) | API REST central: reglas de negocio, disponibilidad, citas y acceso a la base de datos | Java 21, Spring Boot, Flyway | En uso |
+| [`gestion/`](gestion/README.md) | Software de gestión para recepción, odontólogos y administración | React, TypeScript, Vite | Fase 1 |
 
 ```text
-index.html          Página completa (HTML semántico, sin estilos ni onclick en línea)
-assets/
-  fonts/            Inter y Libre Baskerville (woff2, licencia OFL)
-  favicon.svg
-css/
-  fonts.css         @font-face de las fuentes locales
-  variables.css     Colores, tipografía, espaciado (tokens)
-  base.css          Reset, tipografía, layout, utilidades, foco y reduced motion
-  buttons.css       Botones y enlaces de acción
-  forms.css         Campos de formulario (contacto y estimador)
-  navbar.css        Cabecera sticky, menú móvil y barra inferior móvil
-  hero.css · trust.css · services.css · about.css · team.css · technology.css
-  testimonials.css · pricing.css · calculator.css · faq.css · contact.css
-  booking.css       Paso 1 del formulario: horarios disponibles, horario elegido y confirmación
-  footer.css · modal.css
-js/
-  core.js           Datos de la clínica (horario) y utilidades compartidas
-  navigation.js     Menú móvil, sección activa, foco en enlaces internos, barra móvil, volver arriba
-  modal.js          Modales de tratamiento (<dialog> nativo) con enlace compartible #tratamiento-…
-  image-fallback.js Fondo neutro si una foto no carga (sin conexión)
-  testimonials.js   Carrusel que pasa solo cada 7 s, con pausa (botón, ratón, foco y toque)
-  pricing.js        Filtro de la lista de precios
-  calculator.js     Estimador orientativo (lee los precios de la lista HTML)
-  faq.js            Acordeón accesible
-  api.js            Capa única de llamadas a la API (backend/)
-  api-data.js       Precios y equipo desde la API (si no responde, se queda el contenido estático)
-  booking.js        Reserva online: pide los horarios libres a la API y los muestra (no calcula nada)
-  contact-form.js   Validación, envío (reserva o contacto), estados, contador y borrador
-  open-status.js    "Abierto ahora / Cerrado" con la hora de Madrid
-  treatment-finder.js  Orientación rápida: 1–2 preguntas → tratamiento recomendado
-  copy.js           Botones "Copiar" de teléfono, email y dirección
-  reveal.js         Aparición sutil al hacer scroll (desactivada con reducir movimiento)
-  main.js           Arranque general
+landing/  ──┐
+            ├──>  backend/ (API REST /api)  ──>  base de datos central clinica_aeod
+gestion/  ──┘                                     MySQL 8.4 en producción · MariaDB de XAMPP en desarrollo
 ```
 
-Las media queries viven en el archivo de cada sección (mobile-first), por eso no hay un `responsive.css` aparte.
+## Reglas del sistema
 
-Los scripts son clásicos con `defer` (no `type="module"`) para que la página siga funcionando al abrir el archivo directamente (`file://`).
+- **Una sola base de datos y una sola tabla de citas.** Una cita creada en la landing es el mismo registro que ve
+  recepción en el software, sin copias ni sincronizaciones.
+- **Ningún cliente se conecta a la base de datos.** La landing y el software hablan solo con la API.
+- **La lógica vive en el backend.** La disponibilidad, las duraciones, la prevención de doble reserva y las validaciones
+  se calculan en el servidor; los clientes solo muestran lo que reciben.
+- **La base de datos evoluciona con migraciones** (Flyway, `backend/src/main/resources/db/migration`), nunca a mano.
+- **Ningún secreto en el código.** Contraseñas y URLs de producción llegan por variables de entorno.
 
-## Backend (API)
+## Empezar
 
-La carpeta `backend/` contiene la API (Java 21 + Spring Boot + SQL Server). Cómo arrancarla: [backend/README.md](backend/README.md).
+- Arrancar todo en tu equipo (XAMPP + IntelliJ): [COMO-ABRIR.md](COMO-ABRIR.md)
+- API, entornos (`dev`, `test`, `prod`), variables de entorno y migraciones: [backend/README.md](backend/README.md)
+- Landing: [landing/README.md](landing/README.md)
 
-La URL de la API se indica en `index.html`:
+## Pruebas automáticas
 
-```html
-<meta name="aeod-api" content="http://localhost:8080/api">
-```
-
-Con la API en marcha y la landing servida en `http://localhost:5500` o desde IntelliJ (`localhost:63342`):
-
-- La lista de precios, el estimador y el equipo usan los datos de la base de datos (se emparejan por nombre, así se conservan categorías, "por pieza" y credenciales del HTML).
-- El formulario de cita reserva con **horarios reales**:
-  1. *Elige tu cita*: tratamiento (con su duración), odontólogo (opcional), día y franja. La landing pide los horarios libres a `GET /api/disponibilidad` y solo los muestra; si no hay, enseña «No encontramos disponibilidad para el horario seleccionado.», las próximas opciones y «Encontrar el horario más cercano».
-  2. *Tus datos* y **Confirmar cita** (`POST /api/citas`). Si alguien reservó ese horario un instante antes, el backend responde 409: la lista se recarga y aparece «Este horario acaba de ser reservado. Selecciona otra opción.».
-  3. Confirmación con tratamiento, día, hora, odontólogo y estado.
-- «Urgencia dental», «Otro» y «Ninguno me encaja, prefiero que me llaméis» envían un **contacto** (`POST /api/contacto`) con el día y la franja en el mensaje.
-- Los enlaces «Solicitar cita» con `data-treatment` (p. ej. «Implantes dentales») eligen el tratamiento indicado en el atributo `data-tratamiento` de la opción estática correspondiente.
-- Los errores de validación que devuelve la API se muestran en su campo.
-
-Si la API no está configurada (meta vacío) o no responde, la página usa sus datos estáticos, el formulario vuelve a ser una solicitud de contacto y **no simula envíos ni reservas**: muestra un error con el teléfono y el email.
-
-## Imágenes
-
-Las fotos son las de Unsplash del archivo original, servidas con `srcset` en varios anchos y recortadas por Unsplash a la proporción de cada hueco (hero 4:3, tratamientos 16:10, clínica 4:3 en móvil y 4:5 en escritorio, equipo 3:4 centrado en la cara). Cambios respecto al original:
-
-- La foto de la clínica tenía el enlace mal escrito (`…daab30f310e5`, error 404). El correcto es `…daab30f310ce`.
-- La foto del Dr. Marcos Ortega ya no existía (404). Ahora usa la foto masculina que en el original estaba asignada a la Dra. Rocío Fernández.
-- Las fotos de la Dra. Rocío Fernández y la Dra. Ana Villar eran de hombres. Ahora son fotos de doctoras de Unsplash.
-
-Son fotos de stock: no son los profesionales reales. Para usar fotos propias, guárdalas en una carpeta (por ejemplo `assets/img/`) y cambia `src` y `srcset` en `index.html` manteniendo las proporciones.
-
-## Horario
-
-El horario de `js/core.js` solo alimenta el indicador "Abierto ahora" (no contempla festivos). Qué días y horas se pueden reservar lo decide el backend con su propio horario, turnos y bloqueos (ver [backend/README.md](backend/README.md#agenda)); si cambias el horario, cámbialo en los dos sitios y en el texto de Contacto.
-
-## Precios
-
-Los precios orientativos se editan en un solo sitio: la lista `data-price-list` de la sección Precios en `index.html` (`data-price`, `data-per-unit`, `data-category`). El estimador los lee de ahí. Con la API en marcha, los precios vienen de la columna `precio_desde` de la base de datos y sustituyen a los del HTML.
-
-## Pendiente antes de producción
-
-- Sustituir las fotos de stock por fotos propias de la clínica y del equipo (ver «Imágenes»).
-- Crear `aviso-legal.html`, `privacidad.html` y `cookies.html`.
-- Desplegar la API (`backend/`) y poner su URL pública en `<meta name="aeod-api">` y en `app.cors.origenes`.
-- Añadir `og:url`, `og:image` y `link rel="canonical"` con el dominio definitivo.
-- Verificar los datos de negocio (teléfonos, dirección, horario, cifras, credenciales y testimonios) antes de añadir datos estructurados de schema.org.
+GitHub Actions compila el backend y pasa sus pruebas en MySQL 8.4 y en MariaDB 10.4 en cada cambio
+(`.github/workflows/backend.yml`).

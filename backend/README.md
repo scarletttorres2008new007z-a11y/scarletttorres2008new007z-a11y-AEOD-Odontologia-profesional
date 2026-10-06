@@ -1,47 +1,79 @@
-# AEOD · API de la landing
+# AEOD · API central
 
-API REST de la landing de AEOD: tratamientos (con su precio "desde" y su duración), equipo, contacto
+API REST central de AEOD: tratamientos (con su precio "desde" y su duración), equipo, contacto
 y **reserva de citas con disponibilidad real**. El backend calcula qué horarios están libres a partir del
 horario de la clínica, los turnos de cada odontólogo, el almuerzo, los bloqueos y las citas ya reservadas,
 e impide la doble reserva en la propia base de datos.
 
-**No es el software de gestión de la clínica**: no hay login, usuarios, panel, CRUD de pacientes,
-historia clínica, pagos ni envío de notificaciones. La lógica de agenda está en servicios propios
-(`DisponibilidadService`, `CitaService`) para que el futuro software de clínica y la app del paciente la reutilicen.
+Hoy la usa la landing (`../landing`). El software de gestión (`../gestion`, desde la Fase 1) y la futura app del paciente
+usarán esta misma API y la misma base de datos: **una sola base, una sola tabla de citas**. Ningún cliente se conecta
+a la base directamente.
 
-Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · SQL Server (XAMPP/MariaDB y MySQL opcionales) · Maven
+Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · Flyway · MySQL 8.4 / MariaDB (XAMPP) · Maven
 
-## Arrancar en local (IntelliJ + SQL Server)
+## Arrancar en local (IntelliJ + XAMPP)
 
-1. **Base de datos.** Con SQL Server en marcha, ejecuta una vez `database/crear-base-de-datos.sql` (en SSMS o en la consola de base de datos de IntelliJ). Las tablas las crea la aplicación al arrancar.
-2. **Abrir el proyecto.** En IntelliJ: *File → Open* y elige la carpeta `backend` (la que tiene `pom.xml`). IntelliJ la reconoce como proyecto Maven. Comprueba que el SDK es Java 21 (*File → Project Structure → SDK*).
-3. **Usuario y contraseña.** Abre `ClinicaLandingApplication` y pulsa la flecha verde. La primera vez fallará la conexión: entra en *Run → Edit Configurations… → Environment variables* y pon
-   `DB_USER=sa;DB_PASSWORD=tu_contraseña`
-   (o el usuario de SQL Server que uses). Vuelve a ejecutar.
-4. **Comprobar.** Abre <http://localhost:8080/api/health>.
+La guía paso a paso está en [`../COMO-ABRIR.md`](../COMO-ABRIR.md). En resumen:
 
-Al primer arranque se cargan **datos de prueba**: los tratamientos, precios y equipo que ya muestra la landing, más un horario, turnos, almuerzo y duraciones **de ejemplo** (ver «Agenda»). Cámbialos por los reales antes de publicar y desactiva la carga con `app.datos-iniciales=false`. Cada bloque solo se carga si su tabla está vacía, así que una base de datos de una versión anterior se completa sola al arrancar.
-
-Si no conecta, revisa en *SQL Server Configuration Manager* que **TCP/IP** está habilitado en el puerto **1433** y que el servidor acepta **autenticación de SQL Server** (modo mixto). Con SQL Server Express (instancia con nombre), pon su puerto en `DB_PORT` o fija 1433 en la configuración TCP/IP.
-
-Desde terminal también funciona: `DB_PASSWORD=tu_contraseña mvn spring-boot:run`.
-
-### Alternativa: XAMPP (MariaDB) en lugar de SQL Server
-
-1. En el panel de XAMPP pulsa **Start** en **MySQL**.
-2. Crea la base de datos una vez, ejecutando `database/crear-base-de-datos-mysql.sql` en la consola de base de datos de IntelliJ (*Database → + → Data Source → MariaDB*, usuario `root`, sin contraseña, puerto 3306) o en phpMyAdmin. La crea en `utf8mb4` para que se guarden bien tildes, ñ y cualquier carácter.
-3. En *Run → Edit Configurations → Environment variables* pon solo `SPRING_PROFILES_ACTIVE=xampp` y ejecuta `ClinicaLandingApplication`.
+1. En el panel de XAMPP pulsa **Start** en **MySQL** (es MariaDB, usuario `root` sin contraseña).
+2. Abre la carpeta del repositorio en IntelliJ, carga `backend/pom.xml` como proyecto Maven y usa Java 21.
+3. Ejecuta `ClinicaLandingApplication`. **No hace falta ninguna variable de entorno ni ningún script SQL**: sin perfil
+   arranca en `dev`, crea la base `clinica_aeod`, Flyway crea las tablas y se cargan los datos de ejemplo.
+4. Comprueba <http://localhost:8080/api/health>.
 
 No hace falta Tomcat aparte (ni Smart Tomcat): Spring Boot ya lleva Tomcat dentro y arranca en el puerto 8080.
 
-Para MySQL 8 sin XAMPP existe también el perfil `mysql`.
+**Con MySQL 8.4 en lugar de XAMPP**, pon en *Run → Edit Configurations… → Environment variables*:
+`DB_URL=jdbc:mysql://localhost:3306/clinica_aeod?createDatabaseIfNotExist=true;DB_PASSWORD=tu_contraseña`.
+
+## Entornos
+
+El entorno se elige con `SPRING_PROFILES_ACTIVE`. Sin esa variable se usa `dev`.
+
+| Perfil | Dónde | Base de datos | Datos de ejemplo |
+| --- | --- | --- | --- |
+| `dev` | Tu equipo | Por defecto XAMPP: `jdbc:mariadb://localhost:3306/clinica_aeod`, `root` sin contraseña | Sí |
+| `test` | Servidor de pruebas | Por variables de entorno, obligatorias | Sí |
+| `prod` | Producción | Por variables de entorno, obligatorias (MySQL 8.4) | No |
+
+Variables de entorno (en `test` y `prod` son obligatorias; si falta alguna, el backend no arranca y dice cuál):
+
+| Variable | Ejemplo | Para qué |
+| --- | --- | --- |
+| `DB_URL` | `jdbc:mysql://db.ejemplo.com:3306/clinica_aeod` | Conexión. `jdbc:mysql://` para MySQL, `jdbc:mariadb://` para MariaDB |
+| `DB_USERNAME` | `clinica_app` | Usuario de la base |
+| `DB_PASSWORD` | — | Contraseña. Nunca se escribe en el código ni se sube al repositorio |
+| `CORS_ALLOWED_ORIGINS` | `https://www.ejemplo.com,https://gestion.ejemplo.com` | Webs que pueden llamar a la API desde el navegador. Nunca `*` |
+
+`JWT_SECRET` llegará en la Fase 1, con el login del software de gestión.
+
+Las migraciones se aplican solas al arrancar, así que el usuario de `DB_USERNAME` necesita permiso para crear y modificar
+tablas en su base. Antes de desplegar una versión con migraciones nuevas en producción, haz una copia de seguridad de la base.
+
+## Base de datos y migraciones
+
+- **Motores:** MySQL 8.4 en producción y la MariaDB 10.4 de XAMPP en desarrollo. Las migraciones se escriben en SQL que
+  funciona en los dos, y GitHub Actions pasa las pruebas en ambos en cada cambio (`.github/workflows/backend.yml`).
+- **Flyway** crea y cambia las tablas con los archivos de `src/main/resources/db/migration`:
+  `V1__esquema_inicial.sql`, después `V2__...sql`, `V3__...sql`… Cada archivo se aplica una sola vez y queda anotado en la
+  tabla `flyway_schema_history`.
+- **Hibernate no toca la estructura** (`spring.jpa.hibernate.ddl-auto=validate`): al arrancar comprueba que las entidades
+  coinciden con las tablas y, si no, el backend no arranca.
+- **Reglas para cambiar la base:** un cambio de estructura es siempre un archivo nuevo `V<n>__descripcion.sql`; nunca se
+  edita una migración ya aplicada ni se cambian tablas a mano desde Workbench o phpMyAdmin. Cada `CREATE TABLE` lleva
+  `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci` (válido en MySQL 8.4 y en MariaDB). Para añadir una
+  columna obligatoria a una tabla con datos: primero opcional, luego se rellena y después se hace obligatoria.
+- **Borrar la base con Flyway (`clean`) está desactivado** en todos los entornos; solo lo usan las pruebas automáticas
+  sobre su propia base.
+
+La base anterior de la landing (`clinica_landing`) no se usa ni se modifica. La base central es `clinica_aeod`.
 
 ## Ver la landing con datos de la API
 
 La landing debe abrirse desde un servidor local (por CORS, abrir `index.html` con doble clic no puede hablar con la API).
 
-- **Desde IntelliJ:** abre `index.html` de la carpeta raíz y pulsa el icono del navegador que aparece arriba a la derecha (abre `http://localhost:63342/...`, que ya está permitido).
-- **Desde terminal:** en la carpeta raíz, `python3 -m http.server 5500` y abre <http://localhost:5500>.
+- **Desde IntelliJ:** abre `landing/index.html` y pulsa el icono del navegador que aparece arriba a la derecha (abre `http://localhost:63342/...`, que ya está permitido).
+- **Desde VS Code:** con la extensión Live Server, abre `landing/index.html` con *Open with Live Server* (puerto 5500, permitido).
 
 Si la API está apagada, la landing sigue funcionando con sus datos estáticos y el formulario muestra el teléfono en vez de fingir un envío.
 
@@ -126,9 +158,9 @@ Para cada odontólogo que hace el tratamiento: **su turno ∩ horario de la clí
 ### Doble reserva
 
 1. Al confirmar, el backend vuelve a calcular si ese horario sigue libre.
-2. La cita se guarda junto con un registro por cada tramo de 15 minutos en `agenda_ocupacion`, que tiene **clave única** (odontólogo, fecha, hora). Si dos personas confirman a la vez, la base de datos solo acepta una; la otra recibe el 409. Probado con 10 reservas simultáneas en SQL Server, MariaDB y H2.
+2. La cita se guarda junto con un registro por cada tramo de 15 minutos en `agenda_ocupacion`, que tiene **clave única** (odontólogo, fecha, hora). Si dos personas confirman a la vez, la base de datos solo acepta una; la otra recibe el 409. Las pruebas lo comprueban con 10 reservas simultáneas en MySQL 8.4 y en MariaDB 10.4.
 
-En la consola verás entonces un `ERROR … Duplicate entry … uk_agenda_ocupacion` (MariaDB) o `Violation of UNIQUE KEY constraint 'uk_agenda_ocupacion'` (SQL Server): es la protección funcionando, no un fallo.
+En la consola verás entonces un `ERROR … Duplicate entry … for key 'uk_agenda_ocupacion'`: es la protección funcionando, no un fallo.
 
 ### Estados de una cita
 
@@ -183,20 +215,16 @@ Duraciones: Valoración 30 (cualquiera) · Limpieza 60 (Ana, Rocío) · Empaste 
 ## Configuración (`src/main/resources/application.properties`)
 
 - `server.port=8080`
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`: conexión a SQL Server (por defecto `localhost:1433`, `sa`)
-- Los textos se guardan como `nvarchar` (tildes, ñ y cualquier carácter)
-- `app.cors.origenes`: orígenes permitidos (por defecto `localhost` y `127.0.0.1` en los puertos 5500 y 3000, más `localhost:63342` de IntelliJ; nunca `*`)
-- `app.datos-iniciales`: carga los datos de prueba si las tablas están vacías
+- Base de datos y CORS: ver «Entornos»
 - `app.zona-horaria`: zona de la clínica para decidir qué es "hoy" (`Europe/Madrid`)
+- `app.datos-iniciales`: carga los datos de ejemplo si las tablas están vacías (activado en `dev` y `test`)
 - `app.agenda.intervalo-minutos` (30): cada cuánto empieza un horario ofrecido
 - `app.agenda.antelacion-minima-minutos` (60): margen mínimo para reservar hoy
 - `app.agenda.dias-reserva-maximos` (180): hasta cuántos días vista se reserva
 - `app.agenda.dias-busqueda-alternativas` (30): días que se exploran para las próximas opciones
 - `app.agenda.inicio-tarde` (14:00): desde qué hora un horario cuenta como "tarde"
-- `app.citas.confirmacion-automatica` (false): `true` = las citas de la web entran `CONFIRMADA`
+- `app.citas.confirmacion-automatica` (false): las citas de la web entran `PENDIENTE` hasta que la clínica las verifica; `true` = entran `CONFIRMADA`
 - `app.citas.cancelacion-antelacion-horas` (4): antelación mínima para que el paciente cancele o reprograme
-
-Las tablas se crean con `spring.jpa.hibernate.ddl-auto=update`, suficiente en desarrollo. Para producción conviene cambiarlo a `validate` y gestionar el esquema con scripts.
 
 ## Tests
 
@@ -204,13 +232,22 @@ Las tablas se crean con `spring.jpa.hibernate.ddl-auto=update`, suficiente en de
 mvn test
 ```
 
-Usan una base de datos H2 en memoria, así que no necesitan SQL Server. Cubren el cálculo de disponibilidad (incluido el ejemplo 8–17 con almuerzo y una cita de 10 a 11), las reservas simultáneas, la cancelación y la reprogramación. En IntelliJ: clic derecho en `src/test/java` → *Run 'All Tests'*.
+Usan una base de datos real y **solo para pruebas**: al empezar la borran y la crean de nuevo con las migraciones, así que
+también comprueban que las migraciones funcionan. Por seguridad, solo borran una base cuyo nombre contenga «prueba» o «test».
+
+- **En tu equipo:** con XAMPP encendido usan la base `clinica_aeod_pruebas` (se crea sola). En IntelliJ: clic derecho en
+  `src/test/java` → *Run 'All Tests'*.
+- **En GitHub Actions:** se ejecutan en cada cambio en MySQL 8.4 y en MariaDB 10.4. Otra base se indica con
+  `TEST_DB_URL`, `TEST_DB_USERNAME` y `TEST_DB_PASSWORD`.
+
+Cubren el cálculo de disponibilidad (incluido el ejemplo 8–17 con almuerzo y una cita de 10 a 11), las reservas
+simultáneas, la cancelación y la reprogramación.
 
 ## Estructura
 
 ```text
 src/main/java/sv/clinica/landing/
-├── config/       CorsConfig, DataInitializer, AgendaProperties, CitasProperties
+├── config/       CorsConfig, DataInitializer, AgendaProperties, CitasProperties, VariablesDeEntornoObligatorias
 ├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad
 ├── dto/          Respuestas, peticiones con validaciones y patrones compartidos
 ├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion y sus enums
@@ -218,4 +255,12 @@ src/main/java/sv/clinica/landing/
 ├── repository/   Spring Data JPA
 ├── service/      DisponibilidadService (agenda), CitaService (reservar, cancelar, reprogramar), NotificacionService
 └── exception/    RecursoNoEncontrado, DatosInvalidos, HorarioNoDisponible (409), CitaNoModificable (409), GlobalExceptionHandler
+src/main/resources/
+├── application.properties            Configuración común
+├── application-dev.properties        Tu equipo (XAMPP por defecto)
+├── application-test.properties       Servidor de pruebas
+├── application-prod.properties       Producción
+└── db/migration/                     Migraciones Flyway (V1__esquema_inicial.sql…)
 ```
+
+El paquete y el proyecto se renombrarán a `sv.clinica.api` / `clinica-api` en la Fase 1.
