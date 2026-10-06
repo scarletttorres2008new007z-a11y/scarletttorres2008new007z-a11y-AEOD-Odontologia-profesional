@@ -8,7 +8,7 @@ paciente son clientes de la misma API.
 | --- | --- | --- | --- |
 | [`landing/`](landing/README.md) | Web pública: tratamientos, precios, equipo y reserva de citas | HTML, CSS y JavaScript | En uso |
 | [`backend/`](backend/README.md) | API REST central: reglas de negocio, disponibilidad, citas y acceso a la base de datos | Java 21, Spring Boot, Flyway | En uso |
-| [`gestion/`](gestion/README.md) | Software de gestión para recepción, odontólogos y administración | React, TypeScript, Vite | Fase 1 |
+| [`gestion/`](gestion/README.md) | Software de gestión para recepción, odontólogos y administración | React, TypeScript, Vite | Fase 1: entrada, usuarios, roles y auditoría |
 
 ```text
 landing/  ──┐
@@ -28,11 +28,11 @@ gestion/  ──┘                                     MySQL 8.4 en producción
 
 ## Empezar
 
-- Arrancar todo en tu equipo (XAMPP + IntelliJ): [COMO-ABRIR.md](COMO-ABRIR.md)
+- Arrancar todo en tu equipo (XAMPP + IntelliJ + VS Code): [COMO-ABRIR.md](COMO-ABRIR.md)
 - API, entornos (`dev`, `test`, `prod`), variables de entorno y migraciones: [backend/README.md](backend/README.md)
 - Landing: [landing/README.md](landing/README.md)
 
 ## Pruebas automáticas
 
 GitHub Actions compila el backend y pasa sus pruebas en MySQL 8.4 y en MariaDB 10.4 en cada cambio
-(`.github/workflows/backend.yml`).
+(`.github/workflows/backend.yml`), y revisa, prueba y compila el software de gestión (`.github/workflows/gestion.yml`).

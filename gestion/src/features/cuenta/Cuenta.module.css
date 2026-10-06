@@ -1,0 +1,28 @@
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.datos {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+.datos > div {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 12px;
+}
+.datos dt {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.datos dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.formulario {
+  display: grid;
+  gap: 16px;
+}

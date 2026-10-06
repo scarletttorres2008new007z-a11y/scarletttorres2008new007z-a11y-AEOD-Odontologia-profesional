@@ -1,0 +1,147 @@
+import type {
+  AccionAuditoria,
+  EntidadAuditoria,
+  OrigenAuditoria,
+  RegistroAuditoria,
+} from '../../shared/api/tipos';
+import { formatearFecha, formatearFechaHora } from '../../shared/formato';
+
+// Textos en castellano para los códigos que guarda la auditoría.
+
+export const ACCIONES: Record<AccionAuditoria, string> = {
+  INICIAR_SESION: 'Inicio de sesión',
+  INICIO_SESION_FALLIDO: 'Intento de entrada fallido',
+  BLOQUEAR_POR_INTENTOS: 'Bloqueo por intentos fallidos',
+  CERRAR_SESION: 'Cierre de sesión',
+  CAMBIAR_PASSWORD: 'Cambio de su contraseña',
+  RESTABLECER_PASSWORD: 'Contraseña restablecida',
+  CREAR: 'Alta',
+  EDITAR: 'Edición de datos',
+  ACTIVAR: 'Activación o desbloqueo',
+  DESACTIVAR: 'Desactivación',
+  CAMBIAR_ROLES: 'Cambio de roles',
+  CAMBIAR_PERMISOS: 'Cambio de permisos',
+  RESERVAR: 'Reserva de cita',
+  CANCELAR: 'Cancelación de cita',
+  REPROGRAMAR: 'Cambio de fecha de cita',
+};
+
+/** Para el filtro de acciones, agrupadas. */
+export const GRUPOS_DE_ACCIONES: { titulo: string; acciones: AccionAuditoria[] }[] = [
+  {
+    titulo: 'Sesiones',
+    acciones: [
+      'INICIAR_SESION',
+      'INICIO_SESION_FALLIDO',
+      'BLOQUEAR_POR_INTENTOS',
+      'CERRAR_SESION',
+      'CAMBIAR_PASSWORD',
+    ],
+  },
+  {
+    titulo: 'Usuarios y roles',
+    acciones: [
+      'CREAR',
+      'EDITAR',
+      'ACTIVAR',
+      'DESACTIVAR',
+      'CAMBIAR_ROLES',
+      'RESTABLECER_PASSWORD',
+      'CAMBIAR_PERMISOS',
+    ],
+  },
+  { titulo: 'Citas', acciones: ['RESERVAR', 'CANCELAR', 'REPROGRAMAR'] },
+];
+
+export const ENTIDADES: Record<EntidadAuditoria, string> = {
+  USUARIO: 'Usuario',
+  ROL: 'Rol',
+  CITA: 'Cita',
+};
+
+export const ENTIDADES_EN_PLURAL: Record<EntidadAuditoria, string> = {
+  USUARIO: 'Usuarios',
+  ROL: 'Roles',
+  CITA: 'Citas',
+};
+
+export const ORIGENES: Record<OrigenAuditoria, string> = {
+  LANDING: 'Web',
+  SOFTWARE: 'Software',
+  APP: 'App de pacientes',
+  SISTEMA: 'Sistema',
+};
+
+const CAMPOS: Record<string, string> = {
+  nombre: 'Nombre',
+  username: 'Usuario',
+  email: 'Correo',
+  activo: 'Activo',
+  bloqueado: 'Bloqueado',
+  bloqueado_hasta: 'Bloqueado hasta',
+  roles: 'Roles',
+  permisos: 'Permisos',
+  motivo: 'Motivo',
+  estado: 'Estado',
+  fecha: 'Fecha',
+  hora_inicio: 'Hora de inicio',
+  hora_fin: 'Hora de fin',
+  tratamiento_id: 'Tratamiento (n.º)',
+  odontologo_id: 'Odontólogo (n.º)',
+  cita_id: 'Cita nueva (n.º)',
+};
+
+const VALORES: Record<string, string> = {
+  USUARIO_DESCONOCIDO: 'Usuario o correo que no existe',
+  PASSWORD_INCORRECTA: 'Contraseña incorrecta',
+  ADMINISTRADOR: 'Administrador',
+  RECEPCION: 'Recepción',
+  ODONTOLOGO: 'Odontólogo',
+  COORDINADOR: 'Coordinador',
+  PENDIENTE: 'Pendiente',
+  CONFIRMADA: 'Confirmada',
+  CANCELADA: 'Cancelada',
+  REPROGRAMADA: 'Reprogramada',
+  COMPLETADA: 'Completada',
+  NO_ASISTIO: 'No asistió',
+};
+
+export function nombreDelCampo(clave: string): string {
+  return CAMPOS[clave] ?? clave;
+}
+
+/** Un valor guardado en la auditoría, listo para leer. */
+export function textoDelValor(clave: string, valor: unknown): string {
+  if (valor === null || valor === undefined) return '—';
+  if (typeof valor === 'boolean') return valor ? 'Sí' : 'No';
+  if (Array.isArray(valor)) {
+    return valor.length === 0 ? 'Ninguno' : valor.map((item) => textoDelValor(clave, item)).join(', ');
+  }
+  if (typeof valor === 'string') {
+    if (clave === 'fecha') return formatearFecha(valor);
+    if (clave === 'bloqueado_hasta') return formatearFechaHora(valor);
+    return VALORES[valor] ?? valor;
+  }
+  if (typeof valor === 'number') return String(valor);
+  return JSON.stringify(valor);
+}
+
+/** Quién lo hizo: la persona con sesión o, si no había, de dónde llegó. */
+export function autor(registro: RegistroAuditoria): { nombre: string; detalle?: string } {
+  if (registro.usuario) return { nombre: registro.usuario.nombre, detalle: registro.usuario.username };
+  switch (registro.origen) {
+    case 'LANDING':
+      return { nombre: 'Visitante de la web' };
+    case 'APP':
+      return { nombre: 'App de pacientes' };
+    case 'SISTEMA':
+      return { nombre: 'Sistema' };
+    default:
+      return { nombre: 'Sin identificar' };
+  }
+}
+
+export function afectado(registro: RegistroAuditoria): string {
+  const entidad = ENTIDADES[registro.entidad];
+  return registro.entidad_id ? `${entidad} n.º ${registro.entidad_id}` : entidad;
+}

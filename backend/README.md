@@ -17,7 +17,7 @@ La guía paso a paso está en [`../COMO-ABRIR.md`](../COMO-ABRIR.md). En resumen
 
 1. En el panel de XAMPP pulsa **Start** en **MySQL** (es MariaDB, usuario `root` sin contraseña).
 2. Abre la carpeta del repositorio en IntelliJ, carga `backend/pom.xml` como proyecto Maven y usa Java 21.
-3. Ejecuta `ClinicaLandingApplication`. **No hace falta ninguna variable de entorno ni ningún script SQL**: sin perfil
+3. Ejecuta `ClinicaApiApplication`. **No hace falta ninguna variable de entorno ni ningún script SQL**: sin perfil
    arranca en `dev`, crea la base `clinica_aeod`, Flyway crea las tablas y se cargan los datos de ejemplo.
 4. Comprueba <http://localhost:8080/api/health>.
 
@@ -43,9 +43,28 @@ Variables de entorno (en `test` y `prod` son obligatorias; si falta alguna, el b
 | `DB_URL` | `jdbc:mysql://db.ejemplo.com:3306/clinica_aeod` | Conexión. `jdbc:mysql://` para MySQL, `jdbc:mariadb://` para MariaDB |
 | `DB_USERNAME` | `clinica_app` | Usuario de la base |
 | `DB_PASSWORD` | — | Contraseña. Nunca se escribe en el código ni se sube al repositorio |
-| `CORS_ALLOWED_ORIGINS` | `https://www.ejemplo.com,https://gestion.ejemplo.com` | Webs que pueden llamar a la API desde el navegador. Nunca `*` |
+| `CORS_ALLOWED_ORIGINS` | `https://www.ejemplo.com` | Webs que pueden llamar a las rutas **públicas** de la API desde el navegador (la landing). Nunca `*` |
+| `JWT_SECRET` | 64 caracteres aleatorios | Firma de los tokens de sesión (mínimo 32 bytes). En `dev`, si falta, se usa una clave temporal |
+| `ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` | — | Solo para crear o recuperar el administrador. Se quitan después de arrancar |
 
-`JWT_SECRET` llegará en la Fase 1, con el login del software de gestión.
+## Seguridad (Fase 1)
+
+- **Login** en `POST /api/auth/login` (usuario o correo + contraseña). Devuelve un token de acceso JWT (15 minutos) y
+  deja una cookie `HttpOnly`, `SameSite=Strict`, con la que el software lo renueva (`POST /api/auth/refresh`) sin guardar
+  nada en `localStorage`. `POST /api/auth/logout` anula la sesión en la base de datos.
+- **Contraseñas** con BCrypt; mínimo 10 caracteres. Cinco fallos seguidos bloquean el usuario 15 minutos (423).
+- **Permisos (RBAC)**: cada endpoint del software exige su permiso con `@PreAuthorize`; sin él, **403**, aunque se llame
+  directamente. Los permisos se leen de la base en cada petición: un cambio de rol o una desactivación valen al momento.
+- **Límite de peticiones** por IP (429): entrada 10/min, reservas de la web 20/h, mensajes de contacto 20/h.
+- **CORS** solo en las rutas públicas de la landing; el software usa el mismo origen (proxy de Vite en desarrollo).
+- **Cabeceras**: `Content-Security-Policy`, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `no-store` y HSTS
+  por HTTPS. Detrás de un proxy en producción, `server.forward-headers-strategy=native`.
+- **Auditoría** (`/api/auditoria`, permiso `auditoria.ver`): entradas, fallos, bloqueos, cambios de usuarios, roles y
+  permisos, y reservas, cancelaciones y cambios de citas (sin datos del paciente).
+- **Primer administrador**: en `dev`, si no hay ninguno, se crea `admin` con una contraseña aleatoria que se muestra una
+  vez en la consola. En `test` y `prod`, con `ADMIN_USERNAME`, `ADMIN_EMAIL` y `ADMIN_PASSWORD`.
+- **Swagger**: <http://localhost:8080/swagger-ui.html> en `dev` y `test` (desactivado en `prod`).
+- **Errores**: siempre `{ timestamp, status, error, message, path }` (+ `errores` por campo), desde un único manejador.
 
 Las migraciones se aplican solas al arrancar, así que el usuario de `DB_USERNAME` necesita permiso para crear y modificar
 tablas en su base. Antes de desplegar una versión con migraciones nuevas en producción, haz una copia de seguridad de la base.
@@ -246,8 +265,9 @@ simultáneas, la cancelación y la reprogramación.
 ## Estructura
 
 ```text
-src/main/java/sv/clinica/landing/
-├── config/       CorsConfig, DataInitializer, AgendaProperties, CitasProperties, VariablesDeEntornoObligatorias
+src/main/java/sv/clinica/api/
+├── config/       DataInitializer, AdministradorInicial, OpenApiConfig, propiedades, VariablesDeEntornoObligatorias
+├── security/     SeguridadConfig, TokenService, ConvertidorJwt, CookieDeSesion, límite de peticiones, Permisos
 ├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad
 ├── dto/          Respuestas, peticiones con validaciones y patrones compartidos
 ├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion y sus enums
@@ -263,4 +283,4 @@ src/main/resources/
 └── db/migration/                     Migraciones Flyway (V1__esquema_inicial.sql…)
 ```
 
-El paquete y el proyecto se renombrarán a `sv.clinica.api` / `clinica-api` en la Fase 1.
+Desde la Fase 1 el proyecto se llama `clinica-api` (paquete `sv.clinica.api`).

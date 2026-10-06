@@ -1,0 +1,33 @@
+# Revisa, prueba y compila el software de gestión (React + TypeScript + Vite).
+name: Gestión
+
+on:
+  push:
+    branches: [main]
+    paths: ['gestion/**', '.github/workflows/gestion.yml']
+  pull_request:
+    paths: ['gestion/**', '.github/workflows/gestion.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  comprobar:
+    name: Lint, tipos, pruebas y compilación
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gestion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: gestion/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
