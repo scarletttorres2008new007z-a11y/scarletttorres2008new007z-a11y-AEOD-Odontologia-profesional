@@ -40,7 +40,8 @@ de gestión, además, **VS Code** y **Node.js** (paso 8). MySQL Workbench es opc
 ## 1. Descomprimir
 
 1. Haz clic derecho en `aeod-sistema.zip` y elige **Extraer todo…**.
-2. Se crea la carpeta `aeod-sistema`. Dentro verás `landing`, `backend`, `gestion` y esta guía.
+2. Se crea la carpeta `aeod-sistema`. Dentro verás `landing`, `backend`, `gestion` y esta guía. Si Windows la ha metido
+   dentro de otra carpeta `aeod-sistema`, usa la de dentro: la buena es la que contiene `landing`, `backend` y `gestion`.
 
 ## 2. Encender la base de datos (XAMPP)
 
@@ -71,7 +72,7 @@ Si tu XAMPP tiene contraseña, entra en el desplegable de arriba a la derecha �
 ## 5. Comprobar que el backend funciona
 
 1. Abajo se abre la consola. La primera vez verás estas líneas:
-   - `Successfully applied … migration(s) to schema clinica_aeod, now at version v4`: se han creado las tablas.
+   - `Successfully applied 5 migrations to schema clinica_aeod, now at version v5`: se han creado las tablas.
    - `Tomcat started on port 8080`: el backend está en marcha.
    - Varias líneas que empiezan por **`Datos de prueba:`**: tratamientos, odontólogos, horarios y almuerzo de ejemplo
      (solo si la base estaba vacía).
@@ -251,6 +252,7 @@ ese día en el formulario de cita: ya no ofrece horas y te propone las siguiente
 | Línea roja `Duplicate entry … for key 'uk_agenda_ocupacion'` en la consola | Es normal: dos personas intentaron la misma hora y la base de datos rechazó la segunda. Es la protección contra la doble reserva. |
 | El software dice «No se puede conectar con el servidor» | El backend está apagado. Arráncalo en IntelliJ (paso 4) y pulsa **Reintentar**. |
 | `npm` no se reconoce como comando | Node.js no está instalado o VS Code se abrió antes de instalarlo. Instálalo (paso 8) y vuelve a abrir VS Code. |
+| Error rojo con `npm.ps1` y «la ejecución de scripts está deshabilitada en este sistema» | Windows no deja usar `npm` desde PowerShell. En la terminal de VS Code, pulsa la flecha ˅ junto al **+**, elige **Command Prompt** (o «Símbolo del sistema») y repite el comando. |
 | `Port 5173 is already in use` | El software ya está abierto en otra terminal. Usa esa, o ciérrala con **Ctrl + C**. |
 | «Usuario o contraseña incorrectos» con `admin` | La contraseña es la del recuadro del paso 5 (distinta cada base). Si la perdiste, mira el final del paso 8. |
 | Al dar o mover una cita: «Este horario acaba de ser reservado» | Alguien (otra persona o la web) cogió esa hora mientras elegías. La lista de huecos se actualiza sola: elige otro. |
