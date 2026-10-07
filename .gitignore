@@ -1,0 +1,19 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Compilación y dependencias
+target/
+node_modules/
+dist/
+
+# Variables de entorno locales (nunca se suben)
+.env
+.env.local
+.env.*.local
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log

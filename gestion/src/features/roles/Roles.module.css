@@ -1,0 +1,38 @@
+.roles {
+  display: grid;
+  gap: 16px;
+}
+.rol {
+  display: grid;
+  gap: 18px;
+}
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.modulos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 18px 24px;
+}
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 14px;
+  border-top: 1px solid var(--paper-2);
+}
+.guardado {
+  margin-right: auto;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--success);
+}
+.pie > [role='alert'] {
+  flex-basis: 100%;
+}

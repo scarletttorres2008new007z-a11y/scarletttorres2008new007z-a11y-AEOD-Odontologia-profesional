@@ -1,0 +1,667 @@
+/* ═══ Agenda ═══ */
+
+/* ── Barra: día, navegación, vista y odontólogo ── */
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+}
+.navegacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+}
+.titulo {
+  margin-left: 6px;
+  font-size: 1.125rem;
+}
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+.vistas {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+}
+.vistas button {
+  min-height: 40px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--brand);
+  background: var(--white);
+  border: none;
+  cursor: pointer;
+}
+.vistas button + button {
+  border-left: 1px solid var(--rule);
+}
+.vistas button[aria-pressed='true'] {
+  color: var(--white);
+  background: var(--brand);
+}
+.vistas button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -4px;
+}
+.vistas button[aria-pressed='true']:focus-visible {
+  outline-color: var(--white);
+}
+
+/* ── Leyenda de colores ── */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  list-style: none;
+}
+.leyenda li {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.muestra {
+  width: 14px;
+  height: 14px;
+  border-left: 4px solid;
+  border-radius: 3px;
+}
+.contenido[aria-busy='true'] {
+  opacity: 0.6;
+}
+
+/* Colores por estado (bloques de la agenda y muestras de la leyenda) */
+:is(.cita, .citaSemana, .muestra)[data-estado='PENDIENTE'] {
+  --estado: var(--warning);
+  --estado-fondo: var(--warning-bg);
+}
+:is(.cita, .citaSemana, .muestra)[data-estado='CONFIRMADA'] {
+  --estado: var(--brand);
+  --estado-fondo: var(--brand-soft);
+}
+:is(.cita, .citaSemana, .muestra)[data-estado='EN_ATENCION'] {
+  --estado: #2f7a52;
+  --estado-fondo: #dcefe4;
+}
+:is(.cita, .citaSemana, .muestra)[data-estado='COMPLETADA'] {
+  --estado: var(--muted);
+  --estado-fondo: var(--paper-2);
+}
+:is(.cita, .citaSemana, .muestra)[data-estado='NO_ASISTIO'] {
+  --estado: var(--error);
+  --estado-fondo: var(--error-bg);
+}
+.muestra[data-estado] {
+  background: var(--estado-fondo);
+  border-color: var(--estado);
+}
+
+/* ── Vista día: una columna por odontólogo, una fila cada 15 minutos ── */
+.rejillaCaja {
+  /* Se desplaza dentro de su caja: la cabecera y las horas quedan siempre a la vista */
+  position: relative;
+  max-height: max(420px, calc(100dvh - 300px));
+  overflow: auto;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+}
+.rejilla {
+  --fila: 18px;
+  display: grid;
+  grid-template-columns: 56px repeat(var(--columnas), minmax(150px, 1fr));
+  min-width: fit-content;
+}
+.esquina,
+.cabeceraColumna {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: var(--white);
+  border-bottom: 1px solid var(--paper-3);
+}
+.esquina {
+  left: 0;
+  z-index: 7;
+}
+.cabeceraColumna {
+  padding: 10px 10px 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--brand);
+  border-left: 1px solid var(--paper-3);
+}
+.horas,
+.columna {
+  display: grid;
+  grid-template-rows: repeat(var(--filas), var(--fila));
+}
+.horas {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--white);
+}
+.horas span {
+  padding: 2px 8px 0 0;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--muted);
+}
+.columna {
+  /* Fuera de su turno, el odontólogo no pasa consulta: rayado suave */
+  background: repeating-linear-gradient(135deg, var(--paper) 0 7px, var(--paper-2) 7px 8px);
+  border-left: 1px solid var(--paper-3);
+}
+/* Líneas de cada hora (y más suaves, de cada media hora), por encima de los turnos y por debajo de las citas */
+.columna::after {
+  z-index: 2;
+  grid-row: 1 / -1;
+  grid-column: 1;
+  content: '';
+  pointer-events: none;
+  background:
+    linear-gradient(var(--paper-3) 1px, transparent 1px) 0 0 / 100% calc(var(--fila) * 4),
+    linear-gradient(var(--paper-2) 1px, transparent 1px) 0 calc(var(--fila) * 2) / 100% calc(var(--fila) * 4);
+}
+.turno,
+.bloqueo,
+.cita {
+  grid-column: 1;
+  min-width: 0;
+}
+.turno {
+  z-index: 1;
+  background: var(--white);
+}
+.bloqueo {
+  z-index: 3;
+  padding: 3px 8px;
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  background: repeating-linear-gradient(135deg, var(--paper-2) 0 8px, var(--paper-3) 8px 10px);
+}
+.cita {
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  margin: 1px 4px 1px 3px;
+  padding: 2px 6px;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--estado-fondo, var(--brand-soft));
+  border-left: 4px solid var(--estado, var(--brand));
+  border-radius: var(--r-sm);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+.cita:hover {
+  box-shadow: var(--shadow-card);
+}
+.cita:focus-visible,
+.citaSemana:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.cita[data-estado='COMPLETADA'] {
+  color: var(--ink-3);
+}
+.citaLinea,
+.citaDetalle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.citaHora {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.citaNombre {
+  font-weight: 600;
+}
+.citaDetalle {
+  color: var(--ink-3);
+}
+
+/* ── Vista semana: una lista de citas por día ── */
+.semana {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.diaSemana {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 14px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+}
+.diaSemana[data-hoy] {
+  border-color: var(--accent);
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+.diaTitulo {
+  font-size: 1rem;
+}
+.diaTitulo a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.diaTitulo a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+.hoy {
+  font-weight: 600;
+  color: var(--accent-2);
+}
+.horario {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.citasDelDia {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.citaSemana {
+  display: grid;
+  padding: 6px 8px;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--estado-fondo, var(--brand-soft));
+  border-left: 4px solid var(--estado, var(--brand));
+  border-radius: var(--r-sm);
+}
+.citaSemana:hover {
+  box-shadow: var(--shadow-card);
+}
+/* En la semana hay sitio hacia abajo: mejor partir la línea que cortar el nombre */
+.citaSemana .citaLinea,
+.citaSemana .citaDetalle {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ── Formularios de cita ── */
+.formulario {
+  display: grid;
+  gap: 20px;
+}
+.bloque {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.bloque legend {
+  margin-bottom: 4px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--brand);
+}
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 14px;
+}
+.nota {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.error {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--error);
+}
+.secundario {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* Huecos libres, agrupados por odontólogo */
+.huecos {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.huecos legend {
+  margin-bottom: 4px;
+  padding: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.huecos[aria-busy='true'] {
+  opacity: 0.6;
+}
+.sinHuecos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  font-size: 0.875rem;
+  color: var(--ink-3);
+  background: var(--paper);
+  border-radius: var(--r-md);
+}
+.grupoHuecos {
+  display: grid;
+  gap: 6px;
+}
+.grupoTitulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.listaHuecos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hueco {
+  position: relative;
+}
+.hueco input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.hueco > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand);
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.hueco:hover > span {
+  border-color: var(--brand);
+}
+.hueco input:checked + span {
+  color: var(--white);
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.hueco input:focus-visible + span {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.hueco[data-actual] > span {
+  color: var(--muted);
+  background: var(--paper);
+  border-style: dashed;
+  cursor: default;
+}
+
+/* Buscar y elegir paciente */
+.buscador {
+  display: grid;
+  gap: 8px;
+}
+.resultados {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.resultado {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 12px;
+  font: inherit;
+  text-align: left;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.resultado:hover {
+  border-color: var(--brand);
+}
+.resultado:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.pacienteElegido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--brand-soft);
+  border-radius: var(--r-md);
+}
+.pacienteNombre {
+  font-weight: 600;
+}
+.pacienteDatos {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+.datosWeb {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border-radius: var(--r-md);
+}
+
+/* ── Detalle de la cita ── */
+.estadoCita {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.accionesEstado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.datosCita {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.datosCita > div {
+  display: grid;
+  grid-template-columns: minmax(0, 120px) minmax(0, 1fr);
+  gap: 12px;
+}
+.datosCita dt {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.datosCita dd {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.vincular {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-radius: var(--r-md);
+}
+.notas {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  padding-top: 14px;
+  border-top: 1px solid var(--paper-3);
+}
+.notas h3 {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.formNotas {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+.botonesNotas {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.textoNotas {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.historia {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 12px 0 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  list-style: none;
+  border-top: 1px solid var(--paper-3);
+}
+
+/* ── Citas en la ficha del paciente y en el inicio ── */
+.cabeceraSeccion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cabeceraSeccion a {
+  font-size: 0.875rem;
+  color: var(--brand);
+}
+.subtitulo {
+  margin: 16px 0 8px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.sinCorte {
+  white-space: nowrap;
+}
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.contador {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--warning);
+}
+.filas {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.fila {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 10px;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-sm);
+}
+.fila:hover {
+  border-color: var(--accent);
+}
+.fila:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.filaHora {
+  display: grid;
+  flex-shrink: 0;
+  min-width: 3.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand);
+}
+.filaDia {
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.filaTexto {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+}
+.filaTexto > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .datosCita > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}

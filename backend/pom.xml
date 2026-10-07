@@ -12,13 +12,18 @@
     </parent>
 
     <groupId>sv.clinica</groupId>
-    <artifactId>clinica-landing-api</artifactId>
+    <artifactId>clinica-api</artifactId>
     <version>1.0.0</version>
-    <name>clinica-landing-api</name>
-    <description>API REST pequeña para la landing de AEOD Odontología Profesional</description>
+    <name>clinica-api</name>
+    <description>API REST central de AEOD Odontología Profesional (landing y software de gestión)</description>
 
     <properties>
         <java.version>21</java.version>
+        <!-- Versión de Flyway que ya da soporte oficial a MySQL 8.4 (la de Spring Boot 3.5 llega hasta MySQL 8.1).
+             Probada también con la MariaDB 10.4 de XAMPP. -->
+        <flyway.version>11.20.3</flyway.version>
+        <springdoc.version>2.9.1</springdoc.version>
+        <bucket4j.version>8.20.0</bucket4j.version>
     </properties>
 
     <dependencies>
@@ -34,28 +39,58 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-        <!-- SQL Server (por defecto) -->
+        <!-- Seguridad: login, roles y permisos. Las contraseñas se guardan con BCrypt (incluido) -->
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!-- MySQL (opcional, perfil "mysql") -->
+        <!-- Firma y validación de los tokens JWT (Spring Security, sin librerías externas) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <!-- Documentación de la API: Swagger UI en /swagger-ui.html (solo en dev y test) -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <!-- Límite de peticiones por IP en el login y en los formularios públicos -->
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j_jdk17-core</artifactId>
+            <version>${bucket4j.version}</version>
+        </dependency>
+        <!-- Migraciones de la base de datos (src/main/resources/db/migration) -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
+        <!-- MySQL 8.4 (producción): DB_URL empieza por jdbc:mysql:// -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Solo para los tests automáticos (base de datos en memoria) -->
+        <!-- MariaDB de XAMPP (desarrollo): DB_URL empieza por jdbc:mariadb:// -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,0 +1,57 @@
+.modulos {
+  display: grid;
+  gap: 12px;
+}
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.modulo {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  height: 100%;
+  padding: 18px;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+  transition:
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.modulo:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-card);
+}
+.icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--brand);
+  background: var(--brand-soft);
+  border-radius: var(--r-md);
+}
+.moduloTexto {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+}
+.moduloTitulo {
+  font-weight: 600;
+}
+.moduloDescripcion {
+  font-size: 0.875rem;
+  color: var(--ink-3);
+}
+.flecha {
+  align-self: center;
+  color: var(--accent-2);
+}

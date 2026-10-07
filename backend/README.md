@@ -1,47 +1,182 @@
-# AEOD · API de la landing
+# AEOD · API central
 
-API REST de la landing de AEOD: tratamientos (con su precio "desde" y su duración), equipo, contacto
+API REST central de AEOD: tratamientos (con su precio "desde" y su duración), equipo, contacto
 y **reserva de citas con disponibilidad real**. El backend calcula qué horarios están libres a partir del
 horario de la clínica, los turnos de cada odontólogo, el almuerzo, los bloqueos y las citas ya reservadas,
 e impide la doble reserva en la propia base de datos.
 
-**No es el software de gestión de la clínica**: no hay login, usuarios, panel, CRUD de pacientes,
-historia clínica, pagos ni envío de notificaciones. La lógica de agenda está en servicios propios
-(`DisponibilidadService`, `CitaService`) para que el futuro software de clínica y la app del paciente la reutilicen.
+Hoy la usa la landing (`../landing`). El software de gestión (`../gestion`, desde la Fase 1) y la futura app del paciente
+usarán esta misma API y la misma base de datos: **una sola base, una sola tabla de citas**. Ningún cliente se conecta
+a la base directamente.
 
-Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · SQL Server (XAMPP/MariaDB y MySQL opcionales) · Maven
+Java 21 · Spring Boot 3.5 · Spring Web MVC · Spring Data JPA · Jakarta Validation · Flyway · MySQL 8.4 / MariaDB (XAMPP) · Maven
 
-## Arrancar en local (IntelliJ + SQL Server)
+## Arrancar en local (IntelliJ + XAMPP)
 
-1. **Base de datos.** Con SQL Server en marcha, ejecuta una vez `database/crear-base-de-datos.sql` (en SSMS o en la consola de base de datos de IntelliJ). Las tablas las crea la aplicación al arrancar.
-2. **Abrir el proyecto.** En IntelliJ: *File → Open* y elige la carpeta `backend` (la que tiene `pom.xml`). IntelliJ la reconoce como proyecto Maven. Comprueba que el SDK es Java 21 (*File → Project Structure → SDK*).
-3. **Usuario y contraseña.** Abre `ClinicaLandingApplication` y pulsa la flecha verde. La primera vez fallará la conexión: entra en *Run → Edit Configurations… → Environment variables* y pon
-   `DB_USER=sa;DB_PASSWORD=tu_contraseña`
-   (o el usuario de SQL Server que uses). Vuelve a ejecutar.
-4. **Comprobar.** Abre <http://localhost:8080/api/health>.
+La guía paso a paso está en [`../COMO-ABRIR.md`](../COMO-ABRIR.md). En resumen:
 
-Al primer arranque se cargan **datos de prueba**: los tratamientos, precios y equipo que ya muestra la landing, más un horario, turnos, almuerzo y duraciones **de ejemplo** (ver «Agenda»). Cámbialos por los reales antes de publicar y desactiva la carga con `app.datos-iniciales=false`. Cada bloque solo se carga si su tabla está vacía, así que una base de datos de una versión anterior se completa sola al arrancar.
-
-Si no conecta, revisa en *SQL Server Configuration Manager* que **TCP/IP** está habilitado en el puerto **1433** y que el servidor acepta **autenticación de SQL Server** (modo mixto). Con SQL Server Express (instancia con nombre), pon su puerto en `DB_PORT` o fija 1433 en la configuración TCP/IP.
-
-Desde terminal también funciona: `DB_PASSWORD=tu_contraseña mvn spring-boot:run`.
-
-### Alternativa: XAMPP (MariaDB) en lugar de SQL Server
-
-1. En el panel de XAMPP pulsa **Start** en **MySQL**.
-2. Crea la base de datos una vez, ejecutando `database/crear-base-de-datos-mysql.sql` en la consola de base de datos de IntelliJ (*Database → + → Data Source → MariaDB*, usuario `root`, sin contraseña, puerto 3306) o en phpMyAdmin. La crea en `utf8mb4` para que se guarden bien tildes, ñ y cualquier carácter.
-3. En *Run → Edit Configurations → Environment variables* pon solo `SPRING_PROFILES_ACTIVE=xampp` y ejecuta `ClinicaLandingApplication`.
+1. En el panel de XAMPP pulsa **Start** en **MySQL** (es MariaDB, usuario `root` sin contraseña).
+2. Abre la carpeta del repositorio en IntelliJ, carga `backend/pom.xml` como proyecto Maven y usa Java 21.
+3. Ejecuta `ClinicaApiApplication`. **No hace falta ninguna variable de entorno ni ningún script SQL**: sin perfil
+   arranca en `dev`, crea la base `clinica_aeod`, Flyway crea las tablas y se cargan los datos de ejemplo.
+4. Comprueba <http://localhost:8080/api/health>.
 
 No hace falta Tomcat aparte (ni Smart Tomcat): Spring Boot ya lleva Tomcat dentro y arranca en el puerto 8080.
 
-Para MySQL 8 sin XAMPP existe también el perfil `mysql`.
+**Con MySQL 8.4 en lugar de XAMPP**, pon en *Run → Edit Configurations… → Environment variables*:
+`DB_URL=jdbc:mysql://localhost:3306/clinica_aeod?createDatabaseIfNotExist=true;DB_PASSWORD=tu_contraseña`.
+
+## Entornos
+
+El entorno se elige con `SPRING_PROFILES_ACTIVE`. Sin esa variable se usa `dev`.
+
+| Perfil | Dónde | Base de datos | Datos de ejemplo |
+| --- | --- | --- | --- |
+| `dev` | Tu equipo | Por defecto XAMPP: `jdbc:mariadb://localhost:3306/clinica_aeod`, `root` sin contraseña | Sí |
+| `test` | Servidor de pruebas | Por variables de entorno, obligatorias | Sí |
+| `prod` | Producción | Por variables de entorno, obligatorias (MySQL 8.4) | No |
+
+Variables de entorno (en `test` y `prod` son obligatorias; si falta alguna, el backend no arranca y dice cuál):
+
+| Variable | Ejemplo | Para qué |
+| --- | --- | --- |
+| `DB_URL` | `jdbc:mysql://db.ejemplo.com:3306/clinica_aeod` | Conexión. `jdbc:mysql://` para MySQL, `jdbc:mariadb://` para MariaDB |
+| `DB_USERNAME` | `clinica_app` | Usuario de la base |
+| `DB_PASSWORD` | — | Contraseña. Nunca se escribe en el código ni se sube al repositorio |
+| `CORS_ALLOWED_ORIGINS` | `https://www.ejemplo.com` | Webs que pueden llamar a las rutas **públicas** de la API desde el navegador (la landing). Nunca `*` |
+| `JWT_SECRET` | 64 caracteres aleatorios | Firma de los tokens de sesión (mínimo 32 bytes). En `dev`, si falta, se usa una clave temporal |
+| `ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` | — | Solo para crear o recuperar el administrador. Se quitan después de arrancar |
+
+## Seguridad (Fase 1)
+
+- **Login** en `POST /api/auth/login` (usuario o correo + contraseña). Devuelve un token de acceso JWT (15 minutos) y
+  deja una cookie `HttpOnly`, `SameSite=Strict`, con la que el software lo renueva (`POST /api/auth/refresh`) sin guardar
+  nada en `localStorage`. `POST /api/auth/logout` anula la sesión en la base de datos.
+- **Contraseñas** con BCrypt; mínimo 10 caracteres. Cinco fallos seguidos bloquean el usuario 15 minutos (423).
+- **Permisos (RBAC)**: cada endpoint del software exige su permiso con `@PreAuthorize`; sin él, **403**, aunque se llame
+  directamente. Los permisos se leen de la base en cada petición: un cambio de rol o una desactivación valen al momento.
+- **Límite de peticiones** por IP (429): entrada 10/min, reservas de la web 20/h, mensajes de contacto 20/h.
+- **CORS** solo en las rutas públicas de la landing; el software usa el mismo origen (proxy de Vite en desarrollo).
+- **Cabeceras**: `Content-Security-Policy`, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `no-store` y HSTS
+  por HTTPS. Detrás de un proxy en producción, `server.forward-headers-strategy=native`.
+- **Auditoría** (`/api/auditoria`, permiso `auditoria.ver`): entradas, fallos, bloqueos, cambios de usuarios, roles y
+  permisos, altas y cambios de pacientes, y reservas, cancelaciones y cambios de citas (sin datos del paciente).
+- **Primer administrador**: en `dev`, si no hay ninguno, se crea `admin` con una contraseña aleatoria que se muestra una
+  vez en la consola. En `test` y `prod`, con `ADMIN_USERNAME`, `ADMIN_EMAIL` y `ADMIN_PASSWORD`.
+- **Swagger**: <http://localhost:8080/swagger-ui.html> en `dev` y `test` (desactivado en `prod`).
+- **Errores**: siempre `{ timestamp, status, error, message, path }` (+ `errores` por campo), desde un único manejador.
+
+## Pacientes (Fase 2)
+
+Solo datos personales, de contacto y administrativos (tabla `pacientes`, migración `V3__pacientes.sql`). Los datos
+clínicos irán en el expediente, en otra tabla.
+
+| Método | Ruta | Permiso | Qué hace |
+| --- | --- | --- | --- |
+| GET | `/api/pacientes?texto=&activo=&pagina=0&tamano=20` | `pacientes.ver` | Busca por palabras del nombre, los apellidos, el documento, el teléfono, el correo o el código, sin distinguir mayúsculas ni tildes. Ordenados por apellidos; máximo 100 por página |
+| GET | `/api/pacientes/{id}` | `pacientes.ver` | Ficha del paciente (404 si no existe) |
+| POST | `/api/pacientes` | `pacientes.crear` | Alta. 201; 400 con errores por campo; **409** si el documento ya existe |
+| PUT | `/api/pacientes/{id}` | `pacientes.editar` | Sustituye sus datos |
+| PUT | `/api/pacientes/{id}/estado` | `pacientes.editar` | `{ "activo": false }` da de baja (no borra nada); `true` lo reactiva |
+
+- **Validaciones en el backend:** nombre, apellidos y teléfono obligatorios; DNI y NIE con su letra de control; el tipo
+  y el número de documento van juntos; teléfono de 9 a 15 dígitos (con `+` opcional); correo válido; nacimiento no
+  futuro. Se guardan normalizados: documento en mayúsculas sin guiones, teléfono solo con `+` y dígitos, correo en
+  minúsculas. La base también impide documentos repetidos (`uk_paciente_documento`).
+- **Código del paciente:** 6 caracteres aleatorios sin vocales ni caracteres confundibles (p. ej. `K7M3QX`), generado
+  por el backend; no se puede elegir ni cambiar.
+- **Auditoría:** el alta guarda todos los datos; una edición guarda solo los campos que cambiaron (antes y después);
+  guardar sin cambios no deja registro.
+- **Permisos iniciales** (se cambian en Roles y permisos): Administrador, Recepción y Coordinador ven, dan de alta y
+  editan; Odontólogo solo ve.
+
+## Agenda y citas en el software (Fase 3, parte 1)
+
+Una sola tabla `citas` para la web, el software y la futura app (migración `V4__agenda_y_citas.sql`). Una cita del
+software ocupa el horario igual que una de la web, y al cancelarla el hueco vuelve a salir en la landing.
+
+| Método | Ruta | Permiso | Qué hace |
+| --- | --- | --- | --- |
+| GET | `/api/agenda?desde=2026-10-12&dias=1..7[&odontologo_id=]` | `citas.ver` | Días con horario de la clínica, turnos, bloqueos y citas |
+| GET | `/api/agenda/disponibilidad?tratamiento_id=&fecha=[&odontologo_id=][&excluir_cita_id=]` | `citas.crear` o `citas.reprogramar` | Huecos libres de cada odontólogo, calculados como los de la web |
+| GET | `/api/citas?desde=&hasta=&estado=&origen=&odontologo_id=&paciente_id=&sin_ficha=&recientes=&pagina=&tamano=` | `citas.ver` | Busca citas |
+| GET | `/api/citas/{id}` | `citas.ver` | Ficha de la cita con su historia; **404** si es de otra agenda |
+| POST | `/api/pacientes/{id}/citas` | `citas.crear` | Da una cita a un paciente activo (origen `SOFTWARE`, entra `CONFIRMADA`); **409** si el hueco ya no está libre |
+| PUT | `/api/citas/{id}/estado` | `citas.cambiar_estado` | Confirmar, en consulta, completada, no asistió (solo los pasos permitidos) |
+| POST | `/api/citas/{id}/cancelacion` | `citas.cancelar` | `{ "motivo": "…" }` opcional. No se borra: queda `CANCELADA` y el hueco se libera |
+| POST | `/api/citas/{id}/reprogramacion` | `citas.reprogramar` | Crea la cita nueva y deja la anterior `REPROGRAMADA`, enlazadas |
+| PUT | `/api/citas/{id}/paciente` | `citas.editar` | Vincula una cita de la web a la ficha de un paciente |
+| PUT | `/api/citas/{id}/notas` | `citas.editar` | Notas internas (el paciente no las ve) |
+| POST | `/api/citas/cancelacion` | Público | El paciente cancela desde la web con el `codigo` de su reserva, hasta 4 horas antes |
+
+- **Quién ve qué:** con `citas.ver_todas` se ve la agenda de todos; sin él, solo la del odontólogo vinculado al usuario
+  (`odontologos.usuario_id`). Pedir una cita de otra agenda responde 404, no 403, para no revelar que existe.
+- **Validaciones en el backend:** paciente activo, tratamiento activo, odontólogo activo que hace ese tratamiento, fecha
+  no pasada y como mucho a 180 días, hora dentro de su turno y del horario de la clínica, fuera de almuerzo y bloqueos,
+  sin choque con otra cita, y el paso de estado permitido. La duración sale siempre de `tratamientos.duracion_minutos`.
+- **Auditoría:** reservar, cambiar de estado, cancelar (con el motivo), reprogramar y vincular, con antes y después.
+- **Permisos iniciales** (se cambian en Roles y permisos): Administrador, Recepción y Coordinador, todos los `citas.*`;
+  Odontólogo, solo `citas.ver` (su propia agenda).
+
+## Configuración de la agenda (Fase 3, parte 2)
+
+Odontólogos, tratamientos, horarios y bloqueos se configuran desde el software, sobre las mismas tablas de la agenda
+(V1). La migración `V5__configuracion_de_la_agenda.sql` solo añade el tipo de bloqueo `CAPACITACION` y cuatro permisos.
+Un cambio se nota al momento en la disponibilidad de la web y del software: no hay copias ni cachés.
+
+| Método | Ruta | Permiso | Qué hace |
+| --- | --- | --- | --- |
+| GET | `/api/configuracion/odontologos` | `odontologos.gestionar` | Todos, también los desactivados, con su usuario y sus tratamientos |
+| POST · PUT | `/api/configuracion/odontologos[/{id}]` | `odontologos.gestionar` | Alta o cambio: nombre, especialidad, descripción (salen en la web) y `usuario_id` |
+| PUT | `/api/configuracion/odontologos/{id}/estado` | `odontologos.gestionar` | `{ "activo": false }`; **409** si tiene citas pendientes o confirmadas |
+| GET | `/api/configuracion/odontologos/usuarios` | `odontologos.gestionar` | Usuarios activos que se pueden vincular, y a quién están vinculados ya |
+| GET | `/api/configuracion/tratamientos` | `tratamientos.gestionar` | Todos, con duración, precio y quién los hace |
+| POST · PUT | `/api/configuracion/tratamientos[/{id}]` | `tratamientos.gestionar` | Alta o cambio; `duracion_minutos` de 15 en 15 (15 a 480) y `odontologo_ids` (vacío = cualquiera) |
+| PUT | `/api/configuracion/tratamientos/{id}/estado` | `tratamientos.gestionar` | Ofrecer o dejar de ofrecer; **409** si tiene citas pendientes o confirmadas |
+| GET | `/api/configuracion/horarios` | `horarios.gestionar` | Horario de la clínica y turnos de cada odontólogo activo |
+| PUT | `/api/configuracion/horarios/clinica` | `horarios.gestionar` | Sustituye la semana; un día que no llega queda cerrado |
+| PUT | `/api/configuracion/horarios/odontologos/{id}` | `horarios.gestionar` | Sustituye los turnos de la semana (varios tramos por día, sin solaparse) |
+| GET | `/api/configuracion/bloqueos` | `bloqueos.gestionar` | Bloqueos que no han terminado |
+| POST · PUT | `/api/configuracion/bloqueos[/{id}]` | `bloqueos.gestionar` | Para toda la clínica o un odontólogo; fechas o un día de cada semana; día entero o unas horas |
+| DELETE | `/api/configuracion/bloqueos/{id}` | `bloqueos.gestionar` | Lo quita (queda inactivo, no se borra) |
+
+- **Citas afectadas:** al cambiar un horario, unos turnos o un bloqueo, la respuesta trae `citas_afectadas`: las citas
+  pendientes o confirmadas de hoy en adelante que quedan fuera. **No se cancela ninguna**: la clínica decide. La lista
+  solo llega con `citas.ver_todas`; sin él, solo el total.
+- **Validaciones en el backend:** horas en punto o en cuartos, fin después del inicio, tramos del mismo día sin
+  solaparse, bloqueos de hoy en adelante, duración de 15 en 15 minutos, un usuario activo vinculado a un solo
+  odontólogo (**409**) y nombres sin repetir (**409**).
+- **Auditoría:** cada alta, cambio, activación y bloqueo quitado, con solo los campos que cambian (antes y después).
+- **Permisos iniciales** (se cambian en Roles y permisos): Administrador y Coordinador, los cuatro; Recepción, solo
+  `bloqueos.gestionar`; Odontólogo, ninguno.
+
+## Base de datos y migraciones
+
+Las migraciones se aplican solas al arrancar, así que el usuario de `DB_USERNAME` necesita permiso para crear y modificar
+tablas en su base. Antes de desplegar una versión con migraciones nuevas en producción, haz una copia de seguridad de la base.
+
+- **Motores:** MySQL 8.4 en producción y la MariaDB 10.4 de XAMPP en desarrollo. Las migraciones se escriben en SQL que
+  funciona en los dos, y GitHub Actions pasa las pruebas en ambos en cada cambio (`.github/workflows/backend.yml`).
+- **Flyway** crea y cambia las tablas con los archivos de `src/main/resources/db/migration`:
+  `V1__esquema_inicial.sql`, después `V2__...sql`, `V3__...sql`… Cada archivo se aplica una sola vez y queda anotado en la
+  tabla `flyway_schema_history`.
+- **Hibernate no toca la estructura** (`spring.jpa.hibernate.ddl-auto=validate`): al arrancar comprueba que las entidades
+  coinciden con las tablas y, si no, el backend no arranca.
+- **Reglas para cambiar la base:** un cambio de estructura es siempre un archivo nuevo `V<n>__descripcion.sql`; nunca se
+  edita una migración ya aplicada ni se cambian tablas a mano desde Workbench o phpMyAdmin. Cada `CREATE TABLE` lleva
+  `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci` (válido en MySQL 8.4 y en MariaDB). Para añadir una
+  columna obligatoria a una tabla con datos: primero opcional, luego se rellena y después se hace obligatoria.
+- **Borrar la base con Flyway (`clean`) está desactivado** en todos los entornos; solo lo usan las pruebas automáticas
+  sobre su propia base.
+
+La base anterior de la landing (`clinica_landing`) no se usa ni se modifica. La base central es `clinica_aeod`.
 
 ## Ver la landing con datos de la API
 
 La landing debe abrirse desde un servidor local (por CORS, abrir `index.html` con doble clic no puede hablar con la API).
 
-- **Desde IntelliJ:** abre `index.html` de la carpeta raíz y pulsa el icono del navegador que aparece arriba a la derecha (abre `http://localhost:63342/...`, que ya está permitido).
-- **Desde terminal:** en la carpeta raíz, `python3 -m http.server 5500` y abre <http://localhost:5500>.
+- **Desde IntelliJ:** abre `landing/index.html` y pulsa el icono del navegador que aparece arriba a la derecha (abre `http://localhost:63342/...`, que ya está permitido).
+- **Desde VS Code:** con la extensión Live Server, abre `landing/index.html` con *Open with Live Server* (puerto 5500, permitido).
 
 Si la API está apagada, la landing sigue funcionando con sus datos estáticos y el formulario muestra el teléfono en vez de fingir un envío.
 
@@ -126,9 +261,9 @@ Para cada odontólogo que hace el tratamiento: **su turno ∩ horario de la clí
 ### Doble reserva
 
 1. Al confirmar, el backend vuelve a calcular si ese horario sigue libre.
-2. La cita se guarda junto con un registro por cada tramo de 15 minutos en `agenda_ocupacion`, que tiene **clave única** (odontólogo, fecha, hora). Si dos personas confirman a la vez, la base de datos solo acepta una; la otra recibe el 409. Probado con 10 reservas simultáneas en SQL Server, MariaDB y H2.
+2. La cita se guarda junto con un registro por cada tramo de 15 minutos en `agenda_ocupacion`, que tiene **clave única** (odontólogo, fecha, hora). Si dos personas confirman a la vez, la base de datos solo acepta una; la otra recibe el 409. Las pruebas lo comprueban con 10 reservas simultáneas en MySQL 8.4 y en MariaDB 10.4.
 
-En la consola verás entonces un `ERROR … Duplicate entry … uk_agenda_ocupacion` (MariaDB) o `Violation of UNIQUE KEY constraint 'uk_agenda_ocupacion'` (SQL Server): es la protección funcionando, no un fallo.
+En la consola verás entonces un `ERROR … Duplicate entry … for key 'uk_agenda_ocupacion'`: es la protección funcionando, no un fallo.
 
 ### Estados de una cita
 
@@ -136,11 +271,14 @@ En la consola verás entonces un `ERROR … Duplicate entry … uk_agenda_ocupac
 | --- | --- | --- |
 | `PENDIENTE` | Sí | Reservada desde la web; la clínica la confirma |
 | `CONFIRMADA` | Sí | Confirmada (o reservada con `app.citas.confirmacion-automatica=true`) |
+| `EN_ATENCION` | Sí | El paciente está en consulta |
+| `COMPLETADA` | No | Consulta terminada |
+| `NO_ASISTIO` | No | No vino (se puede deshacer y volver a `CONFIRMADA`) |
 | `CANCELADA` | No | Cancelada. **No se borra** y el horario vuelve a estar libre |
 | `REPROGRAMADA` | No | Se movió a otra cita, enlazada por `cita_anterior_id` |
-| `COMPLETADA`, `NO_ASISTIO` | No | Para el futuro software de clínica |
 
-Cancelar y reprogramar existen en `CitaService` con su regla (el paciente, hasta 4 horas antes; la clínica, siempre), pero **no tienen endpoint público**: sin identificar al paciente no es seguro. Los usará la app del paciente.
+El paciente puede cancelar desde la web con el código de su reserva, hasta 4 horas antes (`POST /api/citas/cancelacion`).
+La clínica cancela y reprograma desde el software en cualquier momento. Reprogramar como paciente queda para la app.
 
 ### Tablas de agenda
 
@@ -150,26 +288,19 @@ Cancelar y reprogramar existen en `CitaService` con su regla (el paciente, hasta
 | `horarios_odontologo` | Turnos de cada odontólogo por día; puede haber varios tramos el mismo día |
 | `odontologo_tratamientos` | Quién hace cada tratamiento. Un tratamiento sin filas lo hace cualquiera |
 | `tratamientos.duracion_minutos` | Duración de la cita que se reserva online |
-| `bloqueos` | Almuerzo, reuniones, mantenimiento, vacaciones, feriados y bloqueos manuales (ver abajo) |
-| `citas` | Las citas, con estado, origen (`LANDING`, `CLINICA`, `APP_PACIENTE`) y código público |
+| `bloqueos` | Almuerzo, reuniones, capacitaciones, mantenimiento, vacaciones, feriados y bloqueos manuales (ver abajo) |
+| `citas` | Las citas, con estado, origen (`LANDING`, `SOFTWARE`, `APP`), código público y, si ya está vinculada, `paciente_id` |
 | `agenda_ocupacion` | Tramos de 15 minutos ocupados; su clave única impide la doble reserva |
 | `lista_espera` | Preparada para la futura lista de espera (sin pantalla todavía) |
 | `notificaciones` | Avisos pendientes de cada reserva, cancelación, reprogramación y hueco liberado. **No se envía nada** |
 
-Un **bloqueo** puede ser de toda la clínica (`odontologo_id` vacío) o de un odontólogo; semanal (`dia_semana`) o entre fechas (`fecha_inicio`–`fecha_fin`); de unas horas (`hora_inicio`–`hora_fin`) o del día entero (horas vacías). Ejemplos:
+Un **bloqueo** puede ser de toda la clínica (`odontologo_id` vacío) o de un odontólogo; semanal (`dia_semana`) o entre
+fechas (`fecha_inicio`–`fecha_fin`); de unas horas (`hora_inicio`–`hora_fin`) o del día entero (horas vacías). Desde la
+Fase 3, parte 2, todo esto se cambia desde el software (**Configuración** en el menú), no en la base de datos.
 
-```sql
--- Feriado: toda la clínica cerrada el 12 de octubre
-INSERT INTO bloqueos (tipo, motivo, fecha_inicio, fecha_fin, activo) VALUES ('FERIADO', 'Fiesta Nacional', '2026-10-12', '2026-10-12', 1);
--- Vacaciones de la Dra. Ana (id 3) del 1 al 15 de agosto
-INSERT INTO bloqueos (tipo, motivo, odontologo_id, fecha_inicio, fecha_fin, activo) VALUES ('VACACIONES', 'Vacaciones', 3, '2027-08-01', '2027-08-15', 1);
--- Reunión de equipo todos los miércoles de 9:00 a 10:00
-INSERT INTO bloqueos (tipo, motivo, dia_semana, hora_inicio, hora_fin, activo) VALUES ('REUNION', 'Reunión de equipo', 3, '09:00', '10:00', 1);
-```
+### Datos de ejemplo
 
-### Datos de ejemplo (a confirmar)
-
-Horario de la clínica: L–V 9:00–21:00, S 10:00–14:00, D cerrado (el que muestra la landing). Almuerzo L–V 12:00–13:00.
+Son valores de partida: la clínica pone los reales desde **Configuración** en el software. Horario de la clínica: L–V 9:00–21:00, S 10:00–14:00, D cerrado (el que muestra la landing). Almuerzo L–V 12:00–13:00.
 
 | Odontólogo | L–V | Sábado |
 | --- | --- | --- |
@@ -183,20 +314,16 @@ Duraciones: Valoración 30 (cualquiera) · Limpieza 60 (Ana, Rocío) · Empaste 
 ## Configuración (`src/main/resources/application.properties`)
 
 - `server.port=8080`
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`: conexión a SQL Server (por defecto `localhost:1433`, `sa`)
-- Los textos se guardan como `nvarchar` (tildes, ñ y cualquier carácter)
-- `app.cors.origenes`: orígenes permitidos (por defecto `localhost` y `127.0.0.1` en los puertos 5500 y 3000, más `localhost:63342` de IntelliJ; nunca `*`)
-- `app.datos-iniciales`: carga los datos de prueba si las tablas están vacías
+- Base de datos y CORS: ver «Entornos»
 - `app.zona-horaria`: zona de la clínica para decidir qué es "hoy" (`Europe/Madrid`)
+- `app.datos-iniciales`: carga los datos de ejemplo si las tablas están vacías (activado en `dev` y `test`)
 - `app.agenda.intervalo-minutos` (30): cada cuánto empieza un horario ofrecido
 - `app.agenda.antelacion-minima-minutos` (60): margen mínimo para reservar hoy
 - `app.agenda.dias-reserva-maximos` (180): hasta cuántos días vista se reserva
 - `app.agenda.dias-busqueda-alternativas` (30): días que se exploran para las próximas opciones
 - `app.agenda.inicio-tarde` (14:00): desde qué hora un horario cuenta como "tarde"
-- `app.citas.confirmacion-automatica` (false): `true` = las citas de la web entran `CONFIRMADA`
+- `app.citas.confirmacion-automatica` (false): las citas de la web entran `PENDIENTE` hasta que la clínica las verifica; `true` = entran `CONFIRMADA`
 - `app.citas.cancelacion-antelacion-horas` (4): antelación mínima para que el paciente cancele o reprograme
-
-Las tablas se crean con `spring.jpa.hibernate.ddl-auto=update`, suficiente en desarrollo. Para producción conviene cambiarlo a `validate` y gestionar el esquema con scripts.
 
 ## Tests
 
@@ -204,18 +331,41 @@ Las tablas se crean con `spring.jpa.hibernate.ddl-auto=update`, suficiente en de
 mvn test
 ```
 
-Usan una base de datos H2 en memoria, así que no necesitan SQL Server. Cubren el cálculo de disponibilidad (incluido el ejemplo 8–17 con almuerzo y una cita de 10 a 11), las reservas simultáneas, la cancelación y la reprogramación. En IntelliJ: clic derecho en `src/test/java` → *Run 'All Tests'*.
+Usan una base de datos real y **solo para pruebas**: al empezar la borran y la crean de nuevo con las migraciones, así que
+también comprueban que las migraciones funcionan. Por seguridad, solo borran una base cuyo nombre contenga «prueba» o «test».
+
+- **En tu equipo:** con XAMPP encendido usan la base `clinica_aeod_pruebas` (se crea sola). En IntelliJ: clic derecho en
+  `src/test/java` → *Run 'All Tests'*.
+- **En GitHub Actions:** se ejecutan en cada cambio en MySQL 8.4 y en MariaDB 10.4. Otra base se indica con
+  `TEST_DB_URL`, `TEST_DB_USERNAME` y `TEST_DB_PASSWORD`.
+
+Cubren el cálculo de disponibilidad (incluido el ejemplo 8–17 con almuerzo y una cita de 10 a 11), las reservas
+simultáneas, la cancelación y la reprogramación, la entrada y los permisos, y los pacientes (validaciones, documento
+repetido, búsqueda, permisos por rol y auditoría).
 
 ## Estructura
 
 ```text
-src/main/java/sv/clinica/landing/
-├── config/       CorsConfig, DataInitializer, AgendaProperties, CitasProperties
-├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad
+src/main/java/sv/clinica/api/
+├── config/       DataInitializer, AdministradorInicial, OpenApiConfig, propiedades, VariablesDeEntornoObligatorias
+├── security/     SeguridadConfig, TokenService, ConvertidorJwt, CookieDeSesion, límite de peticiones, Permisos
+├── controller/   Health, Tratamiento, Odontologo, Contacto, Cita, Disponibilidad, Auth, Usuario, Rol, Auditoria, Paciente,
+│                 Agenda y Configuracion{Odontologos,Tratamientos,Horarios,Bloqueos}
 ├── dto/          Respuestas, peticiones con validaciones y patrones compartidos
-├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion y sus enums
+├── entity/       Tratamiento, Odontologo, horarios, Bloqueo, Cita, OcupacionAgenda, ListaEspera, Notificacion, Usuario,
+│                 Rol, Permiso, Sesion, RegistroAuditoria, Paciente y sus enums
 ├── event/        CitaEvento (reserva, cancelación, reprogramación)
 ├── repository/   Spring Data JPA
-├── service/      DisponibilidadService (agenda), CitaService (reservar, cancelar, reprogramar), NotificacionService
+├── service/      DisponibilidadService (agenda), CitaService (reservar, cancelar, reprogramar), NotificacionService,
+│                 AuthService, UsuarioService, RolService, AuditoriaService, PacienteService (+ BusquedaDePacientes),
+│                 Configuracion*Service (+ CitasAfectadas, HorasDeAgenda)
 └── exception/    RecursoNoEncontrado, DatosInvalidos, HorarioNoDisponible (409), CitaNoModificable (409), GlobalExceptionHandler
+src/main/resources/
+├── application.properties            Configuración común
+├── application-dev.properties        Tu equipo (XAMPP por defecto)
+├── application-test.properties       Servidor de pruebas
+├── application-prod.properties       Producción
+└── db/migration/                     Migraciones Flyway (V1__esquema_inicial.sql…)
 ```
+
+Desde la Fase 1 el proyecto se llama `clinica-api` (paquete `sv.clinica.api`).

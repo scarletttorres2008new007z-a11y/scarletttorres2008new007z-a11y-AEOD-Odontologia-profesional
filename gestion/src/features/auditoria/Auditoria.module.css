@@ -1,0 +1,25 @@
+/* Datos de una operación: etiqueta a la izquierda y valor a la derecha */
+.datos {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.datos > div {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 12px;
+}
+.datos dt {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.datos dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* En la tabla de antes/después se resaltan los datos que cambiaron */
+tbody tr.cambio th,
+tbody tr.cambio td {
+  background: var(--warning-bg);
+}

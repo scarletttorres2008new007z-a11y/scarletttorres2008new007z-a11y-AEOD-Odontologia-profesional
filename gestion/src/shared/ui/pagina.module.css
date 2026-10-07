@@ -1,0 +1,107 @@
+/* Estructura común de las páginas: cabecera con título y acciones, filtros y contenido. */
+.pagina {
+  display: grid;
+  /* minmax(0, …): una tabla ancha se desplaza dentro de su caja, nunca ensancha la página */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+}
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.entradilla {
+  margin-top: 6px;
+  color: var(--ink-3);
+}
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: end;
+  padding: 16px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+}
+.tarjeta {
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+}
+
+/* Tablas: en el móvil se desplazan en horizontal dentro de su caja, nunca la página entera. */
+.tablaCaja {
+  /* relative: el texto oculto para lectores de pantalla (position: absolute) queda dentro de la caja */
+  position: relative;
+  overflow-x: auto;
+  background: var(--white);
+  border: 1px solid var(--paper-3);
+  border-radius: var(--r-md);
+}
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.tabla th {
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  background: var(--paper);
+  border-bottom: 1px solid var(--paper-3);
+}
+/* Cabeceras de fila (tablas de dato y valor) */
+.tabla tbody th {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink-2);
+  white-space: normal;
+  vertical-align: top;
+  background: transparent;
+  border-bottom: 1px solid var(--paper-2);
+}
+.tabla td {
+  padding: 12px 14px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--paper-2);
+}
+.tabla tbody tr:last-child td,
+.tabla tbody tr:last-child th {
+  border-bottom: none;
+}
+.secundario {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.celdaAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+/* Mientras llega la página siguiente de resultados se ve la anterior, atenuada */
+.tablaCaja[aria-busy='true'] {
+  opacity: 0.6;
+}
