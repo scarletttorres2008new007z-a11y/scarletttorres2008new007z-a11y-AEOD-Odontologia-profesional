@@ -1,0 +1,46 @@
+# Servidor del servicio «web» en Railway (ver Dockerfile de la raíz y despliegue/README.md).
+{
+	admin off
+	servers {
+		# Solo se llega aquí a través del proxy de Railway, que reescribe X-Real-IP con la IP del visitante.
+		# El backend la usa para limitar reservas e intentos de entrar por persona.
+		trusted_proxies static 0.0.0.0/0 ::/0
+		client_ip_headers X-Real-IP
+	}
+}
+
+:{$PORT:8080} {
+	encode zstd gzip
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Frame-Options DENY
+		Strict-Transport-Security "max-age=31536000"
+	}
+
+	# API: al backend por la red privada. API_INTERNA solo hace falta si el servicio no se llama «backend».
+	handle /api/* {
+		reverse_proxy {$API_INTERNA:http://backend.railway.internal:8080} {
+			header_up X-Forwarded-For {client_ip}
+			header_up X-Forwarded-Proto https
+		}
+	}
+
+	# Software de gestión: cualquier ruta suya (/gestion/agenda, /gestion/pacientes/3…) abre la aplicación.
+	redir /gestion /gestion/ 308
+	handle /gestion/* {
+		root * /srv
+		try_files {path} /gestion/index.html
+		header /gestion/assets/* Cache-Control "public, max-age=31536000, immutable"
+		header /gestion/index.html Cache-Control "no-cache"
+		file_server
+	}
+
+	# Landing.
+	handle {
+		root * /srv/landing
+		file_server
+	}
+}

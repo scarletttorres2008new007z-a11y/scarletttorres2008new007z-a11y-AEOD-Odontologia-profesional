@@ -6,8 +6,11 @@ import { defineConfig } from 'vite';
 // navegador ve el software y la API en el mismo sitio: sin CORS y con la cookie de sesión protegida.
 const API = process.env.AEOD_API ?? 'http://localhost:8080';
 const proxy = { '/api': { target: API } };
+// Carpeta desde la que se sirve el software. En tu equipo, la raíz; en Railway, /gestion/ (lo fija el Dockerfile).
+const BASE = process.env.AEOD_BASE ?? '/';
 
 export default defineConfig({
+  base: BASE,
   plugins: [react()],
   server: { port: 5173, strictPort: true, proxy },
   preview: { port: 4173, strictPort: true, proxy },
