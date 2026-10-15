@@ -10,7 +10,7 @@ export function App() {
   return (
     <QueryClientProvider client={cliente}>
       <AuthProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
           <Rutas />
         </BrowserRouter>
       </AuthProvider>
